@@ -1,0 +1,18 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+* {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif !important;
+  /* 색상 설정 */
+  --black-color: #1c1c1c;
+  --white-color: #fdfdfd;
+}
+
+#root {
+  width: 100vh;
+  height: 100vh;
+  position: absolute;
+  /* 기본 배경 색상 */
+  /* background-color: #f5f4f8; */
+}
