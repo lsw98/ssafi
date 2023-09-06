@@ -7,12 +7,24 @@
   /* 색상 설정 */
   --black-color: #1c1c1c;
   --white-color: #fdfdfd;
+  --gray-color: #858585;
+  --point-color: #4AC49E;
+  --dark-color: #0D1545;
+  --gradation-color: linear-gradient(
+    180deg,
+    rgba(74, 196, 158, 0.32) 0%,
+    rgba(131, 236, 220, 0.15) 100%
+  );
+  --lower-color: #434FD9;
+  --upper-color: #FF6464;
+  --safe-color: #3AB67A;
+  --middle-color: #E5CA12;
+  --danger-color: #FD5353;
 }
 
 #root {
   width: 100vh;
   height: 100vh;
   position: absolute;
-  /* 기본 배경 색상 */
-  /* background-color: #f5f4f8; */
+  background-color: #fdfdfd;
 }
