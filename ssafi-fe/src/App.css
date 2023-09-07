@@ -15,7 +15,12 @@
     rgba(74, 196, 158, 0.32) 0%,
     rgba(131, 236, 220, 0.15) 100%
   );
-  /* 투명도 없는 그라데이션(원본보다 위쪽이 살짝 노란색) 
+  --light-gradation-color: linear-gradient(
+    0deg,
+    #edf9f6 0%,
+    #f9fefd 100%
+  );
+  /* 투명도 없는 그라데이션(원본보다 살짝 노란색) 
   --gradation-color: linear-gradient(
     180deg,
     #ecfbf6,
