@@ -4,6 +4,64 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import darkLogo from '../../assets/logos/logo-dark.png';
 
+interface SiteMenuProps {
+  active?: boolean;
+}
+
+// styled-component 파트
+const NavContainer = styled.div`
+  display: flex;
+  min-width: 1270px;
+  height: 60px;
+  border-bottom: 1px solid var(--black-color);
+  justify-content: center;
+  color: var(--white-color);
+  background-color: var(--dark-color);
+`;
+
+const Navbar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 1270px;
+  align-items: center;
+  padding: 0px 30px;
+`;
+
+const NavbarLeft = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SiteLogo = styled.img.attrs({
+  src: `${darkLogo}`,
+})`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 30px;
+  height: 28px;
+`;
+
+const SiteMenu = styled.div<SiteMenuProps>`
+  font-size: 24px;
+  margin-left: 30px;
+  cursor: pointer;
+  color: ${(props) => (props.active ? 'var(--point-color)' : 'var(--white-color)')};
+`;
+
+const NavbarRight = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const LoginButton = styled.div`
+  font-size: 18px;
+  cursor: pointer;
+`;
+
 export default function Header() {
   // 기능 코드 파트
   const navigate = useNavigate();
@@ -16,60 +74,6 @@ export default function Header() {
   const toSurvey = () => {
     navigate('/survey');
   };
-
-  // styled-component 파트
-  const NavContainer = styled.div`
-    display: flex;
-    min-width: 1270px;
-    height: 60px;
-    border-bottom: 1px solid var(--black-color);
-    justify-content: center;
-    color: var(--white-color);
-    background-color: var(--dark-color);
-  `;
-
-  const Navbar = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 1270px;
-    align-items: center;
-    padding: 0px 30px;
-  `;
-
-  const NavbarLeft = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  `;
-
-  const SiteLogo = styled.img.attrs({
-    src: `${darkLogo}`,
-  })`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    margin-right: 30px;
-    height: 28px;
-  `;
-
-  const SiteMenu = styled.div`
-  font-size: 24px;
-  margin-left: 30px;
-  cursor: pointer;
-  color: ${(props) => (props.active ? 'var(--point-color)' : 'var(--white-color)')};
-`;
-
-  const NavbarRight = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  `;
-
-  const LoginButton = styled.div`
-    font-size: 18px;
-    cursor: pointer;
-  `;
 
   return (
     <NavContainer>
