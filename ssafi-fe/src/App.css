@@ -8,7 +8,9 @@
   --black-color: #1c1c1c;
   --white-color: #fdfdfd;
   --gray-color: #858585;
+  --lightgray-color: #DDDDDD;
   --point-color: #4AC49E;
+  --sub-color: #E7FAF7;
   --dark-color: #0D1545;
   --gradation-color: linear-gradient(
     180deg,
@@ -16,9 +18,11 @@
     rgba(131, 236, 220, 0.15) 100%
   );
   --lower-color: #434FD9;
+  --lightlower-color: #DDF1FF;
   --upper-color: #FF6464;
+  --lightupper-color: #FFDEDE;
   --safe-color: #3AB67A;
-  --middle-color: #E5CA12;
+  --middle-color: #EFDA4C;
   --danger-color: #FD5353;
 }
 
@@ -26,5 +30,5 @@
   width: 100vh;
   height: 100vh;
   position: absolute;
-  background-color: #fdfdfd;
+  background-color: #F9F9F9;
 }
