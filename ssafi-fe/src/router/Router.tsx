@@ -1,11 +1,10 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import Header from '../components/Header';
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import Main from '../main';
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import Portfolio from '../portfolio';
-// eslint-disable-next-line import/no-unresolved, import/extensions
+import News from '../news';
 import Footer from '../components/Footer';
 
 export default function Router() {
@@ -18,12 +17,22 @@ export default function Router() {
     );
   }
 
+  function NewsWithFooter() {
+    return (
+      <>
+        <News />
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Header />
       <Routes>
         <Route path="/" element={<MainWithFooter />} />
         <Route path="/survey" element={<Portfolio />} />
+        <Route path="/news/*" element={<NewsWithFooter />} />
       </Routes>
     </BrowserRouter>
   );

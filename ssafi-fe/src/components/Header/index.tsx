@@ -11,11 +11,10 @@ interface SiteMenuProps {
 // styled-component 파트
 const NavContainer = styled.div`
   display: flex;
+  justify-content: center;
   min-width: 1270px;
   height: 60px;
   border-bottom: 1px solid var(--black-color);
-  justify-content: center;
-  color: var(--white-color);
   background-color: var(--dark-color);
 `;
 
@@ -75,6 +74,10 @@ export default function Header() {
     navigate('/survey');
   };
 
+  const toNews = () => {
+    navigate('/news');
+  };
+
   return (
     <NavContainer>
       <Navbar>
@@ -86,7 +89,7 @@ export default function Header() {
           <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
             포트폴리오
           </SiteMenu>
-          <SiteMenu active={location.pathname === '/news'}>
+          <SiteMenu active={location.pathname.includes('/news')} onClick={toNews}>
             뉴스
           </SiteMenu>
         </NavbarLeft>
