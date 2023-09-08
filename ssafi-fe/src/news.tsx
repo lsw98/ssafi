@@ -89,6 +89,7 @@ const NewsSearchTextbox = styled.input.attrs({
   font-size: 22px;
   color: var(--dark-color);
   border: 0px;
+  outline: none;
 `;
 
 const NewsArea = styled.div`
