@@ -1,6 +1,4 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Routes, Route, useNavigate, useLocation,
 } from 'react-router-dom';
@@ -64,6 +62,15 @@ export default function Trade() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    // 여기에서 API 키 확인 로직을 수행
+    const hasAPI = false; // API 키가 없다고 가정
+
+    if (!hasAPI) {
+      navigate('/trade/api');
+    }
+  }, [navigate]);
+
   const toAI = () => {
     navigate('/trade');
   };
@@ -80,8 +87,8 @@ export default function Trade() {
     <TradeContainer>
       <TradeNavContainer>
         <TradeMenuArea>
-          <TradeMenu active={location.pathname === '/trade'} onClick={toAI}>
-            ai 트레이딩
+          <TradeMenu active={location.pathname === '/trade' || location.pathname === '/trade/api'} onClick={toAI}>
+            AI
           </TradeMenu>
           <TradeMenu active={location.pathname === '/trade/order'} onClick={toOrder}>
             빠른주문
@@ -94,6 +101,7 @@ export default function Trade() {
       <TradeArea>
         <Routes>
           <Route path="/" element={<TradeAI />} />
+          <Route path="/api" element={<TradeAPI />} />
           <Route path="/order" element={<TradeOrder />} />
           <Route path="/account" element={<TradeAccount />} />
         </Routes>
