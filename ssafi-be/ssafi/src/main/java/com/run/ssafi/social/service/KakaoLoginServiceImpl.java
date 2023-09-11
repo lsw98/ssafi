@@ -25,7 +25,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Profile("prod")
 @Qualifier("kakaoLogin")
 public class KakaoLoginServiceImpl implements SocialLoginService {
     private final KakaoAuthApi kakaoAuthApi;
@@ -39,8 +38,6 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
     private String kakaoRedirectUri;
     @Value("${social.client.kakao.grant_type}")
     private String kakaoGrantType;
-
-
 
     @Override
     public SnsType getServiceName() {
