@@ -70,6 +70,10 @@ export default function Header() {
     navigate('/');
   };
 
+  const toTrade = () => {
+    navigate('/trade');
+  };
+
   const toSurvey = () => {
     navigate('/survey');
   };
@@ -79,7 +83,7 @@ export default function Header() {
       <Navbar>
         <NavbarLeft>
           <SiteLogo onClick={toMain} />
-          <SiteMenu active={location.pathname === '/trade'}>
+          <SiteMenu active={location.pathname.includes('/trade')} onClick={toTrade}>
             AI 트레이딩
           </SiteMenu>
           <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
