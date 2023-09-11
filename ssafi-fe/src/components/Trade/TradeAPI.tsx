@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 interface ContainerProps {
@@ -76,6 +76,22 @@ const InputBox = styled.input`
 `;
 
 export default function TradeApi() {
+  const [Api, setApi] = React.useState<string>('');
+
+  const openApiPage = () => {
+    // 임시로 구글..
+    window.open('https://www.google.com/', '_blank');
+  };
+
+  const handleApiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력 값이 변경될 때마다 Api 상태를 업데이트
+    setApi(event.target.value);
+  };
+
+  const handleButtonClick = () => {
+    // axios 요청
+  };
+
   return (
     <ApiContainer>
       <Container dark={true}>
@@ -84,17 +100,21 @@ export default function TradeApi() {
             <Text className='title'>API Key가 없으신가요?</Text>
             <Text>SSAFI에서는 ~~님의 api key를 통해 ~~하고 있으며, <br />
               api key 인증한 회원에 한해 ai 트레이딩 서비스를 제공하고 있습니다.</Text>
-            <Text>API Key 발급받으러 가기 &gt;</Text>
+            <Text onClick={openApiPage}>API Key 발급받으러 가기 &gt;</Text>
           </InnerContainer>
         </div>
       </Container>
       <Container dark={false}>
         <InnerContainer>
           <InputKey>API Key를 입력해주세요.</InputKey>
-          <InputBox placeholder="API Key를 입력하세요" />
-          <InputKey className='button'>입력하기</InputKey>
+          <InputBox
+            placeholder="API Key를 입력하세요"
+            value={Api}
+            onChange={handleApiChange}
+          />
+          <InputKey className='button' onClick={handleButtonClick}>입력하기</InputKey>
         </InnerContainer>
       </Container>
-    </ ApiContainer>
+    </ApiContainer>
   );
 }
