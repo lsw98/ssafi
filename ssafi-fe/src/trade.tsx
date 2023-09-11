@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Routes, Route, useNavigate, useLocation,
 } from 'react-router-dom';
@@ -42,6 +42,7 @@ const TradeMenu = styled.div<TradeMenuProps>`
   align-items: center;
   font-size: 22px;
   padding: 0px 10px;
+  cursor: pointer;
   height: ${(props) => (props.active ? '55px' : '58px')};
   color: ${(props) => (props.active ? 'var(--dark-color)' : 'var(--gray-color)')};
   font-weight: ${(props) => (props.active ? '600' : '400')};
@@ -62,17 +63,16 @@ export default function Trade() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    // 여기에서 API 키 확인 로직을 수행
-    const hasAPI = false; // API 키가 없다고 가정
+  const toAI = () => {
+    // 임시로 설정
+    const hasAPI = false;
+    // const hasAPI = true;
 
     if (!hasAPI) {
       navigate('/trade/api');
+    } else {
+      navigate('/trade');
     }
-  }, [navigate]);
-
-  const toAI = () => {
-    navigate('/trade');
   };
 
   const toOrder = () => {

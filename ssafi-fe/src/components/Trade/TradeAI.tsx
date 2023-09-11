@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import TradeAPI from './TradeAPI';
+import React from 'react';
 
 export default function TradeAI() {
   return (
     <>
-      flkd
+      AI 트레이딩 페이지
     </>
   );
 }
