@@ -1,5 +1,4 @@
 import React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import styled from 'styled-components';
 import darkLogo from '../../assets/logos/logo-dark.png';
 
