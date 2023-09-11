@@ -12,5 +12,24 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
     'linebreak-style': 0,
+    'no-use-before-define': ['error', { variables: false }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        ts: 'never',
+        tsx: 'never',
+        js: 'never',
+        jsx: 'never',
+      },
+    ],
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+  },
+
 };

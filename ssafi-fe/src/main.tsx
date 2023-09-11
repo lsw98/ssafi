@@ -1,5 +1,4 @@
 import React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import styled from 'styled-components';
 import mainImage from './assets/images/main-image.png';
 import buttonArrow from './assets/images/button-arrow.png';

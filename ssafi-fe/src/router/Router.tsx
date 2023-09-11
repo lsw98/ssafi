@@ -5,34 +5,15 @@ import Header from '../components/Header';
 import Main from '../main';
 import Portfolio from '../portfolio';
 import News from '../news';
-import Footer from '../components/Footer';
 
 export default function Router() {
-  function MainWithFooter() {
-    return (
-      <>
-        <Main />
-        <Footer />
-      </>
-    );
-  }
-
-  function NewsWithFooter() {
-    return (
-      <>
-        <News />
-        <Footer />
-      </>
-    );
-  }
-
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<MainWithFooter />} />
+        <Route path="/" element={<Main />} />
         <Route path="/survey" element={<Portfolio />} />
-        <Route path="/news/*" element={<NewsWithFooter />} />
+        <Route path="/news/*" element={<News />} />
       </Routes>
     </BrowserRouter>
   );
