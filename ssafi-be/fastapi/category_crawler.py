@@ -1,28 +1,40 @@
+# 크롬 드라이버 기본 모듈
 from selenium import webdriver
-from selenium.webdriver import ActionChains
- 
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+# 크롬 드라이버 자동 업데이트을 위한 모듈
+from webdriver_manager.chrome import ChromeDriverManager
+
 from selenium.webdriver.common.by import By
- 
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from bs4 import BeautifulSoup
 import requests
+import time as t
+from news import News
 
-def news_category_crawler(url):
-    options = webdriver.ChromeOptions()
+def news_category_crawler(url, category):
+    options = Options()
     options.add_argument('headless')
     options.add_argument('window-size=1920x1080')
     options.add_argument("disable-gpu")
-
-    driver = webdriver.Chrome('chromedriver', options = options)
-
+    
+    # 크롬 드라이버 최신 버전 설정
+    service = Service(executable_path=ChromeDriverManager().install())
+    
+    driver = webdriver.Chrome(service=service, options = options)
+    # wait = WebDriverWait(driver, 10)
     driver.get(url)    
     driver.implicitly_wait(time_to_wait=1000)
+
+
+    # 기사 더보기 5번 클릭
     for _ in range (0, 5):
-        driver.find_element_by_xpath('//*[@id="container"]/section/div[2]/div/div/div[1]/section/div/div/div/button').click()
-        time.sleep(0.5)
+        driver.find_element(By.XPATH, '//*[@id="container"]/section/div[2]/div/div/div[1]/section/div/div/div/button').click()
+        # wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="container"]/section/div[2]/div/div/div[1]/section/div/div/div/button')))
+        t.sleep(3)
         
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
@@ -37,7 +49,7 @@ def news_category_crawler(url):
         else:
             if(new.select('.news_item')):
                 newsUrls.append(new.select('.news_item')[0].attrs['href'])
-        
+    
     for newsUrl in newsUrls:
         print('\n')
         print('기사 주소 : ', newsUrl)
@@ -45,73 +57,81 @@ def news_category_crawler(url):
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
         
-        title = soup.select('.news_detail_head_group')[0].select('.news_ttl')[0].text
-        print('제목 : ', title)
+        title = soup.select('.news_detail_head_group')[0].select('.news_ttl')[0].text       
         
-        name = soup.select('.author')[0].select('.name')[0].text
-        print(name)
-
-        email = soup.select('.author')[0].select('.email')[0].text
-        print(email)            
-                    
-        time = soup.select('.time_area')[0].select('.registration')[0].get_text()
-        print(time)
+        writer = ""
+        # 작성자가 없는 기사가 있어서 확인해줌
+        if(len(soup.select('.author'))):
+            name = soup.select('.author')[0].select('.name')[0].text
+            email = soup.select('.author')[0].select('.email')[0].text
+            writer = email + name             
+        date = soup.select('.time_area')[0].select('.registration')[0].get_text()
+        
+        # 작성자 정보 : 이름 + 이메일
+        
+        midtitle = ""
+        content = ""
+        
+        # print('제목 : ', title)
+        # print(name)
+        # print(email)     
+        # print(time)
         
         # 소제목 있으면 가져오기
         if(soup.select('.midtitle_text')):                
             midtitle = soup.select('.midtitle_text')[0].text
-            print('부제 : ', midtitle, '\n')
+            # print('부제 : ', midtitle, '\n')
             
         type = soup.select('.news_cnt_detail_wrap')[0].select('p')
         if(len(type)):
             # 기사 내용이 p태그로 구분된 형식일 때
-            content = soup.select('.news_cnt_detail_wrap')[0].find_all()
-            for con in content: 
+            news_content = soup.select('.news_cnt_detail_wrap')[0].find_all()
+            for con in news_content: 
                 if(con.name == 'p'):
-                    print(con.text)
+                    content += con.text + "\n"
                 else:
                     if(con.get('class') and con.get('class')[0] == 'thumb_area'):
-                        image = con.find('img').get('data-src')
-                        print(image)
-                # elif (len(con.select('.thumb_area'))):
-                #     print(con.select('.thumb_area')[0].select('img')[0].attrs['data-src'])
-            # # 기사 내용 추출
-            # for con in content:
-            #     print(con.text)
-                
-            # # 이미지 추출
-            # images = soup.select('.news_cnt_detail_wrap')[0].select('img')
-            # for image in images:
-            #     print(image.attrs['data-src'])
+                        if(con.find('img')):
+                            image = con.find('img').get('data-src')
+                            content += image + "\n"
+                            # print(image)
         else:
-            # 기사 내용이 p태그로 구분되지 않은 형식일 때 -> 이미지 1개 밖에 없는듯
-            content = soup.select('.news_cnt_detail_wrap')[0]
+            # 기사 내용이 p태그로 구분되지 않은 형식일 때
+            news_content = soup.select('.news_cnt_detail_wrap')[0]
             
             # 이미지 추출
-            images = content.select('img')
-        
-            # 기사 내용 추출    
-            for ele in content.find_all():
-                ele.extract()
-            content_text = content.get_text()
-            print(content_text)
+            images = news_content.select('img')
             
             for image in images:
-                print(image.attrs['data-src'])
+                content += image.attrs['data-src'] + "\n"
+                # print(image.attrs['data-src'])
+        
+            # 기사 내용 추출    
+            for ele in news_content.find_all():
+                e = ele.extract()               
+            content_text = news_content.get_text()
+            content += content_text + "\n"
+            # print(content_text)
+            
 
-   
+        news = News(category, title, midtitle, date, writer, content, image)
+        news_list.append(news)
+    
+
+# 크롤링 한 뉴스 객체들을 담을 리스트
+news_list = []
         
 # 증권정책
-# news_category_crawler('https://www.mk.co.kr/news/stock/stock-policy/')
+# news_category_crawler('https://www.mk.co.kr/news/stock/stock-policy/', "stock_policy")
 
 # 시황
-# news_category_crawler('https://www.mk.co.kr/news/stock/conditions/')
+# news_category_crawler('https://www.mk.co.kr/news/stock/conditions/', "conditions")
 
 # 공시
-# news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/')
+# news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/', "public_announcement")
 
 # 기업정보
-# news_category_crawler('https://www.mk.co.kr/news/stock/business-information/')
+# news_category_crawler('https://www.mk.co.kr/news/stock/business-information/', "business_information")
 
 # 증시지표
-news_category_crawler('https://www.mk.co.kr/news/stock/market-index/')
+news_category_crawler('https://www.mk.co.kr/news/stock/market-index/', "market_index")

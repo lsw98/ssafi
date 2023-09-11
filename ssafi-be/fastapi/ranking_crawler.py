@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from news import News
 
 def ranking_news_crawler(url):  
     response = requests.get(url)
@@ -26,58 +27,68 @@ def ranking_news_crawler(url):
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
         
-        title = soup.select('.news_detail_head_group')[0].select('.news_ttl')[0].text
-        print('제목 : ', title)
+        title = soup.select('.news_detail_head_group')[0].select('.news_ttl')[0].text       
         
-        name = soup.select('.author')[0].select('.name')[0].text
-        print(name)
-
-        email = soup.select('.author')[0].select('.email')[0].text
-        print(email)            
-                    
-        time = soup.select('.time_area')[0].select('.registration')[0].get_text()
-        print(time)
+        writer = ""
+        # 작성자가 없는 기사가 있어서 확인해줌
+        if(len(soup.select('.author'))):
+            # 작성자 정보 : 이름 + 이메일
+            name = soup.select('.author')[0].select('.name')[0].text
+            email = soup.select('.author')[0].select('.email')[0].text
+            writer = email + name             
+        date = soup.select('.time_area')[0].select('.registration')[0].get_text()
+    
+        midtitle = ""
+        content = ""
+        
+        # print('제목 : ', title)
+        # print(name)
+        # print(email)     
+        # print(time)
         
         # 소제목 있으면 가져오기
         if(soup.select('.midtitle_text')):                
             midtitle = soup.select('.midtitle_text')[0].text
-            print('부제 : ', midtitle, '\n')
+            #print('부제 : ', midtitle, '\n')
             
         type = soup.select('.news_cnt_detail_wrap')[0].select('p')
         if(len(type)):
             # 기사 내용이 p태그로 구분된 형식일 때
-            content = soup.select('.news_cnt_detail_wrap')[0].find_all()
-            for con in content: 
+            news_content = soup.select('.news_cnt_detail_wrap')[0].find_all()
+            for con in news_content: 
                 if(con.name == 'p'):
-                    print(con.text)
+                    content += con.text + "\n"
                 else:
                     if(con.get('class') and con.get('class')[0] == 'thumb_area'):
-                        image = con.find('img').get('data-src')
-                        print(image)
-                # elif (len(con.select('.thumb_area'))):
-                #     print(con.select('.thumb_area')[0].select('img')[0].attrs['data-src'])
-            # # 기사 내용 추출
-            # for con in content:
-            #     print(con.text)
-                
-            # # 이미지 추출
-            # images = soup.select('.news_cnt_detail_wrap')[0].select('img')
-            # for image in images:
-            #     print(image.attrs['data-src'])
+                        if(con.find('img')):
+                            image = con.find('img').get('data-src')
+                            content += image + "\n"
+                            # print(image)
         else:
-            # 기사 내용이 p태그로 구분되지 않은 형식일 때 -> 이미지 1개 밖에 없는듯
-            content = soup.select('.news_cnt_detail_wrap')[0]
+            # 기사 내용이 p태그로 구분되지 않은 형식일 때
+            news_content = soup.select('.news_cnt_detail_wrap')[0]
             
             # 이미지 추출
-            images = content.select('img')
-        
-            # 기사 내용 추출    
-            for ele in content.find_all():
-                ele.extract()
-            content_text = content.get_text()
-            print(content_text)
+            images = news_content.select('img')
             
             for image in images:
-                print(image.attrs['data-src'])
+                content += image.attrs['data-src'] + "\n"
+                # print(image.attrs['data-src'])
+        
+            # 기사 내용 추출    
+            for ele in news_content.find_all():
+                e = ele.extract()               
+            content_text = news_content.get_text()
+            content += content_text + "\n"
+            # print(content_text)
+            
+        news = News('ranking', title, midtitle, date, writer, content, image)
+        news_list.append(news)
                 
+                
+# 크롤링 한 뉴스 객체들을 담을 리스트
+news_list = []
+
+# 랭킹뉴스
 ranking_news_crawler('https://www.mk.co.kr/news/ranking/stock/')
+print(len(news_list))
