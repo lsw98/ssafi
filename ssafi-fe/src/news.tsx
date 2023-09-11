@@ -14,10 +14,12 @@ import NewsAnnounce from './components/NewsPage/NewsAnnounce';
 import NewsInfos from './components/NewsPage/NewsInfos';
 import searchIcon from './assets/icons/search-icon.svg';
 
+// 뉴스 메뉴 상태 prop type 정의
 interface NewsMenuProps {
   active?: boolean;
 }
 
+// 뉴스 영역
 const NewsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -25,6 +27,7 @@ const NewsContainer = styled.div`
   align-items: center;
 `;
 
+// 뉴스 nav bar 영역
 const NewsNavContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -33,6 +36,7 @@ const NewsNavContainer = styled.div`
   border-bottom: 1px solid var(--gray-color);
 `;
 
+// 뉴스 nav bar 속성
 const NewsNav = styled.div`
   display: flex;
   justify-content: space-between;
@@ -41,6 +45,7 @@ const NewsNav = styled.div`
   padding: 0px 30px;
 `;
 
+// 뉴스 메뉴 영역
 const NewsMenuArea = styled.div`
   display: flex;
   justify-content: space-between;
@@ -48,6 +53,7 @@ const NewsMenuArea = styled.div`
   width: 530px;
 `;
 
+// 뉴스 메뉴 속성 (페이지 url에 따른 style 변화)
 const NewsMenu = styled.div<NewsMenuProps>`
   display: flex;
   justify-content: center;
@@ -60,10 +66,10 @@ const NewsMenu = styled.div<NewsMenuProps>`
   padding-top: ${(props) => (props.active ? '2px' : '0px')};
 `;
 
-const NewsSearchBarArea = styled.div`
+// 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
+const NewsSearchBarArea = styled.div``;
 
-`;
-
+// 뉴스 검색바 속성
 const NewsSearchBar = styled.div`
   display: flex;
   justify-content: center;
@@ -72,14 +78,17 @@ const NewsSearchBar = styled.div`
   height: 40px;
   border: 3px solid var(--dark-color);
   border-radius: 20px;
+  background-color: var(--white-color);
 `;
 
+// 돋보기 모양 아이콘
 const NewsSearchIcon = styled.img.attrs({
   src: `${searchIcon}`,
 })`
   width: 30px;
 `;
 
+// 검색바 텍스트 입력 영역 속성
 const NewsSearchTextbox = styled.input.attrs({
   placeholder: '검색할 단어를 입력하세요.',
 })`
@@ -88,16 +97,25 @@ const NewsSearchTextbox = styled.input.attrs({
   margin-left: 15px; 
   font-size: 22px;
   color: var(--dark-color);
+  background-color: var(--white-color);
   border: 0px;
   outline: none;
 `;
 
+// 뉴스 본문 영역
 const NewsArea = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
   width: 1270px;
-  padding: 0px 30px;
+  margin-top: 50px
+`;
+
+const GraphArea = styled.div`
+  display: flex;
+  width: 400px;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 30px;
 `;
 
 export default function News() {
@@ -105,6 +123,7 @@ export default function News() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 하위 페이지로 이동
   const toNewsHome = () => {
     navigate('/news');
   };
@@ -170,6 +189,11 @@ export default function News() {
           <Route path="/announce" element={<NewsAnnounce />} />
           <Route path="/infos" element={<NewsInfos />} />
         </Routes>
+        <GraphArea>
+          코스피 그래프<br />
+          코스닥 그래프<br />
+          코스피 200 그래프
+        </GraphArea>
       </NewsArea>
     </NewsContainer>
   );
