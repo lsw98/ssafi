@@ -8,7 +8,7 @@
   --black-color: #1c1c1c;
   --white-color: #fdfdfd;
   --gray-color: #858585;
-  --lightgray-color: #DDDDDD;
+  --light-gray-color: #DDDDDD;
   --point-color: #4AC49E;
   --sub-color: #E7FAF7;
   --dark-color: #0D1545;
@@ -29,9 +29,9 @@
     #c5ebdc
   ); */
   --lower-color: #434FD9;
-  --lightlower-color: #DDF1FF;
+  --light-lower-color: #DDF1FF;
   --upper-color: #FF6464;
-  --lightupper-color: #FFDEDE;
+  --light-upper-color: #FFDEDE;
   --safe-color: #3AB67A;
   --middle-color: #EFDA4C;
   --danger-color: #FD5353;
