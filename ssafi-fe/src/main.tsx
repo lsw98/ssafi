@@ -1,8 +1,6 @@
 import React from 'react';
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import SocialKakao from './components/Login/login';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import styled from 'styled-components';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import mainImage from './assets/images/main-image.png';
 import buttonArrow from './assets/images/button-arrow.png';
 import longLogo from './assets/logos/logo-long.png';
@@ -23,7 +21,7 @@ const MainBanner = styled.div`
   width: 1210px;
   margin-top: 75px;
   padding: 0px 30px;
-  position: relative
+  position: relative;
 `;
 
 const BannerTitle = styled.p`
@@ -71,7 +69,7 @@ const ButtonArrow = styled.img.attrs({
 const BannerImg = styled.img.attrs({
   src: `${mainImage}`,
 })`
-  width:  450px;
+  width: 450px;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -89,7 +87,7 @@ const MainService = styled.div`
 const LongLogo = styled.img.attrs({
   src: `${longLogo}`,
 })`
-  width:  670px;
+  width: 670px;
 `;
 
 const ServiceDiv = styled.div`
@@ -189,14 +187,18 @@ export default function Main() {
       <MainBanner>
         <div>
           <BannerTitle>
-            똑똑한 SSAFI AI로<br />일하는 동안에도 주식 투자하세요
+            똑똑한 SSAFI AI로
+            <br />
+            일하는 동안에도 주식 투자하세요
           </BannerTitle>
           <BannerContent>
-            AI 트레이딩 플랫폼 SSAFI는<br />
-            사용자의 투자 스타일을 바탕으로 주식 거래를 돕습니다<br />
+            AI 트레이딩 플랫폼 SSAFI는
             <br />
-            나의 투자 스타일을 확인하고 AI 트레이딩을 통해<br />
-            더 똑똑하게 투자하세요
+            사용자의 투자 스타일을 바탕으로 주식 거래를 돕습니다
+            <br />
+            <br />
+            나의 투자 스타일을 확인하고 AI 트레이딩을 통해
+            <br />더 똑똑하게 투자하세요
           </BannerContent>
           <ButtonDiv>
             <BannerBtn>
@@ -216,29 +218,27 @@ export default function Main() {
         <ServiceDiv>
           <ServiceBox>
             <AiTradeImg />
-            <ServiceTitle>
-              AI 트레이딩
-            </ServiceTitle>
+            <ServiceTitle>AI 트레이딩</ServiceTitle>
             <ServiceContent>
-              AI를 활용해 일하는 시간에<br/>도 주식 투자를 해보세요
+              AI를 활용해 일하는 시간에
+              <br />도 주식 투자를 해보세요
             </ServiceContent>
           </ServiceBox>
           <ServiceBox>
             <InvestPortfolioImg />
-            <ServiceTitle>
-              투자 포트폴리오
-            </ServiceTitle>
+            <ServiceTitle>투자 포트폴리오</ServiceTitle>
             <ServiceContent>
-              투자성향을 분석해 포트폴<br/>리오를 추천받으세요
+              투자성향을 분석해 포트폴
+              <br />
+              리오를 추천받으세요
             </ServiceContent>
           </ServiceBox>
           <ServiceBox>
             <StockNewsImg />
-            <ServiceTitle>
-              증권 뉴스
-            </ServiceTitle>
+            <ServiceTitle>증권 뉴스</ServiceTitle>
             <ServiceContent>
-              관심종목과 관련된 뉴스<br/>를 확인하세요
+              관심종목과 관련된 뉴스
+              <br />를 확인하세요
             </ServiceContent>
           </ServiceBox>
         </ServiceDiv>

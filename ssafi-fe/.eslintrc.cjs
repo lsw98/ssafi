@@ -12,5 +12,8 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': 'warn',
     'linebreak-style': 0,
+    'no-confusing-arrow': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'import/prefer-default-export': 'off',
   },
 };

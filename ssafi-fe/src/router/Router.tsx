@@ -1,12 +1,10 @@
+/* eslint-disable import/no-unresolved, import/extensions */
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import Header from '../components/Header';
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import Main from '../main';
-// eslint-disable-next-line import/extensions, import/no-unresolved
 import Portfolio from '../portfolio';
-// eslint-disable-next-line import/no-unresolved, import/extensions
 import Footer from '../components/Footer';
+import Kakao from '../components/Login/kakao';
 
 export default function Router() {
   function MainWithFooter() {
@@ -24,6 +22,7 @@ export default function Router() {
       <Routes>
         <Route path="/" element={<MainWithFooter />} />
         <Route path="/survey" element={<Portfolio />} />
+        <Route path="/auth" element={<Kakao />} />
       </Routes>
     </BrowserRouter>
   );
