@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-const APIContainer = styled.div`
+interface ContainerProps {
+  dark?: boolean;
+}
+
+const ApiContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,32 +14,18 @@ const APIContainer = styled.div`
   position: relative;
 `;
 
-const DarkContainer = styled.div`
+const Container = styled.div<ContainerProps>`
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  width: 1100px;
-  height: 200px;
+  justify-content: ${(props) => (props.dark ? 'flex-end' : 'center')};
+  width: ${(props) => (props.dark ? '1100px' : '470px')};
+  height: ${(props) => (props.dark ? '210px' : '300px')};
   position: absolute;
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--dark-color);
-  color: var(--white-color);
-`;
-
-const WhiteContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 470px;
-  height: 300px;
-  position: absolute;
-  left: 25%;
-  top: 50%;
-  transform: translate(-40%, -50%);
-  background-color: var(--white-color);
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
+  left: ${(props) => (props.dark ? '50%' : '25%')};
+  transform: ${(props) => (props.dark ? 'translate(-50%, -50%)' : 'translate(-40%, -50%)')};
+  background-color: ${(props) => (props.dark ? 'var(--dark-color)' : 'var(--white-color)')};
+  box-shadow: ${(props) => (props.dark ? 'none' : '4px 4px 12px rgba(0, 0, 0, 0.2)')};
 `;
 
 const InnerContainer = styled.div`
@@ -85,26 +75,26 @@ const InputBox = styled.input`
   }
 `;
 
-export default function TradeAPI() {
+export default function TradeApi() {
   return (
-    <APIContainer>
-      <DarkContainer>
+    <ApiContainer>
+      <Container dark={true}>
         <div style={{ width: '530px' }}>
           <InnerContainer>
             <Text className='title'>API Key가 없으신가요?</Text>
-            <Text>SSAFI에서는 ~~님의 api key를 통해 ~~하고 있으며, <br/>
+            <Text>SSAFI에서는 ~~님의 api key를 통해 ~~하고 있으며, <br />
               api key 인증한 회원에 한해 ai 트레이딩 서비스를 제공하고 있습니다.</Text>
             <Text>API Key 발급받으러 가기 &gt;</Text>
           </InnerContainer>
         </div>
-      </DarkContainer>
-      <WhiteContainer>
+      </Container>
+      <Container dark={false}>
         <InnerContainer>
           <InputKey>API Key를 입력해주세요.</InputKey>
-          <InputBox placeholder="API Key를 입력하세요"/>
+          <InputBox placeholder="API Key를 입력하세요" />
           <InputKey className='button'>입력하기</InputKey>
         </InnerContainer>
-      </WhiteContainer>
-    </ APIContainer>
+      </Container>
+    </ ApiContainer>
   );
 }
