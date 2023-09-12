@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface ContainerProps {
@@ -47,18 +48,18 @@ const Text = styled.div`
   }
 `;
 
-const InputKey = styled.div`
+const InputKey = styled.div<{disabled: boolean}>`
   font-weight: 500;
   font-size: 24px;
   color: var(--point-color);
   margin: 20px 0;
 
   &.button {
-    background-color: var(--point-color);
+    background-color: ${(props) => (props.disabled ? 'var(--light-gray-color)' : 'var(--point-color)')};
     color: var(--white-color);
     align-self: flex-end;
     padding: 4px 16px;
-    cursor: pointer;
+    cursor:  ${(props) => (props.disabled ? '' : 'pointer')};
   }
 `;
 
@@ -77,10 +78,11 @@ const InputBox = styled.input`
 
 export default function TradeApi() {
   const [Api, setApi] = React.useState<string>('');
+  const navigate = useNavigate();
 
   const openApiPage = () => {
-    // 임시로 구글..
-    window.open('https://www.google.com/', '_blank');
+    // 한국투자증권
+    window.open('https://apiportal.koreainvestment.com/apiservice/oauth2#L_5c87ba63-740a-4166-93ac-803510bb9c02', '_blank');
   };
 
   const handleApiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +91,11 @@ export default function TradeApi() {
   };
 
   const handleButtonClick = () => {
-    // axios 요청
+    if (Api !== '') {
+      // axios 요청
+      // 200 이면 ai 트레이딩 페이지로 이동 (임시로 그냥 이동)
+      navigate('/trade');
+    }
   };
 
   return (
@@ -106,13 +112,13 @@ export default function TradeApi() {
       </Container>
       <Container dark={false}>
         <InnerContainer>
-          <InputKey>API Key를 입력해주세요.</InputKey>
+          <InputKey disabled={false}>API Key를 입력해주세요.</InputKey>
           <InputBox
             placeholder="API Key를 입력하세요"
             value={Api}
             onChange={handleApiChange}
           />
-          <InputKey className='button' onClick={handleButtonClick}>입력하기</InputKey>
+          <InputKey disabled={Api === ''} className='button' onClick={handleButtonClick}>입력하기</InputKey>
         </InnerContainer>
       </Container>
     </ApiContainer>
