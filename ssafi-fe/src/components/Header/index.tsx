@@ -1,7 +1,9 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import styled from 'styled-components';
 import darkLogo from '../../assets/logos/logo-dark.png';
+import kakaoURL from '../../OAuth';
 
 interface SiteMenuProps {
   active?: boolean;
@@ -47,7 +49,8 @@ const SiteMenu = styled.div<SiteMenuProps>`
   font-size: 24px;
   margin-left: 30px;
   cursor: pointer;
-  color: ${(props) => (props.active ? 'var(--point-color)' : 'var(--white-color)')};
+  color: ${(props) =>
+    props.active ? 'var(--point-color)' : 'var(--white-color)'};
 `;
 
 const NavbarRight = styled.div`
@@ -65,13 +68,16 @@ export default function Header() {
   // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
-
   const toMain = () => {
     navigate('/');
   };
 
   const toSurvey = () => {
     navigate('/survey');
+  };
+
+  const handleLogin = () => {
+    window.location.href = kakaoURL;
   };
 
   return (
@@ -85,14 +91,10 @@ export default function Header() {
           <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
             포트폴리오
           </SiteMenu>
-          <SiteMenu active={location.pathname === '/news'}>
-            뉴스
-          </SiteMenu>
+          <SiteMenu active={location.pathname === '/news'}>뉴스</SiteMenu>
         </NavbarLeft>
         <NavbarRight>
-          <LoginButton>
-            로그인
-          </LoginButton>
+          <LoginButton onClick={handleLogin}>로그인</LoginButton>
         </NavbarRight>
       </Navbar>
     </NavContainer>
