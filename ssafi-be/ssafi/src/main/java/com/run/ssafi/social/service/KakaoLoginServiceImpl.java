@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +31,8 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
 
     @Value("${social.client.kakao.rest-api-key}")
     private String kakaoAppKey;
-    @Value("${social.client.kakao.secret-key}")
-    private String kakaoAppSecret;
+//    @Value("${social.client.kakao.secret-key}")
+//    private String kakaoAppSecret;
     @Value("${social.client.kakao.redirect-uri}")
     private String kakaoRedirectUri;
     @Value("${social.client.kakao.grant_type}")
@@ -48,13 +47,13 @@ public class KakaoLoginServiceImpl implements SocialLoginService {
     public SocialAuthResponse getAccessToken(String authorizationCode) {
         ResponseEntity<?> response = kakaoAuthApi.getAccessToken(
                 kakaoAppKey,
-                kakaoAppSecret,
+//                kakaoAppSecret,
                 kakaoGrantType,
                 kakaoRedirectUri,
                 authorizationCode
         );
 
-        log.info("kaka auth response {}", response.toString());
+        log.info("kakao auth response {}", response.toString());
 
         return new Gson()
                 .fromJson(

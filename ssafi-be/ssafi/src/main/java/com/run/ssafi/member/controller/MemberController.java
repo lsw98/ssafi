@@ -24,14 +24,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/join")
-    public ResponseEntity join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
+    @PostMapping("/")
+    public ResponseEntity<Response> join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         memberService.joinMember(requestDto);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @PostMapping("/id-check")
-    public ResponseEntity idCheck(@RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
+    public ResponseEntity<Response> idCheck(@RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
         log.debug("idCheck email : {}", memberIdCheckRequestDto.getEmail());
         Member member = memberService.emailCheck(memberIdCheckRequestDto.getEmail());
         if (member != null) {
@@ -50,8 +50,8 @@ public class MemberController {
         return memberService.updateMemberInfo(memberDetail, requestDto);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+    @DeleteMapping("/")
+    public ResponseEntity<Response> delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_DELETE_SUCCESS), HttpStatus.OK);

@@ -10,8 +10,8 @@ public enum MemberResponseMessage implements ResponseMessage {
     MEMBER_UPDATE_SUCCESS( "회원 정보 수정이 완료되었습니다."),
     MEMBER_ID_CHECK_SUCCESS( "사용 가능한 아이디입니다."),
     MEMBER_ID_CHECK_FAILURE( "이미 사용중인 아이디입니다."),
-    MEMBER_DELETE_SUCCESS( "회원 탈퇴가 완료되었습니다.");
-
+    MEMBER_DELETE_SUCCESS( "회원 탈퇴가 완료되었습니다."),
+    MEMBER_LOGIN_SUCCESS("로그인 성공 AccessToken 및 RefreshToken 발급 완료");
 
     private final String message;
 

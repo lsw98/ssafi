@@ -24,7 +24,7 @@ public class KaKaoLoginResponse {
         @Builder.Default
         private KakaoProfile profile = KakaoProfile.builder().build();
         @Builder.Default
-        private KakaoPropery properties = KakaoPropery.builder().build();
+        private KakaoProperty properties = KakaoProperty.builder().build();
         @Builder
         @Data
         @NoArgsConstructor
@@ -37,7 +37,7 @@ public class KaKaoLoginResponse {
         @Data
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class KakaoPropery {
+        public static class KakaoProperty {
             private String nickname;
         }
     }

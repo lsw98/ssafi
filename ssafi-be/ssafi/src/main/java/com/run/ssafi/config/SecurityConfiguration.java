@@ -26,7 +26,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
@@ -69,6 +68,7 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/docs",
             "/api/login",
+            "/api/user/**",
     };
 
     // 경로 접근 설정
@@ -93,8 +93,10 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member/info", "GET")).hasAnyAuthority(Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/", "POST")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
                     .anyRequest().authenticated()
                 .and()
                 .logout()

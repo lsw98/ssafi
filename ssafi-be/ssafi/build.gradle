@@ -35,7 +35,21 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
+
+    // DatatypeConverter 오류 (jdk 버전 문제)
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+    // com.sun.xml.bind
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+    // javax.xml.bind
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
+    // Swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
     // or the latest version
+    // javax -> jakarta 변경 (SpringBoot 3.0이상 호환 X)
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     testImplementation 'org.projectlombok:lombok:1.18.28'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"

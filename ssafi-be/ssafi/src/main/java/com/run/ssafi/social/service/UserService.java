@@ -1,6 +1,7 @@
 package com.run.ssafi.social.service;
 
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.domain.Role;
 import com.run.ssafi.exception.customexception.MemberException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.member.repository.MemberRepository;
@@ -27,18 +28,17 @@ public class UserService {
         SocialUserResponse socialUserResponse = loginService.getUserInfo(socialAuthResponse.getAccess_token());
         log.info("socialUserResponse {} ", socialUserResponse.toString());
 
-        if (memberRepository.findByEmail(socialUserResponse.getEmail()) == null) {
+        // 이메일이 Unique 값이므로 SNS 타입과 고유한 회원번호를 혼합한 키를 이메일로 저장하여 회원 구분
+        if (memberRepository.findByEmail(request.getSnsType()+socialUserResponse.getId()) == null) {
             this.joinUser(
                     UserJoinRequest.builder()
-                            .userId(socialUserResponse.getId())
-                            .userEmail(socialUserResponse.getEmail())
-                            .userName(socialUserResponse.getName())
+                            .userId(request.getSnsType()+socialUserResponse.getId())
                             .snsType(request.getSnsType())
                             .build()
             );
         }
 
-        Member member = memberRepository.findByEmail(socialUserResponse.getId());
+        Member member = memberRepository.findByEmail(request.getSnsType()+socialUserResponse.getId());
                 if(member == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
 
         return LoginResponse.builder()
@@ -49,9 +49,10 @@ public class UserService {
     private UserJoinResponse joinUser(UserJoinRequest userJoinRequest) {
         Member member = memberRepository.save(
                 Member.builder()
+                        // 이메일이 Unique 값이므로 SNS 타입과 고유한 회원번호를 혼합한 키를 이메일로 저장하여 회원 구분
                         .email(userJoinRequest.getUserId())
+                        .role(Role.MEMBER)
                         .snsType(String.valueOf(userJoinRequest.getSnsType()))
-                        .name(userJoinRequest.getUserName())
                         .build()
         );
 
@@ -77,7 +78,6 @@ public class UserService {
         return UserResponse.builder()
                 .id(member.getId())
                 .userEmail(member.getEmail())
-                .userName(member.getName())
                 .build();
     }
 }
