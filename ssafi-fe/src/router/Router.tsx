@@ -4,7 +4,6 @@ import Main from '../main';
 import Portfolio from '../portfolio';
 import News from '../news';
 import Trade from '../trade';
->>>>>>> ssafi-fe/src/router/Router.tsx
 
 export default function Router() {
   return (
