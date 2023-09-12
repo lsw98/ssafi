@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
 import React from 'react';
 import {
   Routes, Route, useNavigate, useLocation,
@@ -59,6 +57,7 @@ const NewsMenu = styled.div<NewsMenuProps>`
   justify-content: center;
   align-items: center;
   font-size: 22px;
+  cursor: pointer;
   height: ${(props) => (props.active ? '66px' : '69px')};
   color: ${(props) => (props.active ? 'var(--dark-color)' : 'var(--gray-color)')};
   font-weight: ${(props) => (props.active ? '600' : '400')};
@@ -107,9 +106,10 @@ const NewsArea = styled.div`
   display: flex;
   justify-content: space-between;
   width: 1270px;
-  margin-top: 50px
+  margin-top: 20px;
 `;
 
+// 그래프 영역
 const GraphArea = styled.div`
   display: flex;
   width: 400px;

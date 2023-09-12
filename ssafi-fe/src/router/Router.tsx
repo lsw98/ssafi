@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from '../components/Header';
 import Main from '../main';
