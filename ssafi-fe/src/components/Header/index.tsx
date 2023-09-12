@@ -12,11 +12,10 @@ interface SiteMenuProps {
 // styled-component 파트
 const NavContainer = styled.div`
   display: flex;
+  justify-content: center;
   min-width: 1270px;
   height: 60px;
   border-bottom: 1px solid var(--black-color);
-  justify-content: center;
-  color: var(--white-color);
   background-color: var(--dark-color);
 `;
 
@@ -72,31 +71,49 @@ export default function Header() {
     navigate('/');
   };
 
+  const toTrade = () => {
+    navigate('/trade');
+  };
+
   const toSurvey = () => {
     navigate('/survey');
   };
 
   const handleLogin = () => {
     window.location.href = kakaoURL;
-  };
+    const toNews = () => {
+      navigate('/news');
+    };
 
-  return (
-    <NavContainer>
-      <Navbar>
-        <NavbarLeft>
-          <SiteLogo onClick={toMain} />
-          <SiteMenu active={location.pathname === '/trade'}>
-            AI 트레이딩
-          </SiteMenu>
-          <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
-            포트폴리오
-          </SiteMenu>
-          <SiteMenu active={location.pathname === '/news'}>뉴스</SiteMenu>
-        </NavbarLeft>
-        <NavbarRight>
-          <LoginButton onClick={handleLogin}>로그인</LoginButton>
-        </NavbarRight>
-      </Navbar>
-    </NavContainer>
-  );
+    return (
+      <NavContainer>
+        <Navbar>
+          <NavbarLeft>
+            <SiteLogo onClick={toMain} />
+            <SiteMenu
+              active={location.pathname.includes('/trade')}
+              onClick={toTrade}
+            >
+              AI 트레이딩
+            </SiteMenu>
+            <SiteMenu
+              active={location.pathname === '/survey'}
+              onClick={toSurvey}
+            >
+              금융 MBTI
+            </SiteMenu>
+            <SiteMenu
+              active={location.pathname.includes('/news')}
+              onClick={toNews}
+            >
+              뉴스
+            </SiteMenu>
+          </NavbarLeft>
+          <NavbarRight>
+            <LoginButton onClick={handleLogin}>로그인</LoginButton>
+          </NavbarRight>
+        </Navbar>
+      </NavContainer>
+    );
+  };
 }
