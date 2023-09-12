@@ -3,9 +3,8 @@ import {
   Routes, Route, useNavigate, useLocation,
 } from 'react-router-dom';
 import styled from 'styled-components';
-
-import TradeAPI from './components/Trade/TradeAPI';
-import TradeAI from './components/Trade/TradeAI';
+import TradeApi from './components/Trade/TradeApi';
+import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
 import TradeAccount from './components/Trade/TradeAccount';
 
@@ -100,8 +99,8 @@ export default function Trade() {
       </TradeNavContainer>
       <TradeArea>
         <Routes>
-          <Route path="/" element={<TradeAI />} />
-          <Route path="/api" element={<TradeAPI />} />
+          <Route path="/" element={<TradeAi />} />
+          <Route path="/api" element={<TradeApi />} />
           <Route path="/order" element={<TradeOrder />} />
           <Route path="/account" element={<TradeAccount />} />
         </Routes>

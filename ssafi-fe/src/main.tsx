@@ -1,7 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import mainImage from './assets/images/main-image.png';
-import buttonArrow from './assets/images/button-arrow.png';
+import { ReactComponent as RightArrow } from './assets/images/botton-arrow.svg';
 import longLogo from './assets/logos/logo-long.png';
 import aiTradeImage from './assets/images/ai-trade.svg';
 import investPortfolio from './assets/images/invest-portfolio.svg';
@@ -19,22 +20,23 @@ const MainContainer = styled.div`
 // 메인 배너 속성
 const MainBanner = styled.div`
   display: flex;
-  width: 1210px;
-  margin-top: 75px;
+  width: 1140px;
+  margin-top: 60px;
   padding: 0px 30px;
   position: relative
 `;
 
 // 메인 배너 제목 텍스트 속성
 const BannerTitle = styled.p`
-  font-size: 60px;
+  font-size: 58px;
   font-weight: 600;
   color: var(--black-color);
+  line-height: 80px;
 `;
 
 // 메인 배너 내용 텍스트 속성
 const BannerContent = styled.p`
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 400;
   color: var(--gray-color);
 `;
@@ -58,6 +60,7 @@ const BannerBtn = styled.button`
   font-weight: 400;
   border: 0px;
   border-radius: 20px;
+  cursor: pointer;
 `;
 
 // 배너 버튼 내 텍스트 속성
@@ -65,11 +68,8 @@ const ButtonText = styled.p`
   margin: 10px;
 `;
 
-// 배너 버튼 내 화살표 이미지
-const ButtonArrow = styled.img.attrs({
-  src: `${buttonArrow}`,
-})`
-  width: 24px;
+const ButtonArrow = styled(RightArrow)`
+  fill: var(--dark-color);
   margin-right: 10px;
 `;
 
@@ -89,7 +89,7 @@ const MainService = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 1210px;
+  width: 1140px;
   padding: 160px 30px;
 `;
 
@@ -117,6 +117,7 @@ const ServiceBox = styled.div`
   width: 280px;
   height: 400px;
   background: var(--light-gradation-color);
+  border-radius: 18px;
 `;
 
 // 서비스 이름 속성
@@ -132,7 +133,7 @@ const ServiceContent = styled.p`
   color: var(--gray-color);
   font-size: 20px;
   font-weight: 400;
-  margin: 0px;
+  margin: 0px 36PX;
 `;
 
 // AI 트레이딩 이미지 속성
@@ -206,6 +207,18 @@ export default function Main() {
     };
   }, []);
 
+  const navigate = useNavigate();
+
+  const handleButtonClick = (page: string) => {
+    if (page === 'mbti') {
+      navigate('/survey');
+    } else if (page === 'ai') {
+      navigate('/trade');
+    } else if (page === 'news') {
+      navigate('/news');
+    }
+  };
+
   return (
     <MainContainer>
       <MainBanner>
@@ -215,17 +228,17 @@ export default function Main() {
           </BannerTitle>
           <BannerContent>
             AI 트레이딩 플랫폼 SSAFI는<br />
-            사용자의 투자 스타일을 바탕으로 주식 거래를 돕습니다<br />
+            사용자의 투자 스타일을 바탕으로 주식 거래를 돕습니다.<br />
             <br />
-            나의 투자 스타일을 확인하고 AI 트레이딩을 통해<br />
-            더 똑똑하게 투자하세요
+            금융 MBTI 검사를 통해 나의 투자 스타일을 확인하고, <br />
+            AI 트레이딩으로 더 똑똑하게 투자하세요
           </BannerContent>
           <ButtonDiv>
-            <BannerBtn>
-              <ButtonText>투자 성향 확인하기</ButtonText>
+            <BannerBtn onClick={() => handleButtonClick('mbti')}>
+              <ButtonText>금융 MBTI 검사하기</ButtonText>
               <ButtonArrow />
             </BannerBtn>
-            <BannerBtn>
+            <BannerBtn onClick={() => handleButtonClick('ai')}>
               <ButtonText>AI 트레이딩</ButtonText>
               <ButtonArrow />
             </BannerBtn>
@@ -236,31 +249,31 @@ export default function Main() {
       <MainService>
         <LongLogo />
         <ServiceDiv>
-          <ServiceBox>
+          <ServiceBox onClick={() => handleButtonClick('ai')}>
             <AiTradeImg />
             <ServiceTitle>
               AI 트레이딩
             </ServiceTitle>
             <ServiceContent>
-              AI를 활용해 일하는 시간에<br/>도 주식 투자를 해보세요
+              AI를 활용해 일하는 시간에도 주식 투자를 해보세요
             </ServiceContent>
           </ServiceBox>
-          <ServiceBox>
+          <ServiceBox onClick={() => handleButtonClick('mbti')}>
             <InvestPortfolioImg />
             <ServiceTitle>
-              투자 포트폴리오
+              금융 MBTI
             </ServiceTitle>
             <ServiceContent>
-              투자성향을 분석해 포트폴<br/>리오를 추천받으세요
+              금융 MBTI로 나의 투자 스타일을 발견하고 투자 방식을 추천받아보세요
             </ServiceContent>
           </ServiceBox>
-          <ServiceBox>
+          <ServiceBox onClick={() => handleButtonClick('news')}>
             <StockNewsImg />
             <ServiceTitle>
               증권 뉴스
             </ServiceTitle>
             <ServiceContent>
-              관심종목과 관련된 뉴스<br/>를 확인하세요
+              관심종목과 관련된 증권 이슈를 확인하고 투자 수익률을 높여봐요.
             </ServiceContent>
           </ServiceBox>
         </ServiceDiv>

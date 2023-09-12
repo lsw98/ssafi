@@ -90,7 +90,7 @@ export default function Header() {
             AI 트레이딩
           </SiteMenu>
           <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
-            포트폴리오
+            금융 MBTI
           </SiteMenu>
           <SiteMenu active={location.pathname.includes('/news')} onClick={toNews}>
             뉴스
