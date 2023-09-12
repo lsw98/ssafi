@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
+import ApiGuide from './ApiGuide';
 
 interface ContainerProps {
   dark?: boolean;
@@ -38,15 +40,23 @@ const InnerContainer = styled.div`
 `;
 
 const Text = styled.div`
+  display:flex;
+  align-items: center;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 20px;
   color: var(--white-color);
-  margin: 15px 0;
+  margin: 12px 0;
 
-  &.title {
-    font-size: 20px;
+  &.small {
+    font-size: 14px;
+    line-height: 22px;
   }
-`;
+
+  &.button {
+    font-size: 16px;
+    cursor: pointer;
+  }
+  `;
 
 const InputKey = styled.div<{disabled: boolean}>`
   font-weight: 500;
@@ -76,9 +86,24 @@ const InputBox = styled.input`
   }
 `;
 
+const DoubtsButton = styled(Doubts)`
+  fill: var(--white-color);
+  margin-left: 10px;
+  cursor: pointer;
+`;
+
 export default function TradeApi() {
-  const [Api, setApi] = React.useState<string>('');
+  const [Api, setApi] = React.useState('');
+  const [modalOpen, setModalOpen] = React.useState(false);
   const navigate = useNavigate();
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   const openApiPage = () => {
     // 한국투자증권
@@ -103,10 +128,11 @@ export default function TradeApi() {
       <Container dark={true}>
         <div style={{ width: '530px' }}>
           <InnerContainer>
-            <Text className='title'>API Key가 없으신가요?</Text>
-            <Text>SSAFI에서는 ~~님의 api key를 통해 ~~하고 있으며, <br />
-              api key 인증한 회원에 한해 ai 트레이딩 서비스를 제공하고 있습니다.</Text>
-            <Text onClick={openApiPage}>API Key 발급받으러 가기 &gt;</Text>
+            <Text>API Key가 없으신가요? <DoubtsButton onClick={handleOpenModal}/></Text>
+            <Text className='small'>SSAFI에서는 한국투자증권 API Key를 통해 계좌 인증을 진행하고 있으며,
+              <br />API Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
+            </Text>
+            <Text className='button' onClick={openApiPage}>API Key 발급/확인하기 &gt;</Text>
           </InnerContainer>
         </div>
       </Container>
@@ -121,6 +147,11 @@ export default function TradeApi() {
           <InputKey disabled={Api === ''} className='button' onClick={handleButtonClick}>입력하기</InputKey>
         </InnerContainer>
       </Container>
+      {modalOpen && (
+        <ApiGuide
+          closeModal={handleCloseModal}
+        />
+      )}
     </ApiContainer>
   );
 }
