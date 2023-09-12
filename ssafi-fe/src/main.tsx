@@ -8,6 +8,7 @@ import investPortfolio from './assets/images/invest-portfolio.svg';
 import stockNews from './assets/images/stock-news.svg';
 
 // styled-components
+// 메인 영역
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,6 +16,7 @@ const MainContainer = styled.div`
   min-width: 1270px;
 `;
 
+// 메인 배너 속성
 const MainBanner = styled.div`
   display: flex;
   width: 1210px;
@@ -23,18 +25,21 @@ const MainBanner = styled.div`
   position: relative
 `;
 
+// 메인 배너 제목 텍스트 속성
 const BannerTitle = styled.p`
   font-size: 60px;
   font-weight: 600;
   color: var(--black-color);
 `;
 
+// 메인 배너 내용 텍스트 속성
 const BannerContent = styled.p`
   font-size: 28px;
   font-weight: 400;
   color: var(--gray-color);
 `;
 
+// 배너 버튼 영역
 const ButtonDiv = styled.div`
   width: 510px;
   display: flex;
@@ -42,6 +47,7 @@ const ButtonDiv = styled.div`
   margin-top: 50px;
 `;
 
+// 배너 버튼 속성
 const BannerBtn = styled.button`
   display: flex;
   justify-content: center;
@@ -54,10 +60,12 @@ const BannerBtn = styled.button`
   border-radius: 20px;
 `;
 
+// 배너 버튼 내 텍스트 속성
 const ButtonText = styled.p`
   margin: 10px;
 `;
 
+// 배너 버튼 내 화살표 이미지
 const ButtonArrow = styled.img.attrs({
   src: `${buttonArrow}`,
 })`
@@ -65,6 +73,7 @@ const ButtonArrow = styled.img.attrs({
   margin-right: 10px;
 `;
 
+// 배너 이미지 속성
 const BannerImg = styled.img.attrs({
   src: `${mainImage}`,
 })`
@@ -75,6 +84,7 @@ const BannerImg = styled.img.attrs({
   margin-right: 30px;
 `;
 
+// 메인 서비스 안내 영역
 const MainService = styled.div`
   display: flex;
   flex-direction: column;
@@ -83,12 +93,14 @@ const MainService = styled.div`
   padding: 160px 30px;
 `;
 
+// 긴 로고 이미지 속성
 const LongLogo = styled.img.attrs({
   src: `${longLogo}`,
 })`
   width:  670px;
 `;
 
+// 서비스 박스 영역
 const ServiceDiv = styled.div`
   display: flex;
   margin-top: 50px;
@@ -96,6 +108,7 @@ const ServiceDiv = styled.div`
   justify-content: space-between;
 `;
 
+// 서비스 박스 속성
 const ServiceBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,6 +119,7 @@ const ServiceBox = styled.div`
   background: var(--light-gradation-color);
 `;
 
+// 서비스 이름 속성
 const ServiceTitle = styled.p`
   color: var(--dark-color);
   font-size: 24px;
@@ -113,6 +127,7 @@ const ServiceTitle = styled.p`
   margin: 20px;
 `;
 
+// 서비스 내용 속성
 const ServiceContent = styled.p`
   color: var(--gray-color);
   font-size: 20px;
@@ -120,6 +135,7 @@ const ServiceContent = styled.p`
   margin: 0px;
 `;
 
+// AI 트레이딩 이미지 속성
 const AiTradeImg = styled.img.attrs({
   src: `${aiTradeImage}`,
 })`
@@ -127,6 +143,7 @@ const AiTradeImg = styled.img.attrs({
   margin-bottom: 10px;
 `;
 
+// 포트폴리오 이미지 속성
 const InvestPortfolioImg = styled.img.attrs({
   src: `${investPortfolio}`,
 })`
@@ -134,6 +151,7 @@ const InvestPortfolioImg = styled.img.attrs({
   margin-bottom: 10px;
 `;
 
+// 뉴스 이미지 속성
 const StockNewsImg = styled.img.attrs({
   src: `${stockNews}`,
 })`
@@ -142,26 +160,33 @@ const StockNewsImg = styled.img.attrs({
 `;
 
 export default function Main() {
+  // 스크롤 기능 함수
   const handleScroll = (event: WheelEvent) => {
     event.preventDefault();
     const currentScrollPosition = window.scrollY;
-    const scrollThreshold = 700; // 원하는 스크롤 위치로 조정하세요.
+    // 스크롤 당 이동 px 수
+    const scrollThreshold = 700;
 
+    // 설정된 스크롤 위치에서
     if (currentScrollPosition <= scrollThreshold) {
+      // 마우스 휠을 아래로 스크롤할 때
       if (event.deltaY > 0) {
-        // 마우스 휠을 아래로 스크롤할 때
         window.scrollBy({
+          // scrollThreshold 만큼 아래로 이동
           top: scrollThreshold,
-          behavior: 'smooth', // 부드러운 스크롤을 위해 사용
+          behavior: 'smooth', // 부드러운 스크롤
         });
       } else {
         // 마우스 휠을 위로 스크롤할 때
         window.scrollBy({
+          // scrollThreshold 만큼 위로 이동
           top: -scrollThreshold,
           behavior: 'smooth',
         });
       }
+      // 설정된 높이 아래로 내려갈 시
     } else if (currentScrollPosition > scrollThreshold) {
+      // 위로 올릴 때 700px 위치로 이동
       if (event.deltaY <= 0) {
         window.scrollTo({
           top: 700,
@@ -172,10 +197,10 @@ export default function Main() {
   };
 
   React.useEffect(() => {
-    // wheel 이벤트 리스너를 추가합니다.
+    // wheel 이벤트 리스너
     window.addEventListener('wheel', handleScroll);
 
-    // 컴포넌트가 언마운트될 때 리스너를 제거합니다.
+    // 컴포넌트가 언마운트될 때 리스너를 제거
     return () => {
       window.removeEventListener('wheel', handleScroll);
     };
