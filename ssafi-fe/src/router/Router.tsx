@@ -3,6 +3,8 @@ import Header from '../components/Header';
 import Main from '../main';
 import Portfolio from '../portfolio';
 import News from '../news';
+import Trade from '../trade';
+>>>>>>> ssafi-fe/src/router/Router.tsx
 
 export default function Router() {
   return (
@@ -12,6 +14,7 @@ export default function Router() {
         <Route path="/" element={<Main />} />
         <Route path="/survey" element={<Portfolio />} />
         <Route path="/news/*" element={<News />} />
+        <Route path="/trade/*" element={<Trade />} />
       </Routes>
     </BrowserRouter>
   );
