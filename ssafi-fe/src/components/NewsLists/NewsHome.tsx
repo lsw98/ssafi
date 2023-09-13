@@ -27,12 +27,13 @@ const NewsHomeContainer = styled.div`
 const MostViewedContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: end;
   width: 800px;
 `;
 
 // 많이 본 뉴스 제목 속성
 const MostViewedTitle = styled.p`
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--black-color);
 `;
@@ -42,6 +43,7 @@ const MostViewedText = styled.p`
   font-size: 16px;
   font-weight: 400;
   color: var(--gray-color);
+  margin-bottom: 24px;
 `;
 
 // 많이 본 뉴스 박스 영역
@@ -63,7 +65,7 @@ const MostViewedNewsImage = styled.img`
 width: 380px;
 `;
 
-// 많이 본 뉴스 제목 속성
+// 많이 본 뉴스 박스 제목 속성
 const MostViewedNewsText = styled.div`
 font-size: 24px;
 font-weight: 600;

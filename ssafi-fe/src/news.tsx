@@ -4,12 +4,12 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 
-import NewsHome from './components/NewsPage/NewsHome';
-import NewsNewest from './components/NewsPage/NewsNewest';
-import NewsPolicies from './components/NewsPage/NewsPolicies';
-import NewsMarkets from './components/NewsPage/NewsMarkets';
-import NewsAnnounce from './components/NewsPage/NewsAnnounce';
-import NewsInfos from './components/NewsPage/NewsInfos';
+import NewsHome from './components/NewsLists/NewsHome';
+import NewsNewest from './components/NewsLists/NewsNewest';
+import NewsPolicies from './components/NewsLists/NewsPolicies';
+import NewsMarkets from './components/NewsLists/NewsMarkets';
+import NewsAnnounce from './components/NewsLists/NewsAnnounce';
+import NewsInfos from './components/NewsLists/NewsInfos';
 import searchIcon from './assets/icons/search-icon.svg';
 
 // 뉴스 메뉴 상태 prop type 정의
