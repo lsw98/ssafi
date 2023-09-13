@@ -52,7 +52,7 @@ public class UserService {
                         // 이메일이 Unique 값이므로 SNS 타입과 고유한 회원번호를 혼합한 키를 이메일로 저장하여 회원 구분
                         .email(userJoinRequest.getUserId())
                         .role(Role.MEMBER)
-                        .snsType(String.valueOf(userJoinRequest.getSnsType()))
+                        .snsType(userJoinRequest.getSnsType())
                         .build()
         );
 

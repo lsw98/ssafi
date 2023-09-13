@@ -1,5 +1,6 @@
 package com.run.ssafi.member.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class MemberIdCheckRequestDto {
+
+    @NotNull
     private String email;
 }

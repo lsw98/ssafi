@@ -2,6 +2,7 @@ package com.run.ssafi.member.dto;
 
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Role;
+import com.run.ssafi.social.type.SnsType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,13 +21,11 @@ public class MemberJoinRequestDto {
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?])(?=.*\\d).{8,}$",
             message = "비밀번호를 영문자, 특수문자, 숫자를 포함한 8자 이상으로 입력해주세요.")
     private String password;
-    private String name;
 
     @Builder
-    public MemberJoinRequestDto(String email, String password, String name) {
+    public MemberJoinRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
-        this.name = name;
     }
 
     public Member toEntity() {
@@ -34,7 +33,7 @@ public class MemberJoinRequestDto {
                 .email(email)
                 .password(password)
                 .role(Role.MEMBER)
-                .name(name)
+                .snsType(SnsType.NORMAL)
                 .exit(false)
                 .personalAgreement('T')
                 .build();

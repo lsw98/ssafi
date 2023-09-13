@@ -89,21 +89,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), ACCESS_TOKEN_EXPIRATION_TIME, customClaims);
         String refreshToken = jwtTokenProvider.generateToken(memberDetail.getUsername(), REFRESH_TOKEN_EXPIRATION_TIME, customClaims);
 
-//        String accessToken = JWT.create()
-//                .withSubject(memberDetail.getUsername())
-//                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
-////                .withClaim("id", memberDetail.getMember().getId())
-//                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
-//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-//
-//        String refreshToken = JWT.create()
-//                .withSubject(memberDetail.getUsername())
-//                .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-////                .withClaim("id", memberDetail.getMember().getId())
-//                .withClaim("memberId", String.valueOf(memberDetail.getMember().getId()))
-//                .sign(Algorithm.HMAC512(env.getProperty("jwt.secret")));
-
-
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
 
         // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함

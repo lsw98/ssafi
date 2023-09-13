@@ -54,19 +54,8 @@ public class SocialController {
         // 사용자로부터 헤더 값으로 리프레시 토큰을 받는 것을 테스트하는 용도로, 실제 구현에서는 쿠키 값으로 전달하므로 빼야 함
         jwtTokenProvider.addHeaderRefreshToken(response, refreshToken);
 
-//        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
         refreshTokenService.saveRefreshToken(String.valueOf(member.getId()), refreshToken, REFRESH_TOKEN_EXPIRATION_TIME);
 
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_LOGIN_SUCCESS), HttpStatus.OK);
-
-//        return ResponseEntity.created(URI.create("/social-login"))
-//                .body(userService.doSocialLogin(request));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(
-                userService.getUser(id)
-        );
     }
 }

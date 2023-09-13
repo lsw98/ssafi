@@ -21,6 +21,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final com.run.ssafi.QBaseTimeEntity _super = new com.run.ssafi.QBaseTimeEntity(this);
 
+    public final StringPath appKey = createString("appKey");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
@@ -33,17 +35,19 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
-    public final StringPath name = createString("name");
-
     public final StringPath password = createString("password");
 
     public final ComparablePath<Character> personalAgreement = createComparable("personalAgreement", Character.class);
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
-    public final StringPath snsId = createString("snsId");
+    public final StringPath score = createString("score");
 
-    public final StringPath snsType = createString("snsType");
+    public final StringPath secretKey = createString("secretKey");
+
+    public final EnumPath<com.run.ssafi.social.type.SnsType> snsType = createEnum("snsType", com.run.ssafi.social.type.SnsType.class);
+
+    public final StringPath type = createString("type");
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

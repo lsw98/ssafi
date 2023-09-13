@@ -61,6 +61,7 @@ public class SecurityConfiguration {
 
     //권한 확인을 하지 않는 uri
     private static final String[] PERMIT_ALL_PATTERNS = new String[] {
+            "/v3/api-docs",
             "/v3/api-docs/**",
             "/configuration/**",
             "/swagger*/**",
@@ -93,10 +94,11 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member/info", "GET")).hasAnyAuthority(Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/api/member/", "POST")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/member", "POST")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/member", "PATCH")).hasAnyAuthority(Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
-                    .requestMatchers(new AntPathRequestMatcher("/api/member/", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
                     .anyRequest().authenticated()
                 .and()
                 .logout()

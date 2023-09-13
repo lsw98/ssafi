@@ -52,13 +52,11 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
 
         member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
-        member.modifyName(memberInfoUpdateRequestDto.getName());
         member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
         Map<String, Object> response = new HashMap<>();
 
         MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
                 .email(member.getEmail())
-                .name(member.getName())
                 .personalAgreement(member.getPersonalAgreement())
                 .build();
 
@@ -73,7 +71,11 @@ public class MemberServiceImpl implements MemberService {
 
         MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
                 .email(member.getEmail())
-                .name(member.getName())
+                .snsType(member.getSnsType())
+                .type(member.getType())
+                .score(member.getScore())
+                .appKey(member.getAppKey())
+                .secretKey(member.getSecretKey())
                 .personalAgreement(member.getPersonalAgreement())
                 .build();
 
@@ -85,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(long memberId) throws Exception {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
-//        member.modifyExit(true);
-            memberRepository.delete(member);
+            member.modifyExit(true);
+//            memberRepository.delete(member);
     }
 }

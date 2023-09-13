@@ -3,3 +3,8 @@ spring:
     active: local
   application:
     name: user-service
+h2:
+  console:
+    enabled: true
+    settings:
+      web-allow-others: true  # 추가

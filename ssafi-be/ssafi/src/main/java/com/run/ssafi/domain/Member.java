@@ -1,6 +1,7 @@
 package com.run.ssafi.domain;
 
 import com.run.ssafi.BaseTimeEntity;
+import com.run.ssafi.social.type.SnsType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,25 +25,28 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false)
     private Role role;
-    @Column(name="name")
-    private String name;
     @Column(name="exit")
     private Boolean exit;
-    @Column(name="sns_id")
-    private String snsId;
+    @Enumerated(EnumType.STRING)
     @Column(name="sns_type")
-    private String snsType;
+    private SnsType snsType;
     @Column(name="personal_agreement_yn")
     private Character personalAgreement;
+    @Column(name="app_key")
+    private String appKey;
+    @Column(name="secret_key")
+    private String secretKey;
+    @Column(name="score")
+    private String score;
+    @Column(name="type")
+    private String type;
 
     @Builder
-    public Member(String email, String password, Role role, String name, Boolean exit ,String snsId, String snsType, Character personalAgreement) {
+    public Member(String email, String password, Role role, Boolean exit, SnsType snsType, Character personalAgreement) {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.name = name;
         this.exit = exit;
-        this.snsId = snsId;
         this.snsType = snsType;
         this.personalAgreement = personalAgreement;
     }
@@ -51,17 +55,8 @@ public class Member extends BaseTimeEntity {
     public void modifyPassword(String password) {
         this.password=password;
     }
-    public void modifyName(String name) {
-        this.name=name;
-    }
     public void modifyExit(Boolean exit) {
         this.exit=exit;
-    }
-    public void modifySnsId(String snsId) {
-        this.snsId=snsId;
-    }
-    public void modifySnsType(String snsType) {
-        this.snsType=snsType;
     }
     public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;

@@ -24,14 +24,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Response> join(@Valid @RequestBody MemberJoinRequestDto requestDto) throws Exception {
         memberService.joinMember(requestDto);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_JOIN_SUCCESS), HttpStatus.OK);
     }
 
     @PostMapping("/id-check")
-    public ResponseEntity<Response> idCheck(@RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
+    public ResponseEntity<Response> idCheck(@Valid @RequestBody MemberIdCheckRequestDto memberIdCheckRequestDto) throws Exception {
         log.debug("idCheck email : {}", memberIdCheckRequestDto.getEmail());
         Member member = memberService.emailCheck(memberIdCheckRequestDto.getEmail());
         if (member != null) {
@@ -41,23 +41,20 @@ public class MemberController {
         }
     }
 
-    @PutMapping("/modify")
-    public ResponseEntity modify(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto, BindingResult bindingResult) throws Exception {
+    @PatchMapping("/score")
+    public ResponseEntity modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto) throws Exception {
 
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-        }
         return memberService.updateMemberInfo(memberDetail, requestDto);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping
     public ResponseEntity<Response> delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_DELETE_SUCCESS), HttpStatus.OK);
     }
 
-    @GetMapping("/info")
+    @GetMapping
     public ResponseEntity<MemberInfoResponseDto> getInfo(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         String memberId = memberDetail.getMember().getEmail();
         MemberInfoResponseDto memberInfoResponseDto = memberService.getMemberInfo(memberId);
