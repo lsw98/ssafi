@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  nginx:
+    restart: always
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - frontend
+
+  client:
+    container_name: SSAFI-FE
+    build:
+      context: ./ssafi-fe
+      dockerfile: Dockerfile
+    volumes:
+      - "./ssafi-fe/:/app"
+      - "/app/node_modules"
+    networks:
+      - frontend
+    
+networks:
+  frontend:
+    driver: bridge
