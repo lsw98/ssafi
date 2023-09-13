@@ -31,6 +31,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-confusing-arrow': 'off',
     'implicit-arrow-linebreak': 'off',
+    'object-curly-newline': 'off',
   },
   settings: {
     'import/resolver': {

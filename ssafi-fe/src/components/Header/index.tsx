@@ -81,39 +81,37 @@ export default function Header() {
 
   const handleLogin = () => {
     window.location.href = kakaoURL;
-    const toNews = () => {
-      navigate('/news');
-    };
-
-    return (
-      <NavContainer>
-        <Navbar>
-          <NavbarLeft>
-            <SiteLogo onClick={toMain} />
-            <SiteMenu
-              active={location.pathname.includes('/trade')}
-              onClick={toTrade}
-            >
-              AI 트레이딩
-            </SiteMenu>
-            <SiteMenu
-              active={location.pathname === '/survey'}
-              onClick={toSurvey}
-            >
-              금융 MBTI
-            </SiteMenu>
-            <SiteMenu
-              active={location.pathname.includes('/news')}
-              onClick={toNews}
-            >
-              뉴스
-            </SiteMenu>
-          </NavbarLeft>
-          <NavbarRight>
-            <LoginButton onClick={handleLogin}>로그인</LoginButton>
-          </NavbarRight>
-        </Navbar>
-      </NavContainer>
-    );
   };
+
+  const toNews = () => {
+    navigate('/news');
+  };
+
+  return (
+    <NavContainer>
+      <Navbar>
+        <NavbarLeft>
+          <SiteLogo onClick={toMain} />
+          <SiteMenu
+            active={location.pathname.includes('/trade')}
+            onClick={toTrade}
+          >
+            AI 트레이딩
+          </SiteMenu>
+          <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
+            금융 MBTI
+          </SiteMenu>
+          <SiteMenu
+            active={location.pathname.includes('/news')}
+            onClick={toNews}
+          >
+            뉴스
+          </SiteMenu>
+        </NavbarLeft>
+        <NavbarRight>
+          <LoginButton onClick={handleLogin}>로그인</LoginButton>
+        </NavbarRight>
+      </Navbar>
+    </NavContainer>
+  );
 }
