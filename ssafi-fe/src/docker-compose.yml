@@ -12,7 +12,7 @@ services:
     networks:
       - frontend
 
-  client:
+  ssafi-fe:
     container_name: ssafi-fe
     build:
       context: ./ssafi-fe
