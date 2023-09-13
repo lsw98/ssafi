@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import btnArrow from '../../assets/images/button-arrow.png';
+import { ReactComponent as btnArrow } from '../../assets/images/button-arrow.svg';
 // API로 대체될 예정인 뉴스 데이터, 이미지
 import tempNews from '../../assets/temp.json';
 import tempImage from '../../assets/images/temp-image.png';
@@ -99,11 +99,10 @@ margin-bottom: 30px;
 `;
 
 // 버튼 내의 화살표 이미지
-const BtnArrow = styled.img.attrs({
-  src: btnArrow,
-})`
+const BtnArrow = styled(btnArrow)`
   width: 15px;
   margin-left: 5px;
+  fill: var(--dark-color);
   transform: rotate(90deg);
 `;
 
@@ -113,11 +112,11 @@ margin: 80px;
 `;
 
 export default function NewsHomeList() {
+  const tempNewsList: Array<NewsItem> = tempNews.data;
   // 뉴스를 가져온 횟수 newsCount
   const [newsCount, setNewsCount] = React.useState<number>(0);
   // 새로 가져온 뉴스의 JSX 코드를 담을 리스트 newsList
   const [newsList, setNewsList] = React.useState<Array<JSX.Element>>([]);
-  const tempNewsList: Array<NewsItem> = tempNews.data.slice(0, 4);
 
   // newsCount의 상태 변화에 따라 newsList에 뉴스를 추가하는 함수
   React.useEffect(() => {
@@ -128,72 +127,20 @@ export default function NewsHomeList() {
       // API로 대체될 예정인 뉴스 데이터
       const loadedNewsList: Array<NewsItem> = tempNews.data.slice(baseNum, baseNum + 8);
       // 뉴스 JSX 코드
-      const loadedNews = [
-        <NewsListBox key={baseNum + 1}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[0].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[0].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 1}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 2}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[1].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[1].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 2}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 3}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[2].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[2].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 3}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 4}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[3].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[3].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 4}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 5}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[4].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[4].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 5}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 6}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[5].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[5].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 6}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 7}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[6].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[6].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 7}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-        <NewsListBox key={baseNum + 8}>
-          <NewsTextContainer>
-            <NewsTextTitle>{loadedNewsList[7].title}</NewsTextTitle>
-            <NewsTextContent>{loadedNewsList[7].content}</NewsTextContent>
-            <NewsTextCreatedAt>{`${baseNum + 8}시간 전`}</NewsTextCreatedAt>
-          </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-        </NewsListBox>,
-      ];
+      const loadedNews = [];
+      // eslint-disable-next-line no-plusplus
+      for (let i = baseNum; i < baseNum + 8; i++) {
+        loadedNews.push(
+          <NewsListBox key={i + 1}>
+            <NewsTextContainer>
+              <NewsTextTitle>{loadedNewsList[i - baseNum].title}</NewsTextTitle>
+              <NewsTextContent>{loadedNewsList[i - baseNum].content}</NewsTextContent>
+              <NewsTextCreatedAt>{`${i + 1}시간 전`}</NewsTextCreatedAt>
+            </NewsTextContainer>
+            <NewsListImage src={tempImage} />
+          </NewsListBox>,
+        );
+      }
       // 기존 newsList에 loadedNews를 더한 배열을 newsList로 설정
       setNewsList([...newsList, ...loadedNews]);
     };
@@ -244,7 +191,7 @@ export default function NewsHomeList() {
       </NewsListBox>
       {newsList}
       <div>
-        {newsCount === 4
+        {newsCount === 7
           ? <EmptyDiv />
           : <LoadBtn onClick={handleNewsCount}>
             더보기

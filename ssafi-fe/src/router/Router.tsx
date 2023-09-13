@@ -4,6 +4,7 @@ import Main from '../main';
 import Portfolio from '../portfolio';
 import News from '../news';
 import Trade from '../trade';
+import NewsDetail from '../components/NewsDetails';
 
 export default function Router() {
   return (
@@ -14,6 +15,7 @@ export default function Router() {
         <Route path="/survey" element={<Portfolio />} />
         <Route path="/news/*" element={<News />} />
         <Route path="/trade/*" element={<Trade />} />
+        <Route path="/detail" element={<NewsDetail />} />
       </Routes>
     </BrowserRouter>
   );
