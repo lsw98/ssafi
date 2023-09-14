@@ -1,15 +1,23 @@
 import React from 'react';
+import styled from 'styled-components';
 import Survey from './components/Survey';
 import Result from './components/Result';
 
-export default function Portfolio() {
+const MbtiContainer = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 0px 30px;
+`;
+
+export default function Mbti() {
   const [surveyDone, setSurveyDone] = React.useState<boolean>(false);
   return (
-    <div>
+    <MbtiContainer>
       {surveyDone
         ? <Result setSurveyDone={setSurveyDone} />
         : <Survey setSurveyDone={setSurveyDone} />
       }
-    </div>
+    </MbtiContainer>
   );
 }
