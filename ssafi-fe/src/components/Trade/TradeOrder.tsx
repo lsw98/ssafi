@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Tabs from '../Tab/Tab';
 
 const Container = styled.div`
   display: flex;
@@ -17,7 +18,6 @@ const CenterColumn = styled.div`
   flex: 60; /* 가운데 열을 60%로 설정 */
   display: flex;
   flex-direction: column;
-  width: 70%;
 `;
 
 const GraphContainer = styled.div`
@@ -28,6 +28,7 @@ const GraphContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 25px;
+  height: 60%;
 `;
 
 const TradingAndAccountContainer = styled.div`
@@ -35,6 +36,7 @@ const TradingAndAccountContainer = styled.div`
   justify-content: space-between;
   background-color: #f0f0f0;
   padding: 20px;
+  height: 40%;
 `;
 
 const Trading = styled.div`
@@ -60,7 +62,8 @@ export default function TradeOrder() {
     <Container>
       <LeftColumn>
         {/* 왼쪽 열 컨텐츠 (Stocks) */}
-        Stocks
+
+        <Tabs />
       </LeftColumn>
       <CenterColumn>
         {/* 가운데 열 컨텐츠 (Graph, Trading, Account) */}
@@ -77,7 +80,7 @@ export default function TradeOrder() {
       </CenterColumn>
       <RightColumn>
         {/* 오른쪽 열 컨텐츠 (Ranking) */}
-        Ranking
+        거래량 TOP 10
       </RightColumn>
     </Container>
   );
