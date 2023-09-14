@@ -74,7 +74,7 @@ export default function Header() {
   };
 
   const toSurvey = () => {
-    navigate('/survey');
+    navigate('/mbti');
   };
 
   const toNews = () => {
@@ -89,7 +89,7 @@ export default function Header() {
           <SiteMenu active={location.pathname.includes('/trade')} onClick={toTrade}>
             AI 트레이딩
           </SiteMenu>
-          <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
+          <SiteMenu active={location.pathname === '/mbti'} onClick={toSurvey}>
             금융 MBTI
           </SiteMenu>
           <SiteMenu active={location.pathname.includes('/news')} onClick={toNews}>
