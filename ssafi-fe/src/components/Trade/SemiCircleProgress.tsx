@@ -43,8 +43,19 @@ const Donut = styled.div<{halfPercent : number, barColor : string}>`
   }
 `;
 
+const StockCategoryName = styled.div`
+  position: absolute;
+  top: 54px;
+  width: 100%;
+  text-align: center;
+  color: var(--black-color);
+  font-weight: 400;
+  font-size: 26px;
+`;
+
 const SemiCircleProgress = ({ color, percent }: SemiCircleProps) => {
   const [increasePercent, setIncreasePercent] = useState(0);
+  const [stockCategory, setStockCategory] = useState('');
 
   useEffect(() => {
     let tmpPercent = 0;
@@ -58,12 +69,25 @@ const SemiCircleProgress = ({ color, percent }: SemiCircleProps) => {
     }, 10);
   }, [percent]);
 
+  useEffect(() => {
+    if (color === 'safe') {
+      setStockCategory('안전형');
+    } else if (color === 'middle') {
+      setStockCategory('중립형');
+    } else {
+      setStockCategory('위험형');
+    }
+  }, [color]);
+
   return (
     <DonutContainer>
       <Donut
         data-percent={increasePercent}
         barColor = {color}
-        halfPercent ={increasePercent / 2} />
+        halfPercent ={increasePercent / 2}
+      >
+        <StockCategoryName>{stockCategory}</StockCategoryName>
+      </Donut>
     </DonutContainer>
   );
 };

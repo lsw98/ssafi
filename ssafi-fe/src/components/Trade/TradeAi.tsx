@@ -6,6 +6,7 @@ import SemiCircleProgress from './SemiCircleProgress';
 interface StyleProps {
   weight?: number;
   width?: string;
+  height?: string;
   color?: string;
 }
 
@@ -35,15 +36,15 @@ const Title = styled.div<StyleProps>`
   margin: 20px 0 40px 0;
 `;
 
-const BoxContainer = styled.div`
+const BoxContainer = styled.div<StyleProps>`
   display: flex;
   width: 1000px;
-  height: 430px;
+  height: ${({ height }) => height || ''};
 `;
 
 const Box = styled.div<StyleProps>`
   width: ${({ width }) => width || '300px'};
-  height: 430px;
+  height: inhert;
   background-color: ${({ color }) => color || 'none'};
   gap: -100px;
 `;
@@ -82,7 +83,7 @@ export default function TradeAi() {
           <Title weight={600} color='var(--point-color)'>{botName}</Title>
           <Title>이 주식 투자 중이에요</Title>
         </div>
-        <BoxContainer>
+        <BoxContainer height={'430px'}>
           <Box color='var(--white-color)' />
           <Box width='700px' color='var(--dark-color)' />
         </BoxContainer>
