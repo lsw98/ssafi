@@ -1,6 +1,5 @@
 package com.run.ssafi.member.dto;
 
-import com.run.ssafi.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +11,17 @@ public class MemberInfoUpdateRequestDto {
     private String password;
     private String snsId;
     private String snsType;
+    private String type;
+    private String score;
     private Character personalAgreement;
 
     @Builder
-    public MemberInfoUpdateRequestDto(String password, String snsId, String snsType) {
+    public MemberInfoUpdateRequestDto(String password, String snsId, String snsType, String type, String score, Character personalAgreement) {
         this.password = password;
         this.snsId = snsId;
         this.snsType = snsType;
-        this.personalAgreement = 'T';
+        this.type = type;
+        this.score = score;
+        this.personalAgreement = personalAgreement;
     }
 }

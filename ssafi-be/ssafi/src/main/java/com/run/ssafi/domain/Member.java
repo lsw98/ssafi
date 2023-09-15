@@ -58,6 +58,12 @@ public class Member extends BaseTimeEntity {
     public void modifyExit(Boolean exit) {
         this.exit=exit;
     }
+    public void modifyScore(String score) {
+        this.score=score;
+    }
+    public void modifyType(String type) {
+        this.type=type;
+    }
     public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;
     }
