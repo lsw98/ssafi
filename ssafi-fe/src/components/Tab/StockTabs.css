@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 5px 5px 0 0;
+}
+
+.bloc-tabs {
+  display: flex;
+}
+
+.tabs {
+  flex: 1;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  position: relative;
+  transition: background 0.2s ease; /* 추가된 부분 */
+}
+
+.tabs:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.tabs:last-child {
+  border-radius: 5px 5px 0 0;
+  border-right: none;
+}
+
+.tabs.active-tabs {
+  background: white;
+  border-bottom: 1px solid transparent;
+  display: block;
+}
+
+.tabs.active-tabs::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 2px);
+  height: 5px;
+  background: #4ac49e;
+}
+
+.content-tabs {
+  background: white;
+  /* padding: 2px; */
+  width: 100%;
+  /* height: 100%; */
+  display: flex;
+  /* flex-grow: 1;
+  overflow: hidden; */
+  flex-direction: column;
+}
+
+.content {
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  /* border-top: 1px solid #ccc; */
+}
+
+.content.active-content {
+  display: flex;
+  justify-content: start;
+  align-items: start;
+}
+
+.content hr {
+}
+
+.content p {
+  width: 100%;
+  height: 100%;
+}
+
+button {
+  border: none;
+}

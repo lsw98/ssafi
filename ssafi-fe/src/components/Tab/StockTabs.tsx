@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import './Tab.css';
+import './StockTabs.css';
 import searchIcon from '../../assets/icons/search-icon.svg';
 // 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
 const StocksSearchBarArea = styled.div`
@@ -53,7 +53,7 @@ const StocksInterests = styled.div`
   align-items: start;
 `;
 
-function Tabs() {
+function StockTabs() {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index: number) => {
     setToggleState(index);
@@ -106,4 +106,4 @@ function Tabs() {
   );
 }
 
-export default Tabs;
+export default StockTabs;
