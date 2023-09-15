@@ -8,7 +8,7 @@ interface SemiCircleProps {
 
 const DonutContainer = styled.div`
   height: 170px;
-  margin: 20px;
+  margin: 20px 0;
   overflow: hidden;
 `;
 
