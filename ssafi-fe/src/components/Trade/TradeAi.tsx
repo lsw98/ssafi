@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import handleScroll from '../../utils/scrollUtils';
+import SemiCircleProgress from './SemiCircleProgress';
 
 interface StyleProps {
   weight?: number;
@@ -18,7 +19,7 @@ const Container = styled.div`
 const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  // justify-content: space-evenly;
   align-items: center;
   height: 704px;
 
@@ -31,6 +32,7 @@ const Title = styled.div<StyleProps>`
   font-size: 46px;
   font-weight: ${({ weight }) => weight || 500};
   color: ${({ color }) => color || 'var(--black-color)'};
+  margin: 20px 0 40px 0;
 `;
 
 const BoxContainer = styled.div`
@@ -43,12 +45,27 @@ const Box = styled.div<StyleProps>`
   width: ${({ width }) => width || '300px'};
   height: 430px;
   background-color: ${({ color }) => color || 'none'};
+  gap: -100px;
 `;
 
 export default function TradeAi() {
   // hasResult: 분석 결과가 있는지를 나타내는 boolean(처음이 아닐 때) - 임시 데이터
   const hasResult = true;
   const botName = '싸피봇';
+  const stockRateInfo = [
+    {
+      category: 'safe',
+      percent: 35,
+    },
+    {
+      category: 'middle',
+      percent: 58,
+    },
+    {
+      category: 'danger',
+      percent: 7,
+    },
+  ];
 
   React.useEffect(() => {
     window.addEventListener('wheel', handleScroll);
@@ -61,7 +78,7 @@ export default function TradeAi() {
   return (
     <Container>
       <SubContainer className='small'>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginTop: '20px' }}>
           <Title weight={600} color='var(--point-color)'>{botName}</Title>
           <Title>이 주식 투자 중이에요</Title>
         </div>
@@ -73,7 +90,11 @@ export default function TradeAi() {
       {hasResult && <SubContainer>
         <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
         <BoxContainer>
-          <Box></Box>
+          <Box>
+            {stockRateInfo.map((item) => (
+              <SemiCircleProgress color={item.category} percent={item.percent}/>
+            ))}
+          </Box>
           <Box width='700px' />
         </BoxContainer>
       </SubContainer>}
