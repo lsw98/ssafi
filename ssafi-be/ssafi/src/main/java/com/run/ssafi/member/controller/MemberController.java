@@ -2,6 +2,8 @@ package com.run.ssafi.member.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.exception.customexception.MemberException;
+import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.service.MemberService;
 import com.run.ssafi.message.Response;
@@ -11,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -42,13 +43,24 @@ public class MemberController {
     }
 
     @PatchMapping("/score")
-    public ResponseEntity modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberInfoUpdateRequestDto requestDto) throws Exception {
+    public ResponseEntity<MemberScoreResponseDto> modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberScoreUpdateRequestDto requestDto) throws Exception {
 
-        return memberService.updateMemberInfo(memberDetail, requestDto);
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        MemberScoreResponseDto memberScoreResponseDto = memberService.updateScore(memberDetail, requestDto);
+        return new ResponseEntity<>(memberScoreResponseDto, HttpStatus.OK);
+    }
+
+    @PatchMapping("/type")
+    public ResponseEntity<MemberTypeResponseDto> modifyType(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberTypeUpdateRequestDto requestDto) throws Exception {
+
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        MemberTypeResponseDto memberTypeResponseDto = memberService.updateType(memberDetail, requestDto);
+        return new ResponseEntity<>(memberTypeResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping
     public ResponseEntity<Response> delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
+        System.out.println("여기여 여기");
         long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_DELETE_SUCCESS), HttpStatus.OK);

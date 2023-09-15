@@ -39,6 +39,8 @@ public class SecurityConfiguration {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final String RolePrefix = "ROLE_";
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -92,13 +94,13 @@ public class SecurityConfiguration {
                                     .toArray(AntPathRequestMatcher[]::new)
                     )
                     .permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/api/member/info", "GET")).hasAnyAuthority(Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "POST")).permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/api/member", "PATCH")).hasAnyAuthority(Role.MEMBER.name())
-                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(Role.MEMBER.name())
-                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
-                    .requestMatchers(new AntPathRequestMatcher("/api/member", "DELETE")).hasAnyAuthority(Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PATCH")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member", "DELETE")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .anyRequest().authenticated()
                 .and()
                 .logout()
