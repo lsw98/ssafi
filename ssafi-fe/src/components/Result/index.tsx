@@ -2,23 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProgressBar from './ProgressBar';
-import mbtiTypesJson from '../../assets/mbti-types.json';
+import mbtiTraitsJson from '../../assets/mbti-traits.json';
 
 interface Props {
   setSurveyDone: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface MbtiType {
-  [key: string]: {
-    summary: string;
-    hashtag: string[];
-    description: string;
-    person: {
-      summary: string;
-      name: string;
-      description: string;
-    };
-  };
 }
 
 interface MbtiTrait {
@@ -95,16 +82,44 @@ const TraitTitle = styled.p`
 font-size: 38px;
 font-weight: 600;
 color: var(--black-color);
+margin-bottom: 10px;
 `;
 
 const PointMbti = styled.span`
 color: var(--point-color);
 `;
 
+const HashtagContainer = styled.div`
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 300px;
+`;
+
 const TraitHashtag = styled.p`
 font-size: 24px;
 font-weight: 400;
 color: var(--gray-color);
+`;
+
+const TraitDescription = styled.div`
+text-align: center;
+white-space: pre-line;
+font-size: 24px;
+`;
+
+const PersonSummary = styled.p`
+font-size: 24px;
+font-weight: 400;
+color: #00583D;
+margin-bottom: 0px;
+`;
+
+const PersonName = styled.p`
+font-size: 30px;
+font-weight: 700;
+color: var(--black-color);
+margin-top: 10px;
 `;
 
 const RedoBtn = styled.button`
@@ -148,7 +163,7 @@ export default function Result({ setSurveyDone }: Props) {
         'Most Effective\nE(집중형)',
         'Well Balanced\nW(분산형)',
       ],
-      percentage: 80,
+      percentage: 30,
     },
     {
       element: [
@@ -158,7 +173,25 @@ export default function Result({ setSurveyDone }: Props) {
       percentage: 50,
     },
   ];
-  const mbtiTypes: MbtiType = mbtiTypesJson;
+  const mbtiIndex = [
+    'APML',
+    'APMC',
+    'APWL',
+    'APWC',
+    'ABML',
+    'ABMC',
+    'ABWC',
+    'ABWL',
+    'IPML',
+    'IPMC',
+    'IPWL',
+    'IPWC',
+    'IBML',
+    'IBMC',
+    'IBWL',
+    'IBWC',
+  ];
+  const mbtiTraits = mbtiTraitsJson.data;
   const [mbtiType, setMbtiType] = React.useState<string>();
   const [mbtiTrait, setMbtiTrait] = React.useState<MbtiTrait | null>(null);
   const [mbtiHashtag, setMbtiHashtag] = React.useState<string[]>(['']);
@@ -174,8 +207,8 @@ export default function Result({ setSurveyDone }: Props) {
         }
       });
       setMbtiType(mbtiString);
-      setMbtiTrait(mbtiTypes[mbtiString]);
-      setMbtiHashtag(mbtiTypes[mbtiString].hashtag);
+      setMbtiTrait(mbtiTraits[mbtiIndex.indexOf(mbtiString)]);
+      setMbtiHashtag(mbtiTraits[mbtiIndex.indexOf(mbtiString)].hashtag);
     };
     getMbtiType();
   });
@@ -200,11 +233,20 @@ export default function Result({ setSurveyDone }: Props) {
       </ResultBox>
       <ResultBox>
         <TraitTitle><PointMbti>{mbtiType}</PointMbti> 투자 스타일 특징?</TraitTitle>
-        {mbtiType && mbtiTypes[mbtiType].hashtag.map((tag: string, index: number) => (
-        <div key={index}>
-          <TraitHashtag>{tag}</TraitHashtag>
-        </div>
-        ))}
+        <HashtagContainer>
+          {mbtiHashtag && mbtiHashtag.map((tag: string, index: number) => (
+          <div key={index}>
+            <TraitHashtag>{tag}</TraitHashtag>
+          </div>
+          ))}
+        </HashtagContainer>
+        <TraitDescription>{mbtiTrait && mbtiTrait.description}</TraitDescription>
+      </ResultBox>
+      <ResultBox>
+        <TraitTitle><PointMbti>{mbtiType}</PointMbti> 유형의 유명인</TraitTitle>
+        <PersonSummary>{mbtiTrait && mbtiTrait.person.summary}</PersonSummary>
+        <PersonName>{mbtiTrait && mbtiTrait.person.name}</PersonName>
+        <TraitDescription>{mbtiTrait && mbtiTrait.person.description}</TraitDescription>
       </ResultBox>
       <RedoBtn onClick={handleSurveyDone}>다시하기</RedoBtn>
     </ResultContainer>
