@@ -5,6 +5,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import darkLogo from '../../assets/logos/logo-dark.png';
 import kakaoURL from '../../OAuth';
+import { useAuth } from '../../context/AuthContext';
 
 interface SiteMenuProps {
   active?: boolean;
@@ -73,7 +74,9 @@ const LogoutButton = styled.div`
 
 export default function Header() {
   // 기능 코드 파트
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  console.log(isLoggedIn);
   const navigate = useNavigate();
   const location = useLocation();
   const toMain = () => {
@@ -90,37 +93,46 @@ export default function Header() {
 
   useEffect(() => {
     // 페이지 로딩 시 localStorage에서 토큰 유무를 확인하여 로그인 상태 설정
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = localStorage.getItem('accessToken');
+    console.log(token);
+    if (token != null) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
+    console.log(isLoggedIn);
   }, []);
+
+  // isLoggedIn 상태가 변경될 때마다 로그를 출력
+  // useEffect(() => {
+  //   console.log(isLoggedIn);
+  // }, [isLoggedIn]);
 
   const handleLogin = () => {
     window.location.href = kakaoURL;
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-
+    const token = localStorage.getItem('accessToken');
+    console.log(token);
     if (!token) {
       console.error('토큰이 없습니다.');
+      setIsLoggedIn(false);
       return;
     }
-
     try {
       await axios.post(
-        'https://j9a407.p.ssafy.io/api/logout',
+        'https://8264-211-192-210-179.ngrok-free.app/api/logout',
         {},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
         },
       );
-
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
       setIsLoggedIn(false);
+      window.alert('로그아웃되었습니다.');
     } catch (error) {
       console.error('로그아웃 중 에러가 발생했습니다:', error);
     }

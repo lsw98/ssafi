@@ -2,9 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './reucers/authReducers';
+import rootReducer from './reducers/authReducers';
 import App from './App';
 import './index.css';
+import { AuthProvider } from './context/AuthContext';
+import './utility/axiosConfig';
 
 const store = configureStore({
   reducer: rootReducer,
@@ -12,8 +14,10 @@ const store = configureStore({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
+    <AuthProvider>
       <App />
-    </React.StrictMode>
+    </AuthProvider>
+    {/* </React.StrictMode> */}
   </Provider>,
 );
