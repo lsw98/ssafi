@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
@@ -96,10 +96,21 @@ const StyledSelect = styled.select`
   }
 `;
 
+const StopBtn = styled.div<{stop: boolean}>`
+  width: 172px;
+  height: 60px;
+  text-align: center;
+  color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
+  border: ${(props) => (props.stop ? '2px solid var(--point-color)' : '')};
+  background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
+`;
+
 export default function TradeAi() {
   // hasResult: 분석 결과가 있는지를 나타내는 boolean(처음이 아닐 때) - 임시 데이터
   const hasResult = true;
-  const botName = '싸피봇';
+  // ai 트레이딩이 진행 중인지 아닌지
+  const [isTrade, setIsTrade] = useState(false);
+  const [botName, setBotName] = useState('');
   const stockRateInfo = [
     {
       category: 'safe',
@@ -114,6 +125,7 @@ export default function TradeAi() {
       percent: 7,
     },
   ];
+
   const options = [
     '타고난 리더형 투자 지도자(APML)',
     '박학다식한 투자의 달인(APMC)',
@@ -141,6 +153,10 @@ export default function TradeAi() {
     };
   }, []);
 
+  const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBotName(event.target.value);
+  };
+
   return (
     <Container>
       <SubContainer className='small'>
@@ -155,8 +171,8 @@ export default function TradeAi() {
             <Row>
               <InputBox
                 placeholder="싸피봇"
-                // value={Api}
-                // onChange={handleApiChange}
+                value={botName}
+                onChange={handleBotNameChange}
               >
               </InputBox>
               <EditBtn />
@@ -170,6 +186,9 @@ export default function TradeAi() {
               </option>
             ))}
           </StyledSelect>
+          <Text>투자 금액:</Text>
+          <Text>목표 금액:</Text>
+          <StopBtn stop={isTrade}>{isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}</StopBtn>
           </Box>
         </BoxContainer>
       </SubContainer>
