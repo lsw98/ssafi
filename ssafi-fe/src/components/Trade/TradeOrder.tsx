@@ -68,6 +68,42 @@ const RightColumn = styled.div`
   background-color: #f0f0f0;
   padding: 20px;
 `;
+const AmountRanking = styled.div`
+  width: 100%;
+  height: 60%;
+  flex-shrink: 0;
+  border-radius: 25px;
+  background: var(--White, #fdfdfd);
+  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    color: var(--Dark, #0d1545);
+    font-family: Pretendard;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+
+    &::before {
+      content: ''; /* 가상 요소 내용 초기화 */
+      position: absolute; /* 가상 요소에 대한 절대 위치 설정 */
+      top: 50%; /* 가운데 정렬을 위한 top 위치 설정 */
+      left: 0;
+      width: 100%; /* 가로 너비 100% 설정 */
+      height: 8px; /* 그래프의 높이 설정 */
+      background-color: var(
+        --Gradation,
+        linear-gradient(
+          180deg,
+          rgba(131, 236, 220, 0.15) 0%,
+          rgba(74, 196, 158, 0.32) 100%
+        )
+      ); /* 그래프 배경색 설정 */
+      transform: translateY(-50%); /* 가운데 정렬을 위한 이동 */
+      z-index: -1; /* 텍스트 위로 오도록 배치 */
+    }
+  }
+`;
 
 export default function TradeOrder() {
   return (
@@ -93,8 +129,9 @@ export default function TradeOrder() {
         </TradingAndAccountContainer>
       </CenterColumn>
       <RightColumn>
-        {/* 오른쪽 열 컨텐츠 (Ranking) */}
-        거래량 TOP 10
+        <AmountRanking>
+          <h2>거래량 TOP 10</h2>
+        </AmountRanking>
       </RightColumn>
     </Container>
   );
