@@ -2,11 +2,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Header from '../components/Header';
 import Main from '../main';
-import Portfolio from '../portfolio';
-// import Footer from '../components/Footer';
+import Mbti from '../mbti';
 import Kakao from '../components/Login/kakao';
 import News from '../news';
 import Trade from '../trade';
+import NewsDetail from '../components/NewsDetails';
 
 export default function Router() {
   return (
@@ -14,10 +14,11 @@ export default function Router() {
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/survey" element={<Portfolio />} />
+        <Route path="/mbti" element={<Mbti />} />
         <Route path="/auth" element={<Kakao />} />
         <Route path="/news/*" element={<News />} />
         <Route path="/trade/*" element={<Trade />} />
+        <Route path="/detail" element={<NewsDetail />} />
       </Routes>
     </BrowserRouter>
   );
