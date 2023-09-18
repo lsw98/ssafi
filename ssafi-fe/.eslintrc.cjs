@@ -14,6 +14,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     'linebreak-style': 0,
     'operator-linebreak': 'off',
+    'import/no-unresolved': 'off',
     'no-use-before-define': ['error', { variables: false }],
     'import/extensions': [
       'error',
