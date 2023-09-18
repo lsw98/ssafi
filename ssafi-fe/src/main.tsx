@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import mainImage from './assets/images/main-image.png';
-import { ReactComponent as RightArrow } from './assets/images/botton-arrow.svg';
+import { ReactComponent as RightArrow } from './assets/images/button-arrow.svg';
 import longLogo from './assets/logos/logo-long.png';
 import aiTradeImage from './assets/images/ai-trade.svg';
 import investPortfolio from './assets/images/invest-portfolio.svg';

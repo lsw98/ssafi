@@ -7,6 +7,7 @@ import Portfolio from '../portfolio';
 import Kakao from '../components/Login/kakao';
 import News from '../news';
 import Trade from '../trade';
+import NewsDetail from '../components/NewsDetails';
 
 export default function Router() {
   return (
@@ -18,6 +19,7 @@ export default function Router() {
         <Route path="/auth" element={<Kakao />} />
         <Route path="/news/*" element={<News />} />
         <Route path="/trade/*" element={<Trade />} />
+        <Route path="/detail" element={<NewsDetail />} />
       </Routes>
     </BrowserRouter>
   );
