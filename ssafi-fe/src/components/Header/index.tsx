@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import styled from 'styled-components';
 import darkLogo from '../../assets/logos/logo-dark.png';
+import kakaoURL from '../../OAuth';
 
 interface SiteMenuProps {
   active?: boolean;
@@ -46,7 +49,8 @@ const SiteMenu = styled.div<SiteMenuProps>`
   font-size: 24px;
   margin-left: 30px;
   cursor: pointer;
-  color: ${(props) => (props.active ? 'var(--point-color)' : 'var(--white-color)')};
+  color: ${(props) =>
+    props.active ? 'var(--point-color)' : 'var(--white-color)'};
 `;
 
 const NavbarRight = styled.div`
@@ -58,13 +62,20 @@ const NavbarRight = styled.div`
 const LoginButton = styled.div`
   font-size: 18px;
   cursor: pointer;
+  color: var(--white-color);
+`;
+
+const LogoutButton = styled.div`
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--white-color);
 `;
 
 export default function Header() {
   // 기능 코드 파트
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
   const toMain = () => {
     navigate('/');
   };
@@ -77,6 +88,44 @@ export default function Header() {
     navigate('/mbti');
   };
 
+  useEffect(() => {
+    // 페이지 로딩 시 localStorage에서 토큰 유무를 확인하여 로그인 상태 설정
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    window.location.href = kakaoURL;
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('토큰이 없습니다.');
+      return;
+    }
+
+    try {
+      await axios.post(
+        'https://j9a407.p.ssafy.io/api/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      localStorage.removeItem('token');
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('로그아웃 중 에러가 발생했습니다:', error);
+    }
+  };
+
   const toNews = () => {
     navigate('/news');
   };
@@ -86,20 +135,30 @@ export default function Header() {
       <Navbar>
         <NavbarLeft>
           <SiteLogo onClick={toMain} />
-          <SiteMenu active={location.pathname.includes('/trade')} onClick={toTrade}>
+          <SiteMenu
+            active={location.pathname.includes('/trade')}
+            onClick={toTrade}
+          >
             AI 트레이딩
           </SiteMenu>
           <SiteMenu active={location.pathname === '/mbti'} onClick={toSurvey}>
             금융 MBTI
           </SiteMenu>
-          <SiteMenu active={location.pathname.includes('/news')} onClick={toNews}>
+          <SiteMenu
+            active={location.pathname.includes('/news')}
+            onClick={toNews}
+          >
             뉴스
           </SiteMenu>
         </NavbarLeft>
         <NavbarRight>
-          <LoginButton>
-            로그인
-          </LoginButton>
+          {/* 로그인 상태에 따라 버튼을 동적으로 렌더링 */}
+          {!isLoggedIn && (
+            <LoginButton onClick={handleLogin}>로그인</LoginButton>
+          )}
+          {isLoggedIn && (
+            <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+          )}
         </NavbarRight>
       </Navbar>
     </NavContainer>

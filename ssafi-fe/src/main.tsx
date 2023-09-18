@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import mainImage from './assets/images/main-image.png';
 import { ReactComponent as RightArrow } from './assets/images/button-arrow.svg';
 import longLogo from './assets/logos/logo-long.png';
@@ -23,7 +24,7 @@ const MainBanner = styled.div`
   width: 1140px;
   margin-top: 60px;
   padding: 0px 30px;
-  position: relative
+  position: relative;
 `;
 
 // 메인 배너 제목 텍스트 속성
@@ -77,7 +78,7 @@ const ButtonArrow = styled(RightArrow)`
 const BannerImg = styled.img.attrs({
   src: `${mainImage}`,
 })`
-  width:  450px;
+  width: 450px;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -97,7 +98,7 @@ const MainService = styled.div`
 const LongLogo = styled.img.attrs({
   src: `${longLogo}`,
 })`
-  width:  670px;
+  width: 670px;
 `;
 
 // 서비스 박스 영역
@@ -224,7 +225,9 @@ export default function Main() {
       <MainBanner>
         <div>
           <BannerTitle>
-            똑똑한 SSAFI AI로<br />일하는 동안에도 주식 투자하세요
+            똑똑한 SSAFI AI로
+            <br />
+            일하는 동안에도 주식 투자하세요
           </BannerTitle>
           <BannerContent>
             AI 트레이딩 플랫폼 SSAFI는<br />
@@ -251,9 +254,7 @@ export default function Main() {
         <ServiceDiv>
           <ServiceBox onClick={() => handleButtonClick('ai')}>
             <AiTradeImg />
-            <ServiceTitle>
-              AI 트레이딩
-            </ServiceTitle>
+            <ServiceTitle>AI 트레이딩</ServiceTitle>
             <ServiceContent>
               AI를 활용해 일하는 시간에도 주식 투자를 해보세요
             </ServiceContent>
@@ -269,9 +270,7 @@ export default function Main() {
           </ServiceBox>
           <ServiceBox onClick={() => handleButtonClick('news')}>
             <StockNewsImg />
-            <ServiceTitle>
-              증권 뉴스
-            </ServiceTitle>
+            <ServiceTitle>증권 뉴스</ServiceTitle>
             <ServiceContent>
               관심종목과 관련된 증권 이슈를 확인하고 투자 수익률을 높여봐요.
             </ServiceContent>
