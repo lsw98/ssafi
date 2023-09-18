@@ -64,6 +64,12 @@ public class Member extends BaseTimeEntity {
     public void modifyType(String type) {
         this.type=type;
     }
+    public void modifyAppKey(String appKey) {
+        this.appKey=appKey;
+    }
+    public void modifySecretKey(String secretKey) {
+        this.secretKey=secretKey;
+    }
     public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;
     }

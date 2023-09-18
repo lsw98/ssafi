@@ -30,7 +30,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
         String accessToken = jwtUtil.resolveToken(request);;
         String memberId = jwtUtil.extractClaimValue(accessToken, "memberId");
-        String refreshToken = refreshTokenService.getRefreshToken(memberId);
         refreshTokenService.deleteRefreshToken(memberId);
 
         // accessToken BlackList 설정

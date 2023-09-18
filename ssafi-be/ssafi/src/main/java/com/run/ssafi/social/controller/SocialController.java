@@ -28,6 +28,7 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+
 public class SocialController {
     private final UserService userService;
 
@@ -38,6 +39,11 @@ public class SocialController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtUtil jwtUtil;
+
+//    @GetMapping
+//    public void test(@RequestParam("code") String code){
+//        System.out.println(code);
+//    }
 
     @PostMapping("/social-login")
     public ResponseEntity<Response> doSocialLogin(@RequestBody @Valid SocialLoginRequest request, HttpServletResponse response) throws SQLException {

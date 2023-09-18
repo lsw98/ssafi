@@ -100,6 +100,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
+    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto memberKeyUpdateRequestDto)
+            throws SQLException {
+        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+        member.modifyAppKey(memberKeyUpdateRequestDto.getAppKey());
+        member.modifySecretKey(memberKeyUpdateRequestDto.getSecretKey());
+        MemberKeyResponseDto memberKeyResponseDto = new MemberKeyResponseDto(
+                memberKeyUpdateRequestDto.getAppKey(), memberKeyUpdateRequestDto.getSecretKey());
+        return memberKeyResponseDto;
+    }
+
+    @Transactional
+    @Override
     public void deleteMember(long memberId) throws Exception {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
