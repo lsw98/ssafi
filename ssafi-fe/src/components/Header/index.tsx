@@ -85,7 +85,7 @@ export default function Header() {
   };
 
   const toSurvey = () => {
-    navigate('/survey');
+    navigate('/mbti');
   };
 
   useEffect(() => {
@@ -141,7 +141,7 @@ export default function Header() {
           >
             AI 트레이딩
           </SiteMenu>
-          <SiteMenu active={location.pathname === '/survey'} onClick={toSurvey}>
+          <SiteMenu active={location.pathname === '/mbti'} onClick={toSurvey}>
             금융 MBTI
           </SiteMenu>
           <SiteMenu
