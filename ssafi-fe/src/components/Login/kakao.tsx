@@ -16,13 +16,18 @@ const Kakao = () => {
     const fetchData = async () => {
       if (code) {
         await dispatch(userActions.kakaoLogin(code, navigate) as any);
+      } else {
+        // code가 없는 경우 처리
+        console.log('code가 없음');
+        window.alert('로그인에 실패하였습니다.');
+        navigate('/');
       }
     };
 
     fetchData();
   }, [dispatch, code, navigate]);
 
-  return <div>{/* JSX 내용 추가 */}</div>;
+  return <div>...로그인중입니다</div>;
 };
 
 export default Kakao;
