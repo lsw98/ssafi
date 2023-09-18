@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 import ApiGuide from './ApiGuide';
+import handleScroll from '../../utils/scrollUtils';
 
 interface ContainerProps {
   dark?: boolean;
@@ -93,40 +94,9 @@ const DoubtsButton = styled(Doubts)`
 `;
 
 export default function TradeApi() {
-  const handleScroll = (event: WheelEvent) => {
-    event.preventDefault();
-    const currentScrollPosition = window.scrollY;
-    const scrollThreshold = 700; // 원하는 스크롤 위치로 조정하세요.
-
-    if (currentScrollPosition <= scrollThreshold) {
-      if (event.deltaY > 0) {
-        // 마우스 휠을 아래로 스크롤할 때
-        window.scrollBy({
-          top: scrollThreshold,
-          behavior: 'smooth', // 부드러운 스크롤을 위해 사용
-        });
-      } else {
-        // 마우스 휠을 위로 스크롤할 때
-        window.scrollBy({
-          top: -scrollThreshold,
-          behavior: 'smooth',
-        });
-      }
-    } else if (currentScrollPosition > scrollThreshold) {
-      if (event.deltaY <= 0) {
-        window.scrollTo({
-          top: 700,
-          behavior: 'smooth',
-        });
-      }
-    }
-  };
-
   React.useEffect(() => {
-    // wheel 이벤트 리스너를 추가합니다.
     window.addEventListener('wheel', handleScroll);
 
-    // 컴포넌트가 언마운트될 때 리스너를 제거합니다.
     return () => {
       window.removeEventListener('wheel', handleScroll);
     };
