@@ -156,7 +156,7 @@ export default function Result({ setSurveyDone }: Props) {
         'Professional\nP(전문가형)',
         'Beginner\nB(탐험가형)',
       ],
-      percentage: 10,
+      percentage: 80,
     },
     {
       element: [
