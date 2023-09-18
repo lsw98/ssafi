@@ -11,7 +11,9 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': 'warn',
+    '@typescript-eslint/ban-types': 'off',
     'linebreak-style': 0,
+    'operator-linebreak': 'off',
     'no-use-before-define': ['error', { variables: false }],
     'import/extensions': [
       'error',
@@ -23,6 +25,12 @@ module.exports = {
         jsx: 'never',
       },
     ],
+    'default-param-last': 'off',
+    'arrow-body-style': 'off',
+    'import/no-duplicates': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'no-confusing-arrow': 'off',
+    'implicit-arrow-linebreak': 'off',
   },
   settings: {
     'import/resolver': {
@@ -31,5 +39,4 @@ module.exports = {
       },
     },
   },
-
 };
