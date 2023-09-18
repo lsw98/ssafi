@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
+import TradeInput from './TradeInput';
 
 interface StyleProps {
   weight?: number;
@@ -79,32 +80,6 @@ const Row = styled.div`
   align-items: flex-end;
 `;
 
-const StyledSelect = styled.select`
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-
-  &:hover {
-    border-color: #007bff;
-  }
-
-  &:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-  }
-`;
-
-const StopBtn = styled.div<{stop: boolean}>`
-  width: 172px;
-  height: 60px;
-  text-align: center;
-  color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
-  border: ${(props) => (props.stop ? '2px solid var(--point-color)' : '')};
-  background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
-`;
-
 export default function TradeAi() {
   // hasResult: 분석 결과가 있는지를 나타내는 boolean(처음이 아닐 때) - 임시 데이터
   const hasResult = true;
@@ -124,25 +99,6 @@ export default function TradeAi() {
       category: 'danger',
       percent: 7,
     },
-  ];
-
-  const options = [
-    '타고난 리더형 투자 지도자(APML)',
-    '박학다식한 투자의 달인(APMC)',
-    '똘똘한 분산투자 능력자(APWL)',
-    '당당하고 유능한 투자자(APWC)',
-    '똑똑한 투자 트렌디세터(ABML)',
-    '시대를 앞서는 투자 리더(ABMC)',
-    '용감한 투자 탐정가(ABWL)',
-    '통찰력있는 투자 예술인(ABWC)',
-    '전략적인 투자 연구자(IPML)',
-    '미래지향적 투자 탐험가(IPMC)',
-    '노련한 투자의 아이콘(IPWL)',
-    '다재다능한 투자 지휘관(IPWC)',
-    '도전을 즐기는 투자 샛별(IBML)',
-    '탐구하는 투자 탐색가(IBMC)',
-    '호기심 가득한 투자 관찰가(IBWL)',
-    '잠재력있는 새싹 투자자(IBWC)',
   ];
 
   React.useEffect(() => {
@@ -179,16 +135,7 @@ export default function TradeAi() {
             </Row>
           </Box>
           <Box width='700px' color='var(--dark-color)'>
-          <StyledSelect>
-            {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </StyledSelect>
-          <Text>투자 금액:</Text>
-          <Text>목표 금액:</Text>
-          <StopBtn stop={isTrade}>{isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}</StopBtn>
+            <TradeInput/>
           </Box>
         </BoxContainer>
       </SubContainer>
