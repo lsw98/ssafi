@@ -135,7 +135,7 @@ export default function TradeAi() {
             </Row>
           </Box>
           <Box width='700px' color='var(--dark-color)'>
-            <TradeInput/>
+            <TradeInput isTrade={isTrade} setIsTrade={setIsTrade}/>
           </Box>
         </BoxContainer>
       </SubContainer>

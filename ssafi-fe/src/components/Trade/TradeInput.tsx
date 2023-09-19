@@ -6,8 +6,13 @@ interface StyleProps {
   show: boolean;
 }
 
+interface TradeInputProps {
+  isTrade: boolean;
+  setIsTrade: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const Container = styled.div`
-  width: 480px;
+  width: 480px;;
   height: 370px;
   margin: 30px 82px;
   display: flex;
@@ -124,7 +129,12 @@ const RateOfType = styled.div`
   align-items: flex-end;
 `;
 
-const RateInput = styled.input`
+const RightBox = styled.div`
+  display: flex;
+  justify-content: flex-end
+`;
+
+const Input = styled.input`
   width: 50%;
   padding: 0 5%;
   font-size: 20px;
@@ -134,18 +144,26 @@ const RateInput = styled.input`
   border-bottom: 1px solid var(--white-color);
   margin-bottom: 2px;
   outline: none;
+
+  &.ammount {
+    width: 60%;
+    text-align: right;
+  }
 `;
 
-// const StopBtn = styled.div<{stop: boolean}>`
-//   width: 172px;
-//   height: 60px;
-//   text-align: center;
-//   color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
-//   border: ${(props) => (props.stop ? '2px solid var(--point-color)' : '')};
-//   background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
-// `;
+const StopBtn = styled.div<{stop: boolean}>`
+  width: 172px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--point-color);
+  font-size: 20px;
+  color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
+  background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
+`;
 
-export default function TradeInput() {
+export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -225,21 +243,21 @@ export default function TradeInput() {
         <RateContainer>
           <RateOfType>
             <Label>안전</Label>
-            <RateInput
+            <Input
               value={rateValues[0]}
               // onChange={(e) => handleRateInputChange(0, parseInt(e.target.value, 10))}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
-            <RateInput
+            <Input
               value={rateValues[1]}
               // onChange={(e) => handleRateInputChange(1, parseInt(e.target.value, 10))}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
-            <RateInput
+            <Input
               value={rateValues[2]}
               // onChange={(e) => handleRateInputChange(2, parseInt(e.target.value, 10))}
             />
@@ -247,7 +265,22 @@ export default function TradeInput() {
         </RateContainer>
         <Notice>원하시는 투자 비율을 퍼센트(%) 단위로 입력해주세요.</Notice>
       </div>
-      {/* <StopBtn stop={isTrade}>{isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}</StopBtn> */}
+      <RateContainer>
+        <Label>투자 금액</Label>
+        <Input className='ammount' />
+      </RateContainer>
+      <RateContainer>
+        <Label>투자 금액</Label>
+        <Input className='ammount' />
+      </RateContainer>
+      <RightBox>
+        <StopBtn
+          stop={isTrade}
+          onClick={() => setIsTrade(!isTrade)}
+        >
+        {isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}
+        </StopBtn>
+      </RightBox>
     </Container>
   );
 }
