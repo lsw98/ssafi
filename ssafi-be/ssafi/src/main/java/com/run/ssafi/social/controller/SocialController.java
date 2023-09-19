@@ -3,17 +3,19 @@ package com.run.ssafi.social.controller;
 import static com.run.ssafi.filter.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.run.ssafi.filter.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
 
-import com.google.gson.Gson;
 import com.run.ssafi.config.redis.RefreshTokenService;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.exception.customexception.MemberException;
+import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.filter.JwtTokenProvider;
 import com.run.ssafi.filter.JwtUtil;
 import com.run.ssafi.member.repository.MemberRepository;
-import com.run.ssafi.stock.dto.KISAuthResponse;
+import com.run.ssafi.message.custom_message.AuthResponseMessage;
+import com.run.ssafi.stock.dto.AuthResponseDto;
 import com.run.ssafi.social.dto.SocialLoginRequest;
 import com.run.ssafi.social.dto.SocialLoginResponse;
 import com.run.ssafi.social.service.UserService;
-import com.run.ssafi.stock.feign.KISAuthApi;
+import com.run.ssafi.stock.service.StockServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ import java.sql.SQLException;
 
 public class SocialController {
 
-    private final KISAuthApi kisAuthApi;
+    private final StockServiceImpl stockService;
 
     private final UserService userService;
 
@@ -42,8 +44,6 @@ public class SocialController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtUtil jwtUtil;
-
-    private final String grantType = "client_credentials";
 
     @GetMapping
     public void test(@RequestParam("code") String code){
@@ -56,7 +56,7 @@ public class SocialController {
             throws SQLException {
 
         Member member = memberRepository.findById(userService.doSocialLogin(request).getId())
-                .orElse(null);
+                .orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
 
         Map<String, Object> customClaims = jwtUtil.setCustomClaims(new HashMap<>(), "memberId",
                 String.valueOf(member.getId()));
@@ -74,32 +74,13 @@ public class SocialController {
         refreshTokenService.saveRefreshToken(String.valueOf(member.getId()), refreshToken,
                 REFRESH_TOKEN_EXPIRATION_TIME);
 
-        SocialLoginResponse socialLoginResponse = new SocialLoginResponse();
-        ResponseEntity<?> responseEntity;
-        KISAuthResponse kisAuthResponse = null;
-        if (member.getAppKey() != null) {
-            socialLoginResponse.setAppKey(member.getAppKey());
-        }
-        if (member.getSecretKey() != null) {
-            socialLoginResponse.setSecretKey(member.getSecretKey());
-        }
-        if (member.getAppKey() != null && member.getSecretKey() != null) {
-            responseEntity = kisAuthApi.getAccessToken(
-                    grantType,
-                    member.getAppKey(),
-                    member.getSecretKey()
-            );
-            kisAuthResponse = new Gson()
-                    .fromJson(
-                            String.valueOf(responseEntity.getBody())
-                            , KISAuthResponse.class
-                    );
-            socialLoginResponse.setAccessToken(kisAuthResponse.getAccessToken());
-            socialLoginResponse.setTokenType(kisAuthResponse.getTokenType());
-            socialLoginResponse.setExpiresIn(kisAuthResponse.getExpiresIn());
-        }
+        AuthResponseDto authResponseDto = new AuthResponseDto();
+        stockService.extracted(member, authResponseDto);
 
-        socialLoginResponse.setMessage("로그인 성공 AccessToken 및 RefreshToken 발급 완료");
+        SocialLoginResponse socialLoginResponse = SocialLoginResponse.builder()
+                .authResponseDto(authResponseDto)
+                .message(AuthResponseMessage.SOCIAL_LOGIN_SUCCESS.getMessage())
+                .build();
 
         return new ResponseEntity<>(socialLoginResponse, HttpStatus.OK);
     }
