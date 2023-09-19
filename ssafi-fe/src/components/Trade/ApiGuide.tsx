@@ -31,21 +31,21 @@ justify-content: end;
 align-items: center;
 `;
 
-const questionList: Array<string> = ['0', '1', '2', '3', '4', '5', '6', '7'];
-const allQuestions = questionList.length - 1;
+const guideList: Array<string> = ['0', '1', '2', '3', '4', '5', '6', '7'];
+const allGuides = guideList.length - 1;
 
 const ApiGuide = ({ closeModal }: GuideProps) => {
-  const [questionNum, setQuestionNum] = React.useState(0);
+  const [guideNum, setGuideNum] = React.useState(0);
 
-  const nextQuestionNum = () => {
-    if (questionNum < allQuestions) {
-      setQuestionNum(questionNum + 1);
+  const nextGuideNum = () => {
+    if (guideNum < allGuides) {
+      setGuideNum(guideNum + 1);
     }
   };
 
-  const previousQuestionNum = () => {
-    if (questionNum > 0) {
-      setQuestionNum(questionNum - 1);
+  const previousGuideNum = () => {
+    if (guideNum > 0) {
+      setGuideNum(guideNum - 1);
     }
   };
 
@@ -58,14 +58,14 @@ const ApiGuide = ({ closeModal }: GuideProps) => {
       <ModalContainer onClick={stopPropagation}>
         api key 받아오는 방법 설명
         <div>
-          <h3>{questionList[questionNum]}</h3>
-          {questionNum !== allQuestions
+          <h3>{guideList[guideNum]}</h3>
+          {guideNum !== allGuides
             ? <div>
-                { questionNum === 0
-                  ? <ButtonBox><button onClick={nextQuestionNum}>다음</button></ButtonBox>
+                { guideNum === 0
+                  ? <ButtonBox><button onClick={nextGuideNum}>다음</button></ButtonBox>
                   : <ButtonBox>
-                    <button onClick={previousQuestionNum}>이전</button>
-                    <button onClick={nextQuestionNum}>다음</button>
+                    <button onClick={previousGuideNum}>이전</button>
+                    <button onClick={nextGuideNum}>다음</button>
                   </ButtonBox>
                 }
               </div>
