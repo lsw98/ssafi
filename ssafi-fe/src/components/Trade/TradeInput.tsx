@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 
 interface StyleProps {
@@ -48,9 +48,9 @@ const Label = styled.label`
 const SelectOptions = styled.ul<StyleProps>`
   position: absolute;
   list-style: none;
-  top: 28px;
+  top: 32px;
   left: 0;
-  width: 100%;
+  width: 91.5%;
   overflow: hidden;
   height: 150px;
   max-height: ${(props) => (props.show ? 'none' : '0')};
@@ -58,14 +58,16 @@ const SelectOptions = styled.ul<StyleProps>`
   background-color: var(--white-color);
   color: var(--gray-color);
   overflow-y: auto;
+  z-index: 1;
 `;
 
 const Option = styled.li`
   font-size: 18px;
-  padding: 6px 10px;
+  padding: 6px 0;
   transition: background-color 0.2s ease-in;
 
   &:hover {
+    font-size: 19px;
     background-color: var(--sub-color);
     color: var(--black-color);
   }
@@ -92,7 +94,25 @@ const DoubtsButton = styled(Doubts)`
   cursor: pointer;
 `;
 
-const Tooltip = styled.div<StyleProps>`
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+// const fadeOut = keyframes`
+//   from {
+//     opacity: 1;
+//   }
+//   to {
+//     opacity: 0;
+//   }
+// `;
+
+const Tooltip = styled.div`
   width: 200px;
   position: absolute;
   top: 30px;
@@ -102,7 +122,8 @@ const Tooltip = styled.div<StyleProps>`
   font-size: 14px;
   padding: 6px 12PX;
   border-radius: 6px;
-  display: ${(props) => (props.show ? 'block' : 'none')};
+  display: 'block';
+  animation: ${fadeIn} 0.3s ease-in-out;
 
   &::after {
     content: '';
@@ -175,12 +196,14 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
     setCurrentValue(innerText);
   };
 
-  const handleDoubtsButtonClick = () => {
-    setShowTooltip((prev) => !prev); // 클릭 시 툴팁 표시/숨김 토글
-  };
-
   const handleDoubtsButtonHover = (isHovered: boolean) => {
     setShowTooltip(isHovered);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    const numericValue = parseFloat(inputValue);
+    const formattedValue = numericValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   // const handleRateInputChange = (index, value) => {
@@ -192,23 +215,80 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
   // };
 
   const options = [
-    '타고난 리더형 투자 지도자(APML)',
-    '박학다식한 투자의 달인(APMC)',
-    '똘똘한 분산투자 능력자(APWL)',
-    '당당하고 유능한 투자자(APWC)',
-    '똑똑한 투자 트렌디세터(ABML)',
-    '시대를 앞서는 투자 리더(ABMC)',
-    '용감한 투자 탐정가(ABWL)',
-    '통찰력있는 투자 예술인(ABWC)',
-    '전략적인 투자 연구자(IPML)',
-    '미래지향적 투자 탐험가(IPMC)',
-    '노련한 투자의 아이콘(IPWL)',
-    '다재다능한 투자 지휘관(IPWC)',
-    '도전을 즐기는 투자 샛별(IBML)',
-    '탐구하는 투자 탐색가(IBMC)',
-    '호기심 가득한 투자 관찰가(IBWL)',
-    '잠재력있는 새싹 투자자(IBWC)',
+    {
+      type: '타고난 리더형 투자 지도자(APML)',
+      rates: [25, 68, 7],
+    },
+    {
+      type: '박학다식한 투자의 달인(APMC)',
+      rates: [100, 0, 0],
+    },
+    {
+      type: '똘똘한 분산투자 능력자(APWL)',
+      rates: [10, 80, 10],
+    },
+    {
+      type: '당당하고 유능한 투자자(APWC)',
+      rates: [0, 100, 0],
+    },
+    {
+      type: '똑똑한 투자 트렌디세터(ABML)',
+      rates: [1, 2, 97],
+    },
+    {
+      type: '시대를 앞서는 투자 리더(ABMC)',
+      rates: [58, 26, 16],
+    },
+    {
+      type: '용감한 투자 탐정가(ABWL)',
+      rates: [22, 55, 23],
+    },
+    {
+      type: '통찰력있는 투자 예술인(ABWC)',
+      rates: [20, 50, 30],
+    },
+    {
+      type: '전략적인 투자 연구자(IPML)',
+      rates: [25, 68, 7],
+    },
+    {
+      type: '미래지향적 투자 탐험가(IPMC)',
+      rates: [25, 68, 7],
+    },
+    {
+      type: '노련한 투자의 아이콘(IPWL)',
+      rates: [68, 25, 7],
+    },
+    {
+      type: '다재다능한 투자 지휘관(IPWC)',
+      rates: [38, 12, 50],
+    },
+    {
+      type: '도전을 즐기는 투자 샛별(IBML)',
+      rates: [50, 20, 30],
+    },
+    {
+      type: '탐구하는 투자 탐색가(IBMC)',
+      rates: [20, 40, 40],
+    },
+    {
+      type: '호기심 가득한 투자 관찰가(IBWL)',
+      rates: [25, 50, 25],
+    },
+    {
+      type: '잠재력있는 새싹 투자자(IBWC)',
+      rates: [33, 33, 34],
+    },
   ];
+
+  useEffect(() => {
+    // 선택한 옵션에 따라 투자 비율 자동 채움
+    const selectedOption = options.find((option) => option.type === currentValue);
+
+    if (selectedOption) {
+      setRateValues(selectedOption.rates);
+    }
+  }, [currentValue, options]);
 
   return (
     <Container>
@@ -218,7 +298,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <SelectOptions show={showOptions}>
             {options.map((option, index) => (
               <Option key={index} onClick={handleOnChangeSelectValue}>
-                {option}
+                {option.type}
               </Option>
             ))}
           </SelectOptions>
@@ -229,9 +309,9 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
             onMouseEnter={() => handleDoubtsButtonHover(true)}
             onMouseLeave={() => handleDoubtsButtonHover(false)}
           >
-            <DoubtsButton onClick={handleDoubtsButtonClick}/>
+            <DoubtsButton/>
             {showTooltip && (
-              <Tooltip show={showTooltip}>
+              <Tooltip>
                 아직 나의 금융 MBTI를 모르시나요?
                 <br /> 금융 MBTI 알아보러 가기
               </Tooltip>
@@ -244,6 +324,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <RateOfType>
             <Label>안전</Label>
             <Input
+              type='number'
               value={rateValues[0]}
               // onChange={(e) => handleRateInputChange(0, parseInt(e.target.value, 10))}
             />
@@ -251,6 +332,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <RateOfType>
             <Label>중립</Label>
             <Input
+              type='number'
               value={rateValues[1]}
               // onChange={(e) => handleRateInputChange(1, parseInt(e.target.value, 10))}
             />
@@ -258,6 +340,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <RateOfType>
             <Label>위험</Label>
             <Input
+              type='number'
               value={rateValues[2]}
               // onChange={(e) => handleRateInputChange(2, parseInt(e.target.value, 10))}
             />
@@ -267,11 +350,11 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
       </div>
       <RateContainer>
         <Label>투자 금액</Label>
-        <Input className='ammount' />
+        <Input type='number' className='ammount' onChange={handleInputChange}/>
       </RateContainer>
       <RateContainer>
-        <Label>투자 금액</Label>
-        <Input className='ammount' />
+        <Label>목표 금액</Label>
+        <Input type='number' className='ammount' onChange={handleInputChange}/>
       </RateContainer>
       <RightBox>
         <StopBtn
