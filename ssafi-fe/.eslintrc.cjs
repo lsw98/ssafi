@@ -36,6 +36,14 @@ module.exports = {
     'object-curly-newline': 'off',
     'no-shadow': 'off',
     'nonblock-statement-body-position': 'off',
+    'import/prefer-default-export': 'off',
+    'no-else-return': 'off',
+    'quote-props': 'off',
+    'no-var-requires': 'off',
+    'no-nested-ternary': 'off',
+    indent: 'off',
+    'no-restricted-syntax': 'off',
+    'no-await-in-loop': 'off',
   },
   settings: {
     'import/resolver': {

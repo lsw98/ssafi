@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import StockTabs from '../Tab/StockTabs';
 import TradingTabs from '../Tab/TradingTabs';
 import AccountTabs from '../Tab/AccountTabs';
+import { fetchTradeVolumeRanking } from '../../utility/api';
 
 const Container = styled.div`
   display: flex;
@@ -83,29 +84,62 @@ const AmountRanking = styled.div`
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+  }
+`;
 
-    &::before {
-      content: ''; /* 가상 요소 내용 초기화 */
-      position: absolute; /* 가상 요소에 대한 절대 위치 설정 */
-      top: 50%; /* 가운데 정렬을 위한 top 위치 설정 */
-      left: 0;
-      width: 100%; /* 가로 너비 100% 설정 */
-      height: 8px; /* 그래프의 높이 설정 */
-      background-color: var(
-        --Gradation,
-        linear-gradient(
-          180deg,
-          rgba(131, 236, 220, 0.15) 0%,
-          rgba(74, 196, 158, 0.32) 100%
-        )
-      ); /* 그래프 배경색 설정 */
-      transform: translateY(-50%); /* 가운데 정렬을 위한 이동 */
-      z-index: -1; /* 텍스트 위로 오도록 배치 */
-    }
+const Tooltip = styled.div<{ show: boolean; color: string }>`
+  width: 200px;
+  top: 30px;
+  right: 12px;
+  background: var(--Sub, #e7faf7);
+  color: var(--black-color);
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: ${(props) => (props.show ? 'block' : 'none')};
+  color: ${(props) => props.color};
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 0px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent var(--light-gray-color) transparent transparent;
   }
 `;
 
 export default function TradeOrder() {
+  const [rankingData, setRankingData] = useState<any[]>([]);
+  const [currentTime, setCurrentTime] = useState<string | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<null | number>(null);
+
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTradeVolumeRanking((fetchedTime: any) => {
+        if (fetchedTime) {
+          // const formattedTime = formatDate(fetchedTime); // formatDate 함수로 형식을 변경합니다.
+          setCurrentTime(fetchedTime); // 형식이 변경된 시간을 상태에 저장
+        } else {
+          console.log('API call failed.');
+        }
+      }).then((data) => {
+        setRankingData(data);
+      });
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Container>
       <LeftColumn>
@@ -131,6 +165,32 @@ export default function TradeOrder() {
       <RightColumn>
         <AmountRanking>
           <h2>거래량 TOP 10</h2>
+          <h3>{currentTime}</h3>
+          <ul>
+            {rankingData.slice(0, 10).map((item, index) => (
+              <li
+                key={index}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+                style={{ position: 'relative' }}
+              >
+                {index + 1}. {item.hts_kor_isnm}{' '}
+                {Number(item.acml_vol).toLocaleString()}
+                <Tooltip
+                  show={hoveredIndex === index}
+                  color={
+                    Number(item.prdy_vrss_sign) === 5
+                      ? 'blue'
+                      : Number(item.prdy_vrss_sign) === 2
+                      ? 'red'
+                      : 'black'
+                  }
+                >
+                  {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
         </AmountRanking>
       </RightColumn>
     </Container>

@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './StockTabs.css';
 import searchIcon from '../../assets/icons/search-icon.svg';
+import { fetchStockCodes } from '../../utility/api';
+import { fetchStockPrice } from '../../utility/api';
+
 // 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
 const StocksSearchBarArea = styled.div`
   display: flex;
@@ -55,9 +58,38 @@ const StocksInterests = styled.div`
 
 function StockTabs() {
   const [toggleState, setToggleState] = useState(1);
+  const [stockData, setStockData] = useState<any[]>([]); // 종목 정보를 저장할 상태
   const toggleTab = (index: number) => {
     setToggleState(index);
   };
+
+  // 메인 로직을 비동기 함수로 작성
+  const fetchAllStockData = async () => {
+    const stockCodes = await fetchStockCodes();
+    const allStockData = [];
+
+    for (const code of stockCodes) {
+      const stockData = await fetchStockPrice(code);
+      console.log(code, stockData);
+      allStockData.push({ code, ...stockData }); // 예시, 실제 데이터 구조에 맞게 수정
+    }
+
+    setStockData(allStockData);
+  };
+
+  // 컴포넌트가 마운트될 때 실행
+  // useEffect(() => {
+  //   fetchAllStockData().catch((error) => console.error(error));
+  // }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const stockCodes = await fetchStockCodes();
+      console.log(stockCodes);
+    }
+
+    fetchData().catch((error) => console.error(error));
+  }, []);
 
   return (
     <div className="container">
@@ -86,7 +118,16 @@ function StockTabs() {
               <StocksSearchTextbox />
             </StocksSearchBar>
           </StocksSearchBarArea>
-          <StocksAllList>content1</StocksAllList>
+          <StocksAllList>
+            {/* 종목 데이터를 맵핑하여 표시 */}
+            {stockData.map((stock, index) => (
+              <div key={index}>
+                <span>{stock}</span> {/* 종목 코드 */}
+                <span>{stock}</span>{' '}
+                {/* 현재가, 실제 데이터 구조에 맞게 수정 */}
+              </div>
+            ))}
+          </StocksAllList>
         </div>
         <div
           className={toggleState === 2 ? 'content active-content' : 'content'}
