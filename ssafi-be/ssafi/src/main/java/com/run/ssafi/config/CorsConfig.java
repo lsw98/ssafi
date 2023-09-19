@@ -21,6 +21,7 @@ public class CorsConfig {
         config.addExposedHeader(JwtProperties.HEADER_STRING);
         config.addExposedHeader(JwtProperties.REFRESH_TOKEN_HEADER);
 
+
         source.registerCorsConfiguration("/api/**", config);
         return new CorsFilter(source);
     }

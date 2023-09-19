@@ -10,6 +10,4 @@ public interface StockRepository extends JpaRepository<Member, Long>, StockCusto
 
     Optional<Member> findById(Long id);
 
-    Member findByEmail(String email) throws SQLException;
-
 }
