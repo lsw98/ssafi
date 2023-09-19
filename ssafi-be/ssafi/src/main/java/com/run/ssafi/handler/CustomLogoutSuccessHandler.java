@@ -28,9 +28,8 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        String accessToken = jwtUtil.resolveToken(request);;
+        String accessToken = jwtUtil.resolveToken(request);
         String memberId = jwtUtil.extractClaimValue(accessToken, "memberId");
-        String refreshToken = refreshTokenService.getRefreshToken(memberId);
         refreshTokenService.deleteRefreshToken(memberId);
 
         // accessToken BlackList 설정

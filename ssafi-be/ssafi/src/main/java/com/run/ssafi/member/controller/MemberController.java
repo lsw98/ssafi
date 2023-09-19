@@ -58,9 +58,16 @@ public class MemberController {
         return new ResponseEntity<>(memberTypeResponseDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/key")
+    public ResponseEntity<MemberKeyResponseDto> modifyKey(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyUpdateRequestDto requestDto) throws Exception {
+
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        MemberKeyResponseDto memberKeyResponseDto = memberService.updateKey(memberDetail, requestDto);
+        return new ResponseEntity<>(memberKeyResponseDto, HttpStatus.OK);
+    }
+
     @DeleteMapping
     public ResponseEntity<Response> delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
-        System.out.println("여기여 여기");
         long memberId = memberDetail.getMember().getId();
         memberService.deleteMember(memberId);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_DELETE_SUCCESS), HttpStatus.OK);
