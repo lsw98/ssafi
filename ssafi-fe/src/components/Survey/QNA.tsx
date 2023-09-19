@@ -67,9 +67,9 @@ export default function SurveyQnA({
       <SurveyAnswers>
         <SurveyRadio
         id={`answerChoice1-${index}`}
-        value={5}
+        value={4}
         name={`answer-${index}`}
-        checked={answerList[index] === 5}
+        checked={answerList[index] === 4}
         onChange={handleRadioChange}
         />
         <AnswerLabel htmlFor={`answerChoice1-${index}`}>
@@ -77,9 +77,9 @@ export default function SurveyQnA({
         </AnswerLabel>
         <SurveyRadio
         id={`answerChoice2-${index}`}
-        value={4}
+        value={3}
         name={`answer-${index}`}
-        checked={answerList[index] === 4}
+        checked={answerList[index] === 3}
         onChange={handleRadioChange}
         />
         <AnswerLabel htmlFor={`answerChoice2-${index}`}>
@@ -87,9 +87,9 @@ export default function SurveyQnA({
         </AnswerLabel>
         <SurveyRadio
         id={`answerChoice3-${index}`}
-        value={3}
+        value={2}
         name={`answer-${index}`}
-        checked={answerList[index] === 3}
+        checked={answerList[index] === 2}
         onChange={handleRadioChange}
         />
         <AnswerLabel htmlFor={`answerChoice3-${index}`}>
@@ -97,9 +97,9 @@ export default function SurveyQnA({
         </AnswerLabel>
         <SurveyRadio
         id={`answerChoice4-${index}`}
-        value={2}
+        value={1}
         name={`answer-${index}`}
-        checked={answerList[index] === 2}
+        checked={answerList[index] === 1}
         onChange={handleRadioChange}
         />
         <AnswerLabel htmlFor={`answerChoice4-${index}`}>
@@ -107,9 +107,9 @@ export default function SurveyQnA({
         </AnswerLabel>
         <SurveyRadio
         id={`answerChoice5-${index}`}
-        value={1}
+        value={0}
         name={`answer-${index}`}
-        checked={answerList[index] === 1}
+        checked={answerList[index] === 0}
         onChange={handleRadioChange}
         />
         <AnswerLabel htmlFor={`answerChoice5-${index}`}>
