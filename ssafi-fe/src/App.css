@@ -44,3 +44,12 @@
   position: absolute;
   background-color: #F9F9F9;
 }
+
+::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+::-webkit-outer-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 
@@ -103,15 +103,6 @@ const fadeIn = keyframes`
   }
 `;
 
-// const fadeOut = keyframes`
-//   from {
-//     opacity: 1;
-//   }
-//   to {
-//     opacity: 0;
-//   }
-// `;
-
 const Tooltip = styled.div`
   width: 200px;
   position: absolute;
@@ -152,7 +143,7 @@ const RateOfType = styled.div`
 
 const RightBox = styled.div`
   display: flex;
-  justify-content: flex-end
+  justify-content: flex-end;
 `;
 
 const Input = styled.input`
@@ -165,6 +156,7 @@ const Input = styled.input`
   border-bottom: 1px solid var(--white-color);
   margin-bottom: 2px;
   outline: none;
+  text-align: center;
 
   &.ammount {
     width: 60%;
@@ -189,30 +181,27 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
   const [showOptions, setShowOptions] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   // 순서대로 안전, 중립, 위험 종목의 비율
-  const [rateValues, setRateValues] = useState([0, 0, 0]);
+  const [safeValue, setSafeValue] = useState(0);
+  const [middleValue, setMiddleValue] = useState(0);
+  const [dangerValue, setDangerValue] = useState(0);
+  const [investmentAmount, setInvestmentAmount] = useState(0);
+  const [targetAmount, setTargetAmount] = useState(0);
 
   const handleOnChangeSelectValue = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     const { innerText } = event.currentTarget;
     setCurrentValue(innerText);
+
+    const selectedOption = options.find((option) => option.type === innerText);
+    if (selectedOption) {
+      setSafeValue(selectedOption.rates[0]);
+      setMiddleValue(selectedOption.rates[1]);
+      setDangerValue(selectedOption.rates[2]);
+    }
   };
 
   const handleDoubtsButtonHover = (isHovered: boolean) => {
     setShowTooltip(isHovered);
   };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    const numericValue = parseFloat(inputValue);
-    const formattedValue = numericValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
-
-  // const handleRateInputChange = (index, value) => {
-  //   // 입력 값이 유효한지 확인하고, 유효하지 않다면 값을 0으로 설정
-  //   // const validValue = value ? value : 0;
-  //   const newRateValues = [...rateValues];
-  //   newRateValues[index] = value;
-  //   setRateValues(newRateValues);
-  // };
 
   const options = [
     {
@@ -281,15 +270,6 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
     },
   ];
 
-  useEffect(() => {
-    // 선택한 옵션에 따라 투자 비율 자동 채움
-    const selectedOption = options.find((option) => option.type === currentValue);
-
-    if (selectedOption) {
-      setRateValues(selectedOption.rates);
-    }
-  }, [currentValue, options]);
-
   return (
     <Container>
       <div>
@@ -324,25 +304,19 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <RateOfType>
             <Label>안전</Label>
             <Input
-              type='number'
-              value={rateValues[0]}
-              // onChange={(e) => handleRateInputChange(0, parseInt(e.target.value, 10))}
+              type='number' min='0' max='100'value={safeValue}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
             <Input
-              type='number'
-              value={rateValues[1]}
-              // onChange={(e) => handleRateInputChange(1, parseInt(e.target.value, 10))}
+              type='number' min='0' max='100' value={middleValue}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
             <Input
-              type='number'
-              value={rateValues[2]}
-              // onChange={(e) => handleRateInputChange(2, parseInt(e.target.value, 10))}
+              type='number' min='0' max='100' value={dangerValue}
             />
           </RateOfType>
         </RateContainer>
@@ -350,11 +324,15 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
       </div>
       <RateContainer>
         <Label>투자 금액</Label>
-        <Input type='number' className='ammount' onChange={handleInputChange}/>
+        <Input
+          type='number' min='0' className='ammount' value={investmentAmount}
+        />
       </RateContainer>
       <RateContainer>
         <Label>목표 금액</Label>
-        <Input type='number' className='ammount' onChange={handleInputChange}/>
+        <Input
+          type='number' min='0' className='ammount' value={targetAmount}
+        />
       </RateContainer>
       <RightBox>
         <StopBtn
