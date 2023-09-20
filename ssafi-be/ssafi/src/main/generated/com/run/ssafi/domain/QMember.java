@@ -41,8 +41,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
-    public final StringPath score = createString("score");
-
     public final StringPath secretKey = createString("secretKey");
 
     public final EnumPath<com.run.ssafi.social.type.SnsType> snsType = createEnum("snsType", com.run.ssafi.social.type.SnsType.class);
