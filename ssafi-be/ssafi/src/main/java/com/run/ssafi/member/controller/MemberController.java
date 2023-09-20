@@ -42,7 +42,7 @@ public class MemberController {
         }
     }
 
-    @PatchMapping("/score")
+    @PutMapping("/score")
     public ResponseEntity<MemberScoreResponseDto> modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberScoreUpdateRequestDto requestDto) throws Exception {
 
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
