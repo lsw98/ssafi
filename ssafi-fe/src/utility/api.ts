@@ -63,11 +63,17 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
 };
 
 // 종목코드를 가져오는 함수
-export async function fetchStockCodes() {
-  const response = await fetch('/src/assets/kospi200.txt');
+export async function fetchStockInfo() {
+  const response = await fetch('/kospi200.txt');
   const text = await response.text();
   const lines = text.trim().split('\n'); // 빈 줄 제거 후 줄 단위로 나눔
-  return lines.map((line) => line.split(',')[0].padStart(6, '0')); // 쉼표로 나눈 후 첫 번째 항목(종목코드)만 추출하고, 앞에 '0'을 붙여 6자리로 만듦
+  return lines.map((line) => {
+    const [code, name] = line.split(','); // 쉼표로 나눈 후 첫 번째 항목은 종목코드, 두 번째 항목은 종목명
+    return {
+      stockCode: code.padStart(6, '0'), // 종목코드 앞에 '0'을 붙여 6자리로 만듦
+      stockName: name,
+    };
+  });
 }
 
 export const fetchStockPrice = async (stockCode: string) => {
@@ -93,7 +99,12 @@ export const fetchStockPrice = async (stockCode: string) => {
     console.log(response);
 
     if (response.data.rt_cd === '0') {
-      return response.data.output;
+      const output = response.data.output;
+      // 필요한 두 개의 속성만 반환
+      return {
+        stck_prpr: output.stck_prpr,
+        prdy_vrss_sign: output.prdy_vrss_sign,
+      };
     } else {
       console.error('API Error:', response.data.msg1);
       return [];

@@ -44,6 +44,7 @@ module.exports = {
     indent: 'off',
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
+    'prefer-destructuring': 'off',
   },
   settings: {
     'import/resolver': {
