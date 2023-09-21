@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
+import DoubtsButton from './ToolTip';
 
 interface TradeInputProps {
   isTrade: boolean;
@@ -73,47 +73,6 @@ const Notice = styled.div`
   font-weight: 300;
   padding: 6px 0;
   color: var(--point-color);
-`;
-
-const DoubtsButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-`;
-
-const DoubtsButton = styled(Doubts)`
-  width: 16px;
-  fill: var(--point-color);
-  margin-right:  4px;
-  cursor: pointer;
-`;
-
-const Tooltip = styled.div`
-  width: 200px;
-  position: absolute;
-  top: 30px;
-  right: 12px;
-  background-color: var(--light-gray-color);
-  color: var(--black-color);
-  font-size: 14px;
-  padding: 6px 12PX;
-  border-radius: 6px;
-  display: 'block';
-  animation: ${keyframes`
-    from { opacity: 0; }
-    to { opacity: 1; }
-  `} 0.3s ease-in-out;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    right: 0px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: transparent var(--light-gray-color) transparent transparent;
-  }
 `;
 
 const RateContainer = styled.div`
@@ -276,15 +235,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
         </SelectBox>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Notice>금융 MBTI 결과를 바탕으로 종목별 주식 투자 비율을 추천해드려요.</Notice>
-          <DoubtsButtonWrapper
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <DoubtsButton/>
-            {showTooltip && (
-              <Tooltip>아직 나의 금융 MBTI를 모르시나요?<br /> 금융 MBTI 알아보러 가기</Tooltip>
-            )}
-          </DoubtsButtonWrapper>
+          <DoubtsButton />
         </div>
       </div>
       <div>
