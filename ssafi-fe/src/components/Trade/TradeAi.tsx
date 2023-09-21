@@ -35,7 +35,7 @@ const Title = styled.div<StyleProps>`
   font-size: 46px;
   font-weight: ${({ weight }) => weight || 500};
   color: ${({ color }) => color || 'var(--black-color)'};
-  margin: 20px 0 40px 0;
+  margin: 20px 0 36px 0;
 `;
 
 const BoxContainer = styled.div<StyleProps>`
@@ -116,11 +116,11 @@ export default function TradeAi() {
   return (
     <Container>
       <SubContainer className='small'>
-        <div style={{ display: 'flex', marginTop: '20px' }}>
+        <div style={{ display: 'flex', marginTop: '16px' }}>
           <Title weight={600} color='var(--point-color)'>{botName}</Title>
           <Title>이 주식 투자 중이에요</Title>
         </div>
-        <BoxContainer height={'430px'}>
+        <BoxContainer height={'450px'}>
           <Box color='var(--white-color)'>
             <div style={{ margin: '120px' }} />
             <Text color='var(--dark-color)'>여러분의 SSAFI AI에 이름을 붙여주세요</Text>

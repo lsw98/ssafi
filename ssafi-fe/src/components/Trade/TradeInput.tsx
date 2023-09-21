@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import DoubtsButton from './ToolTip';
+import convertToKoreanNumber from '../../utils/convertToKorean';
 
 interface TradeInputProps {
   isTrade: boolean;
@@ -9,7 +10,7 @@ interface TradeInputProps {
 
 const Container = styled.div`
   width: 480px;;
-  height: 370px;
+  height: 390px;
   margin: 30px 82px;
   display: flex;
   flex-direction: column;
@@ -69,10 +70,15 @@ const Option = styled.li`
 `;
 
 const Notice = styled.div`
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 300;
   padding: 6px 0;
   color: var(--point-color);
+  &.small {
+    font-size: 14px;
+    padding: 2px 0;
+    color: var(--gray-color);
+  }
 `;
 
 const RateContainer = styled.div`
@@ -134,7 +140,6 @@ const createInputHandler = (setter:React.Dispatch<React.SetStateAction<number>>)
 export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
   const [safetyRatio, setSafetyRatio] = useState(0);
   const [neutralRatio, setNeutralRatio] = useState(0);
   const [riskRatio, setRiskRatio] = useState(0);
@@ -243,36 +248,51 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
           <RateOfType>
             <Label>안전</Label>
             <Input
-              type='number' min='0' max='100'value={safetyRatio} onChange={createInputHandler(setSafetyRatio)}
+              type='number' min='0' max='100'value={safetyRatio}
+              onChange={createInputHandler(setSafetyRatio)}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
             <Input
-              type='number' min='0' max='100' value={neutralRatio} onChange={createInputHandler(setNeutralRatio)}
+              type='number' min='0' max='100' value={neutralRatio}
+              onChange={createInputHandler(setNeutralRatio)}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
             <Input
-              type='number' min='0' max='100' value={riskRatio} onChange={createInputHandler(setRiskRatio)}
+              type='number' min='0' max='100' value={riskRatio}
+              onChange={createInputHandler(setRiskRatio)}
             />
           </RateOfType>
         </RateContainer>
         <Notice>원하시는 투자 비율을 퍼센트(%) 단위로 입력해주세요.</Notice>
       </div>
-      <RateContainer>
-        <Label>투자 금액</Label>
-        <Input
-          type='number' min='0' className='ammount' value={aiBudget} onChange={createInputHandler(setAiBudget)}
-        />
-      </RateContainer>
-      <RateContainer>
-        <Label>목표 금액</Label>
-        <Input
-          type='number' min='0' className='ammount' value={aiGoal} onChange={createInputHandler(setAiGoal)}
-        />
-      </RateContainer>
+      <div>
+        <RateContainer>
+          <Label>투자 금액</Label>
+          <Input
+            type='number' min='0' max='1000000000000000' className='ammount' value={aiBudget}
+            onChange={createInputHandler(setAiBudget)}
+          />
+        </RateContainer>
+        <RightBox>
+          <Notice className='small'>{convertToKoreanNumber(aiBudget)} 원</Notice>
+        </RightBox>
+      </div>
+      <div>
+        <RateContainer>
+          <Label>목표 금액</Label>
+          <Input
+            type='number' min='0' max='1000000000000000' className='ammount' value={aiGoal}
+            onChange={createInputHandler(setAiGoal)}
+          />
+        </RateContainer>
+        <RightBox>
+          <Notice className='small'>{convertToKoreanNumber(aiGoal)} 원</Notice>
+        </RightBox>
+      </div>
       <RightBox>
         <StopBtn
           stop={isTrade}
