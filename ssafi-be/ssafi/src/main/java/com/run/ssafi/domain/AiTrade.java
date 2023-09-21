@@ -32,6 +32,8 @@ public class AiTrade {
     private Double neutralRatio;
     @Column(name = "safety_ratio")
     private Double safetyRatio;
+    @Column(name = "trading_start_yn")
+    private Character tradingStartYn;
 
     @OneToOne
     @PrimaryKeyJoinColumn(name = "user_id", referencedColumnName = "id")
@@ -51,5 +53,8 @@ public class AiTrade {
     }
     public void modifySafetyRatio(Double safetyRatio){
         this.safetyRatio = safetyRatio;
+    }
+    public void modifyTradingStartYn(Character tradingStartYn){
+        this.tradingStartYn = tradingStartYn;
     }
 }
