@@ -10,7 +10,7 @@ const FooterContainer = styled.div`
   min-width: 1270px;
   justify-content: center;
   align-items: center;
-  background-color: var(--light-gray-color);
+  background-color: #EBEBEF;
   padding: 36px 0;
 `;
 
