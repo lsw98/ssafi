@@ -6,6 +6,7 @@ import convertToKoreanNumber from '../../utils/convertToKorean';
 interface TradeInputProps {
   isTrade: boolean;
   setIsTrade: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Container = styled.div`
@@ -145,7 +146,7 @@ const createAmountHandler = (setter:React.Dispatch<React.SetStateAction<string>>
   setter(newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 };
 
-export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
+export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
   const [safetyRatio, setSafetyRatio] = useState(0);
@@ -163,6 +164,26 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
       setSafetyRatio(selectedOption.rates[0]);
       setNeutralRatio(selectedOption.rates[1]);
       setRiskRatio(selectedOption.rates[2]);
+    }
+  };
+
+  const handleAiBotton = (stop: boolean) => {
+    if (stop) {
+      // 트레이딩 중일 경우 -> ai 중지 axios 요청 성공하면
+      setIsTrade(!stop);
+    } else if (safetyRatio + neutralRatio + riskRatio !== 100) {
+      // 에러 처리, 에러 처리 통과하면 모달 띄워서 확인 버튼
+      alert('투자 비율의 합이 100이 아닙니다.');
+    } else if (!aiBudget || parseInt(aiBudget.replace(/,/g, ''), 10) === 0) {
+      alert('투자 금액을 입력해주세요.');
+    } else if (!aiGoal || parseInt(aiGoal.replace(/,/g, ''), 10) === 0) {
+      alert('목표 금액을 입력해주세요.');
+    } else if (parseInt(aiBudget.replace(/,/g, ''), 10) >= parseInt(aiGoal.replace(/,/g, ''), 10)) {
+      alert('목표 금액이 투자 금액보다 작습니다.');
+    } else {
+      // 확인 모달 창 띄우기
+      setShowModal(true);
+      setIsTrade(!stop);
     }
   };
 
@@ -304,7 +325,7 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
       <RightBox>
         <StopBtn
           stop={isTrade}
-          onClick={() => setIsTrade(!isTrade)}
+          onClick={() => handleAiBotton(isTrade)}
         >
         {isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}
         </StopBtn>

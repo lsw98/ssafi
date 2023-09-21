@@ -4,6 +4,7 @@ import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
 import TradeInput from './TradeInput';
+import ConfirmModal from './ConfirmModal';
 
 interface StyleProps {
   weight?: number;
@@ -86,6 +87,8 @@ export default function TradeAi() {
   // ai 트레이딩이 진행 중인지 아닌지
   const [isTrade, setIsTrade] = useState(false);
   const [botName, setBotName] = useState('');
+  // ai 시작버튼 눌렀을 때 확인 모달창
+  const [showModal, setShowModal] = useState(false);
   const stockRateInfo = [
     {
       category: 'safe',
@@ -135,10 +138,13 @@ export default function TradeAi() {
             </Row>
           </Box>
           <Box width='700px' color='var(--dark-color)'>
-            <TradeInput isTrade={isTrade} setIsTrade={setIsTrade}/>
+            <TradeInput isTrade={isTrade} setIsTrade={setIsTrade} setShowModal={setShowModal}/>
           </Box>
         </BoxContainer>
       </SubContainer>
+      {showModal && (
+        <ConfirmModal />
+      )}
       {hasResult && <SubContainer>
         <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
         <BoxContainer>
