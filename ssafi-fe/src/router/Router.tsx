@@ -7,6 +7,7 @@ import Kakao from '../components/Login/kakao';
 import News from '../news';
 import Trade from '../trade';
 import NewsDetail from '../components/NewsDetails';
+import Footer from '../components/Footer';
 
 export default function Router() {
   return (
@@ -20,6 +21,7 @@ export default function Router() {
         <Route path="/trade/*" element={<Trade />} />
         <Route path="/detail" element={<NewsDetail />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
