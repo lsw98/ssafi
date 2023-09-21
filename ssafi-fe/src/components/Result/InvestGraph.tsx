@@ -1,8 +1,49 @@
 import React from 'react';
+import { Doughnut } from 'react-chartjs-2';
 
-export default function InvestGraph() {
+// eslint-disable-next-line object-curly-newline
+import { ArcElement, Chart, Tooltip, Legend } from 'chart.js';
+
+Chart.register(ArcElement, Tooltip, Legend);
+
+interface GraphProps {
+  ratio: number[];
+}
+
+export default function InvestGraph({ ratio } : GraphProps) {
+  const chartData = {
+    labels: ['위험형', '중립형', '안전형'],
+    datasets: [
+      {
+        data: [...ratio, ...[100 - ratio[0] - ratio[1]]],
+        backgroundColor: ['#FD5353', '#EFDA4C', '#3AB67A'],
+        cutout: '50%',
+      },
+    ],
+  };
+
+  const chartOptions = {
+    events: [],
+    responsive: false,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: { enabled: false },
+      legend: {
+        position: 'right' as const,
+        display: false,
+        labels: {
+          color: '#1C1C1C',
+          boxWidth: 24,
+          font: {
+            size: 24,
+            weight: '600',
+          },
+        },
+      },
+    },
+  };
+
   return (
-    <div>
-    </div>
+    <Doughnut data={chartData} width="150px" height="150px" options={chartOptions} />
   );
 }
