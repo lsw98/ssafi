@@ -128,13 +128,21 @@ const StopBtn = styled.div<{stop: boolean}>`
   font-size: 20px;
   color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
   background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
+  cursor: pointer;
 `;
 
-const createInputHandler = (setter:React.Dispatch<React.SetStateAction<number>>) => (
+const createRatioHandler = (setter:React.Dispatch<React.SetStateAction<number>>) => (
   event:React.ChangeEvent<HTMLInputElement>,
 ) => {
-  const newValue = Number.parseInt(event.target.value, 10);
+  const newValue = parseInt(event.target.value, 10);
   setter(newValue);
+};
+
+const createAmountHandler = (setter:React.Dispatch<React.SetStateAction<string>>) => (
+  event:React.ChangeEvent<HTMLInputElement>,
+) => {
+  const newValue = event.target.value.replace(/[^0-9]/g, '');
+  setter(newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
 };
 
 export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
@@ -143,8 +151,8 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
   const [safetyRatio, setSafetyRatio] = useState(0);
   const [neutralRatio, setNeutralRatio] = useState(0);
   const [riskRatio, setRiskRatio] = useState(0);
-  const [aiBudget, setAiBudget] = useState(0);
-  const [aiGoal, setAiGoal] = useState(0);
+  const [aiBudget, setAiBudget] = useState<string>('');
+  const [aiGoal, setAiGoal] = useState<string>('');
 
   const handleOnChangeSelectValue = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     const { innerText } = event.currentTarget;
@@ -249,21 +257,21 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
             <Label>안전</Label>
             <Input
               type='number' min='0' max='100'value={safetyRatio}
-              onChange={createInputHandler(setSafetyRatio)}
+              onChange={createRatioHandler(setSafetyRatio)}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
             <Input
               type='number' min='0' max='100' value={neutralRatio}
-              onChange={createInputHandler(setNeutralRatio)}
+              onChange={createRatioHandler(setNeutralRatio)}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
             <Input
               type='number' min='0' max='100' value={riskRatio}
-              onChange={createInputHandler(setRiskRatio)}
+              onChange={createRatioHandler(setRiskRatio)}
             />
           </RateOfType>
         </RateContainer>
@@ -273,24 +281,24 @@ export default function TradeInput({ isTrade, setIsTrade }: TradeInputProps) {
         <RateContainer>
           <Label>투자 금액</Label>
           <Input
-            type='number' min='0' max='1000000000000000' className='ammount' value={aiBudget}
-            onChange={createInputHandler(setAiBudget)}
+            type='text' maxLength={16} className='ammount' value={aiBudget}
+            onChange={createAmountHandler(setAiBudget)}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(aiBudget)} 원</Notice>
+          <Notice className='small'>{convertToKoreanNumber(aiBudget, '투자')}</Notice>
         </RightBox>
       </div>
       <div>
         <RateContainer>
           <Label>목표 금액</Label>
           <Input
-            type='number' min='0' max='1000000000000000' className='ammount' value={aiGoal}
-            onChange={createInputHandler(setAiGoal)}
+            type='text' maxLength={16} className='ammount' value={aiGoal}
+            onChange={createAmountHandler(setAiGoal)}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(aiGoal)} 원</Notice>
+          <Notice className='small'>{convertToKoreanNumber(aiGoal, '목표')}</Notice>
         </RightBox>
       </div>
       <RightBox>
