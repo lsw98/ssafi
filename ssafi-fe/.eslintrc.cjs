@@ -45,6 +45,8 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
     'prefer-destructuring': 'off',
+    'function-paren-newline': 'off',
+    'no-plusplus': 'off',
   },
   settings: {
     'import/resolver': {

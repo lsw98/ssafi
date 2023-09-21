@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import './TradingTabs.css';
-// 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
+import { fetchBuyStock } from '../../utility/api';
 
 const PriceList = styled.div`
 display-flex;
@@ -72,6 +72,38 @@ const ButtonSell = styled.button``;
 
 const ButtonCorrection = styled.button``;
 
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  h1 {
+    margin-top: 0;
+    font-size: 24px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
+`;
+
 function TradingTabs() {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index: number) => {
@@ -90,6 +122,21 @@ function TradingTabs() {
 
   const handleCloseModal = () => {
     setModalOpen(false);
+  };
+
+  const handleBuyStock = () => {
+    // 매수 로직을 수행하는 fetchBuyStock 함수를 호출
+    const stockCode = '005930'; // 예시 종목코드
+    fetchBuyStock(stockCode)
+      .then((response) => {
+        // 성공적으로 매수가 완료되면 이 부분에서 처리할 로직을 작성
+        console.log('매수 성공:', response);
+        setModalOpen(false);
+      })
+      .catch((error) => {
+        // 매수 실패시 이 부분에서 처리할 로직을 작성
+        console.log('매수 실패:', error);
+      });
   };
 
   return (
@@ -135,6 +182,21 @@ function TradingTabs() {
             <ButtonContainer>
               <ButtonReset onClick={handleOpenModal}>초기화</ButtonReset>
               <ButtonBuy onClick={handleOpenModal}>매수</ButtonBuy>
+              {modalOpen && (
+                <Modal>
+                  <ModalContent>
+                    <h1>매수하시겠습니까?</h1>
+                    <button onClick={handleCloseModal}>취소</button>
+                    <button
+                      onClick={() => {
+                        handleBuyStock();
+                      }}
+                    >
+                      확인
+                    </button>
+                  </ModalContent>
+                </Modal>
+              )}
             </ButtonContainer>
           </TradingBox>
         </div>

@@ -4,6 +4,11 @@ const apiDomain = process.env.REACT_APP_PROD;
 const apiToken = process.env.REACT_APP_PROD_TOKEN;
 const apiKey = process.env.REACT_APP_PROD_APPKEY;
 const apiSecret = process.env.REACT_APP_PROD_APPSECRET;
+const vtsDomain = process.env.REACT_APP_VTS;
+const vtsToken = process.env.REACT_APP_VTS_TOKEN;
+const vtsKey = process.env.REACT_APP_VTS_APPKEY;
+const vtsSecret = process.env.REACT_APP_VTS_APPSECRET;
+const vtsHash = process.env.REACT_APP_VTS_HASH;
 
 function getCurrentTime() {
   const date = new Date();
@@ -115,14 +120,43 @@ export const fetchStockPrice = async (stockCode: string) => {
   }
 };
 
-// 메인 로직
-// async function main() {
-//   const stockCodes = await fetchStockCodes();
-//   console.log('Fetched stock codes:', stockCodes);
-//   for (const code of stockCodes) {
-//     const stockPriceData = await fetchStockPrice(code);
-//     console.log(`Stock Code: ${code}, Price Data: `, stockPriceData);
-//   }
-// }
+export const fetchBuyStock = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'VTTC0802U',
+      hashkey: vtsHash,
+    },
+  };
+  const request = {
+    body: {
+      CANO: '50090047', // 계좌번호 앞 8자리
+      ACNT_PRDT_CD: '01', // 계좌번호 뒤 2자리
+      PDNO: stockCode, // 종목코드(6자리)
+      ORD_DVSN: '00', // 주문구분(00:지정가, 01:시장가)
+      ORD_QTY: '1', // 주문수량
+      ORD_UNPR: '55000', // 주문단가
+    },
+  };
+  try {
+    const response = await axios.post(
+      '/uapi/domestic-stock/v1/trading/order-cash',
+      request,
+      config,
+    );
+    console.log(response);
 
-// main().catch((error) => console.error(error));
+    if (response.data.rt_cd === '0') {
+      return response.data.output;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return [];
+  }
+};
