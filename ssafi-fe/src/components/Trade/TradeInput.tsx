@@ -132,28 +132,16 @@ const StopBtn = styled.div<{stop: boolean}>`
   cursor: pointer;
 `;
 
-const createRatioHandler = (setter:React.Dispatch<React.SetStateAction<number>>) => (
-  event:React.ChangeEvent<HTMLInputElement>,
-) => {
-  const newValue = parseInt(event.target.value, 10);
-  setter(newValue);
-};
-
-const createAmountHandler = (setter:React.Dispatch<React.SetStateAction<string>>) => (
-  event:React.ChangeEvent<HTMLInputElement>,
-) => {
-  const newValue = event.target.value.replace(/[^0-9]/g, '');
-  setter(newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
-};
-
 export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
-  const [safetyRatio, setSafetyRatio] = useState(0);
-  const [neutralRatio, setNeutralRatio] = useState(0);
-  const [riskRatio, setRiskRatio] = useState(0);
-  const [aiBudget, setAiBudget] = useState<string>('');
-  const [aiGoal, setAiGoal] = useState<string>('');
+  const [inputData, setInputData] = useState({
+    safetyRatio: 0,
+    neutralRatio: 0,
+    riskRatio: 0,
+    aiBudget: '',
+    aiGoal: '',
+  });
 
   const handleOnChangeSelectValue = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     const { innerText } = event.currentTarget;
@@ -161,24 +149,43 @@ export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeI
 
     const selectedOption = options.find((option) => option.type === innerText);
     if (selectedOption) {
-      setSafetyRatio(selectedOption.rates[0]);
-      setNeutralRatio(selectedOption.rates[1]);
-      setRiskRatio(selectedOption.rates[2]);
+      setInputData({
+        ...inputData,
+        safetyRatio: selectedOption.rates[0],
+        neutralRatio: selectedOption.rates[1],
+        riskRatio: selectedOption.rates[2],
+      });
     }
   };
 
-  const handleAiBotton = (stop: boolean) => {
+  const createRatioHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(event.target.value, 10);
+    setInputData({
+      ...inputData,
+      [field]: newValue,
+    });
+  };
+
+  const createAmountHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value.replace(/[^0-9]/g, '');
+    setInputData({
+      ...inputData,
+      [field]: newValue,
+    });
+  };
+
+  const handleAiButton = (stop: boolean) => {
     if (stop) {
       // 트레이딩 중일 경우 -> ai 중지 axios 요청 성공하면
       setIsTrade(!stop);
-    } else if (safetyRatio + neutralRatio + riskRatio !== 100) {
+    } else if (inputData.safetyRatio + inputData.neutralRatio + inputData.riskRatio !== 100) {
       // 에러 처리, 에러 처리 통과하면 모달 띄워서 확인 버튼
       alert('투자 비율의 합이 100이 아닙니다.');
-    } else if (!aiBudget || parseInt(aiBudget.replace(/,/g, ''), 10) === 0) {
+    } else if (!inputData.aiBudget || parseInt(inputData.aiBudget.replace(/,/g, ''), 10) === 0) {
       alert('투자 금액을 입력해주세요.');
-    } else if (!aiGoal || parseInt(aiGoal.replace(/,/g, ''), 10) === 0) {
+    } else if (!inputData.aiGoal || parseInt(inputData.aiGoal.replace(/,/g, ''), 10) === 0) {
       alert('목표 금액을 입력해주세요.');
-    } else if (parseInt(aiBudget.replace(/,/g, ''), 10) >= parseInt(aiGoal.replace(/,/g, ''), 10)) {
+    } else if (parseInt(inputData.aiBudget.replace(/,/g, ''), 10) >= parseInt(inputData.aiGoal.replace(/,/g, ''), 10)) {
       alert('목표 금액이 투자 금액보다 작습니다.');
     } else {
       // 확인 모달 창 띄우기
@@ -277,22 +284,22 @@ export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeI
           <RateOfType>
             <Label>안전</Label>
             <Input
-              type='number' min='0' max='100'value={safetyRatio}
-              onChange={createRatioHandler(setSafetyRatio)}
+              type='number' min='0' max='100'value={inputData.safetyRatio}
+              onChange={createRatioHandler('safetyRatio')}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
             <Input
-              type='number' min='0' max='100' value={neutralRatio}
-              onChange={createRatioHandler(setNeutralRatio)}
+              type='number' min='0' max='100' value={inputData.neutralRatio}
+              onChange={createRatioHandler('neutralRatio')}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
             <Input
-              type='number' min='0' max='100' value={riskRatio}
-              onChange={createRatioHandler(setRiskRatio)}
+              type='number' min='0' max='100' value={inputData.riskRatio}
+              onChange={createRatioHandler('riskRatio')}
             />
           </RateOfType>
         </RateContainer>
@@ -302,30 +309,30 @@ export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeI
         <RateContainer>
           <Label>투자 금액</Label>
           <Input
-            type='text' maxLength={16} className='ammount' value={aiBudget}
-            onChange={createAmountHandler(setAiBudget)}
+            type='text' maxLength={16} className='ammount' value={inputData.aiBudget}
+            onChange={createAmountHandler('aiBudget')}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(aiBudget, '투자')}</Notice>
+          <Notice className='small'>{convertToKoreanNumber(inputData.aiBudget, '투자')}</Notice>
         </RightBox>
       </div>
       <div>
         <RateContainer>
           <Label>목표 금액</Label>
           <Input
-            type='text' maxLength={16} className='ammount' value={aiGoal}
-            onChange={createAmountHandler(setAiGoal)}
+            type='text' maxLength={16} className='ammount' value={inputData.aiGoal}
+            onChange={createAmountHandler('aiGoal')}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(aiGoal, '목표')}</Notice>
+          <Notice className='small'>{convertToKoreanNumber(inputData.aiGoal, '목표')}</Notice>
         </RightBox>
       </div>
       <RightBox>
         <StopBtn
           stop={isTrade}
-          onClick={() => handleAiBotton(isTrade)}
+          onClick={() => handleAiButton(isTrade)}
         >
         {isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}
         </StopBtn>
