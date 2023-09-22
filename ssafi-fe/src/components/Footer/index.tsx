@@ -1,15 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import darkLogo from '../../assets/logos/logo-dark.png';
+import Logo from '../../assets/logos/logo.png';
 
 // styled-component 파트
 const FooterContainer = styled.div`
   display: flex;
+  flex-direction: column;
   min-width: 1270px;
-  height: 150px;
   justify-content: center;
-  color: var(--white-color);
-  background-color: var(--dark-color);
+  align-items: center;
+  background-color: #EBEBEF;
+  padding: 36px 0;
 `;
 
 const FooterArea = styled.div`
@@ -17,65 +19,126 @@ const FooterArea = styled.div`
   justify-content: space-between;
   width: 1270px;
   align-items: start;
-  padding: 30px;
+  padding: 0 30px;
 `;
 
 const FooterLogo = styled.img.attrs({
-  src: `${darkLogo}`,
+  src: `${Logo}`,
 })`
   height: 28px;
-  margin-top: 3px
+  margin: 3px 0 24px 0;
 `;
 
-const FooterText = styled.div`
-  width: 270px;
-  color: var(--white-color)
+const FooterRighTArea = styled.div`
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const FooterTitle = styled.p`
   font-weight: 700;
-  font-size: 24px;
-  margin: 0px;
+  font-size: 22px;
+  margin: 0;
+  padding: 6px 0;
 `;
 
-const FooterContent = styled.p`
+const FooterContent = styled.div`
   font-weight: 500;
-  font-size: 12px;
-  margin-top: 18px
+  font-size: 14px;
+  margin-top: 8px;
+  margin-right:4px;
+  color: var(--gray-color);
+  cursor: pointer;
+
+  &:not(.text):hover {
+    color: black;
+  }
+
+  &.text {
+    cursor: default;
+    margin-top: 6px;
+  }
+`;
+
+const FooterBottom = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+  margin-top: 24px;
+  color: rgba(128, 128, 128, 0.5);
+  border-top: 0.5px solid rgba(128, 128, 128, 0.3);
 `;
 
 export default function Footer() {
+  const navigate = useNavigate();
+
+  const toGo = (endPoint: string) => {
+    navigate(endPoint);
+  };
+
   return (
     <FooterContainer>
       <FooterArea>
-        <FooterLogo />
-        <FooterText>
-          <FooterTitle>
-            Our Service
-          </FooterTitle>
-          <FooterContent>
-            대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용대충서비스내용
+        <div>
+          <FooterLogo />
+          <FooterContent className='text'>
+            서비스명 :  SSAFI | 대표자명 :  최휘빈
           </FooterContent>
-        </FooterText>
-        <FooterText>
-          <FooterTitle>
-            Notice
-          </FooterTitle>
-          <FooterContent>
-            대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용대충공지내용
+          <FooterContent className='text'>
+            연락처 :  012-3456-7890 | 이메일 :  ssafiofficial@ssafi.com
           </FooterContent>
-        </FooterText>
-        <FooterText>
-          <FooterTitle>
-            Inquiry
-          </FooterTitle>
-          <FooterContent>
-            문의 시 연락처<br />
-            대충 이메일<br />
-            또는 전화번호<br />
+          <FooterContent className='text'>
+            주소 : 서울특별시 강남구 테헤란로 212 12F
           </FooterContent>
-        </FooterText>
+        </div>
+        <FooterRighTArea>
+          <div>
+            <FooterTitle>AI Trading</FooterTitle>
+            <FooterContent onClick={() => toGo('/trade')}>
+              AI
+            </FooterContent>
+            <FooterContent onClick={() => toGo('/trade/order')}>
+              빠른 주문
+            </FooterContent>
+            <FooterContent onClick={() => toGo('/trade/account')}>
+              내 계좌
+            </FooterContent>
+          </div>
+          <div>
+            <FooterTitle>Finance MBTI</FooterTitle>
+            <FooterContent onClick={() => toGo('/mbti')}>
+              금융 MBTI 검사
+            </FooterContent>
+          </div>
+          <div>
+            <FooterTitle>News</FooterTitle>
+            <FooterContent onClick={() => toGo('/news')}>
+              뉴스 홈
+            </FooterContent>
+            <div style={{ display: 'flex' }}>
+              <FooterContent onClick={() => toGo('/news/newest')}>
+                최신 뉴스
+              </FooterContent>
+              <FooterContent onClick={() => toGo('/news/policies')}>
+                |  증권 정책
+              </FooterContent>
+              <FooterContent onClick={() => toGo('/news/markets')}>
+                |  시황
+              </FooterContent>
+              <FooterContent onClick={() => toGo('/news/announce')}>
+                |  공시
+              </FooterContent>
+              <FooterContent onClick={() => toGo('/news/infos')}>
+                |  기업 정보
+              </FooterContent>
+            </div>
+          </div>
+        </FooterRighTArea>
       </FooterArea>
+      <FooterBottom>
+        Copyright 2023 SSAFI. All rights reserved.
+      </FooterBottom>
     </FooterContainer>
   );
 }

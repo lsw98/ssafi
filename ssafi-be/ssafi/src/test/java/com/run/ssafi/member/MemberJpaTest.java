@@ -37,7 +37,6 @@ public class MemberJpaTest {
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(password))
                 .role(Role.MEMBER)
-                .name("고무신")
                 .build());
 
         //when

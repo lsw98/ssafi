@@ -1,25 +1,25 @@
-import { connect } from 'react-redux';
-import { Dispatch } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router';
-import { actionCreators as userActions } from '../redux/modules/user';
-import Header from '../components/Header';
+// import { connect } from 'react-redux';
+// import { Dispatch } from '@reduxjs/toolkit';
+// import { useNavigate } from 'react-router';
+// import { actionCreators as userActions } from '../redux/modules/user';
+// import Header from '../components/Header';
 
-interface RootState {
-  auth: {
-    isLoggedIn: boolean;
-  };
-}
+// interface RootState {
+//   auth: {
+//     isLoggedIn: boolean;
+//   };
+// }
 
-interface User {
-  username: string;
-  password: string;
-}
+// interface User {
+//   username: string;
+//   password: string;
+// }
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    isLoggedIn: state.auth.isLoggedIn,
-  };
-};
+// const mapStateToProps = (state: RootState) => {
+//   return {
+//     isLoggedIn: state.auth.isLoggedIn,
+//   };
+// };
 // const navigate = useNavigate();
 
 // const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -36,3 +36,4 @@ const mapStateToProps = (state: RootState) => {
 // const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Header);
 
 // export default LoginContainer;
+export {};

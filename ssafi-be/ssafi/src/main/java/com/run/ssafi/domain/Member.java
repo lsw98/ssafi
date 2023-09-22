@@ -36,8 +36,6 @@ public class Member extends BaseTimeEntity {
     private String appKey;
     @Column(name="secret_key")
     private String secretKey;
-    @Column(name="score")
-    private String score;
     @Column(name="type")
     private String type;
 
@@ -58,11 +56,14 @@ public class Member extends BaseTimeEntity {
     public void modifyExit(Boolean exit) {
         this.exit=exit;
     }
-    public void modifyScore(String score) {
-        this.score=score;
-    }
     public void modifyType(String type) {
         this.type=type;
+    }
+    public void modifyAppKey(String appKey) {
+        this.appKey=appKey;
+    }
+    public void modifySecretKey(String secretKey) {
+        this.secretKey=secretKey;
     }
     public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;
