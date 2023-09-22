@@ -10,11 +10,94 @@ import NewsPolicies from './components/NewsLists/NewsPolicies';
 import NewsMarkets from './components/NewsLists/NewsMarkets';
 import NewsAnnounce from './components/NewsLists/NewsAnnounce';
 import NewsInfos from './components/NewsLists/NewsInfos';
+import NewsChart from './components/Charts/NewsChart';
 import searchIcon from './assets/icons/search-icon.svg';
 
 // 뉴스 메뉴 상태 prop type 정의
 interface NewsMenuProps {
   active?: boolean;
+}
+
+export default function News() {
+  // 기능 코드 파트
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 하위 페이지로 이동
+  const toNewsHome = () => {
+    navigate('/news');
+  };
+
+  const toNewsNewest = () => {
+    navigate('/news/newest');
+  };
+
+  const toNewsPolicies = () => {
+    navigate('/news/policies');
+  };
+
+  const toNewsMarkets = () => {
+    navigate('/news/markets');
+  };
+
+  const toNewsAnnounce = () => {
+    navigate('/news/announce');
+  };
+
+  const toNewsInfos = () => {
+    navigate('/news/infos');
+  };
+
+  return (
+    <NewsContainer>
+      <NewsNavContainer>
+        <NewsNav>
+          <NewsMenuArea>
+            <NewsMenu active={location.pathname === '/news'} onClick={toNewsHome}>
+              뉴스 홈
+            </NewsMenu>
+            <NewsMenu active={location.pathname === '/news/newest'} onClick={toNewsNewest}>
+              최신뉴스
+            </NewsMenu>
+            <NewsMenu active={location.pathname === '/news/policies'} onClick={toNewsPolicies}>
+              증권정책
+            </NewsMenu>
+            <NewsMenu active={location.pathname === '/news/markets'} onClick={toNewsMarkets}>
+              시황
+            </NewsMenu>
+            <NewsMenu active={location.pathname === '/news/announce'} onClick={toNewsAnnounce}>
+              공시
+            </NewsMenu>
+            <NewsMenu active={location.pathname === '/news/infos'} onClick={toNewsInfos}>
+              기업정보
+            </NewsMenu>
+          </NewsMenuArea>
+          <NewsSearchBarArea>
+            <NewsSearchBar>
+              <NewsSearchIcon />
+              <NewsSearchTextbox />
+            </NewsSearchBar>
+          </NewsSearchBarArea>
+        </NewsNav>
+      </NewsNavContainer>
+      <NewsArea>
+        <Routes>
+          <Route path="/" element={<NewsHome />} />
+          <Route path="/newest" element={<NewsNewest />} />
+          <Route path="/policies" element={<NewsPolicies />} />
+          <Route path="/markets" element={<NewsMarkets />} />
+          <Route path="/announce" element={<NewsAnnounce />} />
+          <Route path="/infos" element={<NewsInfos />} />
+        </Routes>
+        <GraphArea>
+          <NewsChart />
+          코스피 그래프<br />
+          코스닥 그래프<br />
+          코스피 200 그래프
+        </GraphArea>
+      </NewsArea>
+    </NewsContainer>
+  );
 }
 
 // 뉴스 영역
@@ -114,87 +197,5 @@ const GraphArea = styled.div`
   display: flex;
   width: 400px;
   flex-direction: column;
-  align-items: center;
-  padding-right: 30px;
+  align-items: end;
 `;
-
-export default function News() {
-  // 기능 코드 파트
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // 하위 페이지로 이동
-  const toNewsHome = () => {
-    navigate('/news');
-  };
-
-  const toNewsNewest = () => {
-    navigate('/news/newest');
-  };
-
-  const toNewsPolicies = () => {
-    navigate('/news/policies');
-  };
-
-  const toNewsMarkets = () => {
-    navigate('/news/markets');
-  };
-
-  const toNewsAnnounce = () => {
-    navigate('/news/announce');
-  };
-
-  const toNewsInfos = () => {
-    navigate('/news/infos');
-  };
-
-  return (
-    <NewsContainer>
-      <NewsNavContainer>
-        <NewsNav>
-          <NewsMenuArea>
-            <NewsMenu active={location.pathname === '/news'} onClick={toNewsHome}>
-              뉴스 홈
-            </NewsMenu>
-            <NewsMenu active={location.pathname === '/news/newest'} onClick={toNewsNewest}>
-              최신뉴스
-            </NewsMenu>
-            <NewsMenu active={location.pathname === '/news/policies'} onClick={toNewsPolicies}>
-              증권정책
-            </NewsMenu>
-            <NewsMenu active={location.pathname === '/news/markets'} onClick={toNewsMarkets}>
-              시황
-            </NewsMenu>
-            <NewsMenu active={location.pathname === '/news/announce'} onClick={toNewsAnnounce}>
-              공시
-            </NewsMenu>
-            <NewsMenu active={location.pathname === '/news/infos'} onClick={toNewsInfos}>
-              기업정보
-            </NewsMenu>
-          </NewsMenuArea>
-          <NewsSearchBarArea>
-            <NewsSearchBar>
-              <NewsSearchIcon />
-              <NewsSearchTextbox />
-            </NewsSearchBar>
-          </NewsSearchBarArea>
-        </NewsNav>
-      </NewsNavContainer>
-      <NewsArea>
-        <Routes>
-          <Route path="/" element={<NewsHome />} />
-          <Route path="/newest" element={<NewsNewest />} />
-          <Route path="/policies" element={<NewsPolicies />} />
-          <Route path="/markets" element={<NewsMarkets />} />
-          <Route path="/announce" element={<NewsAnnounce />} />
-          <Route path="/infos" element={<NewsInfos />} />
-        </Routes>
-        <GraphArea>
-          코스피 그래프<br />
-          코스닥 그래프<br />
-          코스피 200 그래프
-        </GraphArea>
-      </NewsArea>
-    </NewsContainer>
-  );
-}
