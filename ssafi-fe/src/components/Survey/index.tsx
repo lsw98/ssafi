@@ -79,22 +79,39 @@ export default function Survey({ setSurveyDone }: Props) {
   ];
 
   const [answerList, setAnswerList] = React.useState<Array<number>>(
-    new Array(questionList.length).fill(0),
+    new Array(questionList.length).fill(-1),
   );
 
   const handleSurveyDone = () => {
     console.log(answerList);
-    const notAllChecked: boolean = answerList.some((item) => item === 0);
+    const notAllChecked: boolean = answerList.some((item) => item === -1);
     if (notAllChecked) {
       let notAnswered = '';
       for (let i = 0; i < answerList.length; i += 1) {
-        if (answerList[i] === 0) {
-          notAnswered += `${i + 1}번, `;
+        if (answerList[i] === -1) {
+          notAnswered += `${i + 1}번 `;
         }
       }
-      alert(`${notAnswered}질문에 답해주세요!`);
+      alert(`다음 질문에 답해주세요!\n${notAnswered}`);
     } else {
+      const mbtiPoint: number[] = [0, 0, 0, 0];
+      for (let i = 0; i < answerList.length; i += 1) {
+        const numRange = Math.floor(i / 5);
+        if (numRange === 0) {
+          mbtiPoint[0] += answerList[i];
+        } else if (numRange === 1) {
+          mbtiPoint[1] += answerList[i];
+        } else if (numRange === 2) {
+          mbtiPoint[2] += answerList[i];
+        } else if (numRange === 3) {
+          mbtiPoint[3] += answerList[i];
+        }
+      }
+      console.log(mbtiPoint);
       setSurveyDone(true);
+      window.scrollTo({
+        top: 0,
+      });
     }
   };
 
