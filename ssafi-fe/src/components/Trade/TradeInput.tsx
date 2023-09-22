@@ -3,10 +3,20 @@ import styled from 'styled-components';
 import DoubtsButton from './ToolTip';
 import convertToKoreanNumber from '../../utils/convertToKorean';
 
+interface inputDataPorps {
+  safetyRatio: number;
+  neutralRatio: number;
+  riskRatio: number;
+  aiBudget: string;
+  aiGoal: string;
+}
+
 interface TradeInputProps {
   isTrade: boolean;
   setIsTrade: React.Dispatch<React.SetStateAction<boolean>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  inputData: inputDataPorps;
+  setInputData: React.Dispatch<React.SetStateAction<inputDataPorps>>;
 }
 
 const Container = styled.div`
@@ -132,16 +142,11 @@ const StopBtn = styled.div<{stop: boolean}>`
   cursor: pointer;
 `;
 
-export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeInputProps) {
+export default function TradeInput({
+  isTrade, setIsTrade, setShowModal, inputData, setInputData,
+} : TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
-  const [inputData, setInputData] = useState({
-    safetyRatio: 0,
-    neutralRatio: 0,
-    riskRatio: 0,
-    aiBudget: '',
-    aiGoal: '',
-  });
 
   const handleOnChangeSelectValue = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     const { innerText } = event.currentTarget;
@@ -170,7 +175,7 @@ export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeI
     const newValue = event.target.value.replace(/[^0-9]/g, '');
     setInputData({
       ...inputData,
-      [field]: newValue,
+      [field]: newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     });
   };
 
@@ -190,7 +195,7 @@ export default function TradeInput({ isTrade, setIsTrade, setShowModal }: TradeI
     } else {
       // 확인 모달 창 띄우기
       setShowModal(true);
-      setIsTrade(!stop);
+      // setIsTrade(!stop);
     }
   };
 

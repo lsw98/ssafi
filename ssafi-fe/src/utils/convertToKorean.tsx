@@ -8,7 +8,7 @@ function convertToKoreannum(num:string, word:string) {
   const splitUnit = 10000;
   const splitCount = unitWords.length;
   const resultArray = [];
-  let resultString = ' 원';
+  let resultString = '원';
 
   for (let i = 0; i < splitCount;) {
     let unitResult = (number % (splitUnit ** (i + 1))) / (splitUnit ** i);

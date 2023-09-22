@@ -6,6 +6,14 @@ import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
 import TradeInput from './TradeInput';
 import ConfirmModal from './ConfirmModal';
 
+interface inputDataPorps {
+  safetyRatio: number;
+  neutralRatio: number;
+  riskRatio: number;
+  aiBudget: string;
+  aiGoal: string;
+}
+
 interface StyleProps {
   weight?: number;
   width?: string;
@@ -89,6 +97,13 @@ export default function TradeAi() {
   const [botName, setBotName] = useState('');
   // ai 시작버튼 눌렀을 때 확인 모달창
   const [showModal, setShowModal] = useState(false);
+  const [inputData, setInputData] = useState<inputDataPorps>({
+    safetyRatio: 0,
+    neutralRatio: 0,
+    riskRatio: 0,
+    aiBudget: '',
+    aiGoal: '',
+  });
   const stockRateInfo = [
     {
       category: 'safe',
@@ -138,12 +153,16 @@ export default function TradeAi() {
             </Row>
           </Box>
           <Box width='700px' color='var(--dark-color)'>
-            <TradeInput isTrade={isTrade} setIsTrade={setIsTrade} setShowModal={setShowModal}/>
+            <TradeInput
+              isTrade={isTrade} setIsTrade={setIsTrade}
+              setShowModal={setShowModal}
+              inputData={inputData} setInputData={setInputData}
+              />
           </Box>
         </BoxContainer>
       </SubContainer>
       {showModal && (
-        <ConfirmModal />
+        <ConfirmModal inputData={inputData} closeModal={setShowModal} setIsTrade={setIsTrade}/>
       )}
       {hasResult && <SubContainer>
         <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
