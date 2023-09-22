@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 5px 5px 0 0;
+}
+
+.bloc-tabs {
+  display: flex;
+}
+
+.tabs {
+  flex: 1;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  position: relative;
+  transition: background 0.2s ease; /* 추가된 부분 */
+}
+
+.tabs:first-child {
+  border-radius: 5px 5px 0 0;
+}
+
+.tabs:last-child {
+  border-radius: 5px 5px 0 0;
+  border-right: none;
+}
+
+.tabs.active-tabs {
+  background: white;
+  border-bottom: 1px solid transparent;
+  display: block;
+}
+
+.tabs.active-tabs::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 2px);
+  height: 5px;
+  background: #4ac49e;
+}
+
+.content-tabs {
+  background: white;
+  /* padding: 2px; */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  /* flex-grow: 1;
+  overflow: hidden; */
+  flex-direction: column;
+}
+
+.content {
+  display: none;
+  padding: 10px;
+  height: 100%;
+  /* border-top: 1px solid #ccc; */
+}
+
+.content.active-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  height: 100%;
+}
+
+li {
+  display: flex;
+  margin-bottom: 1%; /* 각 li 사이의 마진을 추가 (선택적) */
+  font-size: 15px;
+}
+
+li > div {
+  margin-bottom: 5%; /* 각 div 사이에 마진을 추가 (선택적) */
+}
+
+.stock-interested {
+  display: flex;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 5%; /* 버튼 간의 간격 */
+  margin-top: 5%;
+}
+
+/* 개별 버튼에 대한 스타일 */
+.button-container button {
+  display: flex;
+  padding: 2px;
+  width: 10%;
+  height: 4%;
+  text-align: center;
+}
+
+.star {
+  stroke-width: 2px;
+  stroke: var(--Middle, #efda4c);
+}
+
+.star.filled {
+  fill: var(--Middle, #efda4c);
+}

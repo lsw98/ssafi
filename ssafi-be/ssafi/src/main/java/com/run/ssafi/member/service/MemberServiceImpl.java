@@ -2,12 +2,15 @@ package com.run.ssafi.member.service;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.domain.Score;
 import com.run.ssafi.exception.customexception.MemberException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.repository.MemberRepository;
+import com.run.ssafi.member.repository.ScoreRepository;
 import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.MemberResponseMessage;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,8 @@ import java.util.Map;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final ScoreRepository scoreRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -71,7 +76,6 @@ public class MemberServiceImpl implements MemberService {
                 .email(member.getEmail())
                 .snsType(member.getSnsType())
                 .type(member.getType())
-                .score(member.getScore())
                 .appKey(member.getAppKey())
                 .secretKey(member.getSecretKey())
                 .personalAgreement(member.getPersonalAgreement())
@@ -85,8 +89,38 @@ public class MemberServiceImpl implements MemberService {
     public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto)
             throws SQLException {
         Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
-        member.modifyScore(memberScoreUpdateRequestDto.getScore());
-        return new MemberScoreResponseDto(member.getScore());
+        Double aiScore = memberScoreUpdateRequestDto.getAiScore();
+        Double pbScore = memberScoreUpdateRequestDto.getPbScore();
+        Double mwScore = memberScoreUpdateRequestDto.getMwScore();
+        Double lcScore = memberScoreUpdateRequestDto.getLcScore();
+
+        Optional<Score> optionalScore = scoreRepository.findById(member.getId());
+        Score score;
+        if (optionalScore.isPresent()) {
+            score = optionalScore.get();
+            score.modifyAiScore(aiScore);
+            score.modifyPbScore(pbScore);
+            score.modifyMwScore(mwScore);
+            score.modifyLcScore(lcScore);
+        } else {
+            score = Score.builder()
+                    .id(member.getId())
+                    .aiScore(aiScore)
+                    .pbScore(pbScore)
+                    .mwScore(mwScore)
+                    .lcScore(lcScore)
+                    .build();
+            scoreRepository.save(score);
+        }
+
+        MemberScoreResponseDto memberScoreResponseDto = MemberScoreResponseDto.builder()
+                .aiScore(score.getAiScore())
+                .pbScore(score.getPbScore())
+                .mwScore(score.getMwScore())
+                .lcScore(score.getLcScore())
+                .build();
+
+        return memberScoreResponseDto;
     }
 
     @Transactional
@@ -96,6 +130,18 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
         member.modifyType(memberTypeUpdateRequestDto.getType());
         return new MemberTypeResponseDto(member.getType());
+    }
+
+    @Transactional
+    @Override
+    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto memberKeyUpdateRequestDto)
+            throws SQLException {
+        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+        member.modifyAppKey(memberKeyUpdateRequestDto.getAppKey());
+        member.modifySecretKey(memberKeyUpdateRequestDto.getSecretKey());
+        MemberKeyResponseDto memberKeyResponseDto = new MemberKeyResponseDto(
+                memberKeyUpdateRequestDto.getAppKey(), memberKeyUpdateRequestDto.getSecretKey());
+        return memberKeyResponseDto;
     }
 
     @Transactional

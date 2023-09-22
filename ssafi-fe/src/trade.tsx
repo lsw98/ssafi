@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Routes, Route, useNavigate, useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import TradeApi from './components/Trade/TradeApi';
 import TradeAi from './components/Trade/TradeAi';
@@ -43,9 +41,11 @@ const TradeMenu = styled.div<TradeMenuProps>`
   padding: 0px 10px;
   cursor: pointer;
   height: ${(props) => (props.active ? '55px' : '58px')};
-  color: ${(props) => (props.active ? 'var(--dark-color)' : 'var(--gray-color)')};
+  color: ${(props) =>
+    props.active ? 'var(--dark-color)' : 'var(--gray-color)'};
   font-weight: ${(props) => (props.active ? '600' : '400')};
-  border-bottom: ${(props) => (props.active ? '3px solid var(--dark-color)' : '0px')};
+  border-bottom: ${(props) =>
+    props.active ? '3px solid var(--dark-color)' : '0px'};
   padding-top: ${(props) => (props.active ? '2px' : '0px')};
 `;
 
@@ -86,13 +86,25 @@ export default function Trade() {
     <TradeContainer>
       <TradeNavContainer>
         <TradeMenuArea>
-          <TradeMenu active={location.pathname === '/trade' || location.pathname === '/trade/api'} onClick={toAI}>
+          <TradeMenu
+            active={
+              location.pathname === '/trade' ||
+              location.pathname === '/trade/api'
+            }
+            onClick={toAI}
+          >
             AI
           </TradeMenu>
-          <TradeMenu active={location.pathname === '/trade/order'} onClick={toOrder}>
+          <TradeMenu
+            active={location.pathname === '/trade/order'}
+            onClick={toOrder}
+          >
             빠른주문
           </TradeMenu>
-          <TradeMenu active={location.pathname === '/trade/account'} onClick={toAccount}>
+          <TradeMenu
+            active={location.pathname === '/trade/account'}
+            onClick={toAccount}
+          >
             내 계좌
           </TradeMenu>
         </TradeMenuArea>

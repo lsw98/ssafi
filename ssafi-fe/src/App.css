@@ -43,4 +43,5 @@
   /* height: 100vh; */
   position: absolute;
   background-color: #F9F9F9;
+  color: var(--black-color);
 }
