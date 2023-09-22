@@ -1,5 +1,6 @@
-from kospi_dict import kospi_dict
 import FinanceDataReader as fdr
+from modules.kospi_dict import kospi_dict
+
 var_dict = {}
 
 for code in kospi_dict.keys():
@@ -30,11 +31,11 @@ danger = var_dic[:66]
 neutral = var_dic[66:133]
 safe = var_dic[133:]
 
-print(len(danger))
-print(danger)
+# print(len(danger))
+# print(danger)
 
-print(len(neutral))
-print(neutral)
+# print(len(neutral))
+# print(neutral)
 
-print(len(safe))
-print(safe)
+# print(len(safe))
+# print(safe)

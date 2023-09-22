@@ -1,7 +1,5 @@
 import pandas as pd
 
-kospi_dict = {}
-
 kospi_200 = pd.read_csv('kospi200.csv', encoding='EUC-KR')
 kospi = pd.DataFrame(kospi_200)
 kospi_dict = {}
@@ -14,4 +12,3 @@ for index, row in kospi.iterrows():
          for _ in range (6-length):
              code = '0' + code
     kospi_dict[code] = row['종목명']
-print(kospi_dict)

@@ -11,4 +11,10 @@ class News(Base):
     news_date = Column(DateTime, nullable=True)
     news_writer = Column(String, nullable=True)
     news_content = Column(Text, nullable=True)
-    news_image = Column(String, nullable=True)
+
+class Kospi(Base):
+    __tablename__ = "kospi"
+    
+    kospi_id = Column(Integer, primary_key=True, autoincrement=True)
+    kospi_name = Column(String, nullable=False)
+    kospi_code = Column(Integer, nullalbe=False)

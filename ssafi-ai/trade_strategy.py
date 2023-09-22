@@ -1,5 +1,5 @@
 import tensorflow as tf
-from keras.models import load_model, Sequential
+from keras.models import load_model
 import FinanceDataReader as fdr
 import cv2
 from modules.kospi_dict import kospi_dict
@@ -8,6 +8,7 @@ from mplfinance.original_flavor import candlestick2_ohlc
 import numpy as np
 import os
 import datetime
+from modules.stock_variance import danger, neutral, safe
 
 cnn_model = load_model('cnn_model.h5')
 lstm_model = load_model('lstm_model.h5')
@@ -107,8 +108,57 @@ def lstm_prediction(model, day):
 today = datetime.date.today()
 yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
+# 거래일 기준 10일전~1일전 까지의 데이터로 예측한 오늘의 주가 상승/하락, 예상 등락 비율
 cnn = cnn_prediction(cnn_model, yesterday)
 lstm = lstm_prediction(lstm_model, yesterday)
 
-print(cnn)
-print(lstm)
+def category_prediction(category, cnn, lstm):
+    rise = []
+    fall = []
+    for item in category:
+        
+        code = item[0]
+        price_change = 0
+        change_rate = 0
+        for i in range(200):
+            if code == cnn[i][0]:
+                if cnn[i][1] == 1: 
+                    price_change += 1
+                else:
+                    price_change -= 1
+            if code == lstm[i][0]:
+                if lstm[i][1] > 1: 
+                    price_change += 1
+                else:
+                    price_change -= 1
+                change_rate = lstm[i][1]
+                
+        if price_change == 2:
+            rise.append((code, change_rate))
+        elif price_change == -2:
+            fall.append((code, change_rate))
+    return rise, fall
+
+# 위험, 중립, 안전 상승/하락 예측
+danger_rise, danger_fall = category_prediction(danger, cnn, lstm)
+neutral_rise, neutral_fall = category_prediction(neutral, cnn, lstm)
+safe_rise, safe_fall = category_prediction(neutral, cnn, lstm)
+
+# 각각 예상 상승폭/하락폭 큰것부터 나오게 정렬
+danger_rise.sort(key=lambda x : x[1], reverse=True)
+neutral_rise.sort(key=lambda x : x[1], reverse=True)
+safe_rise.sort(key=lambda x : x[1], reverse=True)
+
+danger_fall.sort(key=lambda x : x[1])
+neutral_fall.sort(key=lambda x : x[1])
+safe_fall.sort(key=lambda x : x[1])
+
+print(len(danger_rise))
+print(len(neutral_rise))
+print(len(safe_rise))
+print(len(danger_fall))
+print(len(neutral_fall))
+print(len(safe_fall))
+
+
+
