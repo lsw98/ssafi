@@ -13,18 +13,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import requests
 import time as t
-from news import News
+from models import News
 
-def news_category_crawler(url, category):
+def news_category_crawler(url, category, news_list):
     options = Options()
     options.add_argument('headless')
     options.add_argument('window-size=1920x1080')
     options.add_argument("disable-gpu")
     
     # 크롬 드라이버 최신 버전 설정
-    service = Service(executable_path=ChromeDriverManager().install())
+    # service = Service(executable_path=ChromeDriverManager().install())
     
-    driver = webdriver.Chrome(service=service, options = options)
+    # driver = webdriver.Chrome(service=service, options = options)
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options = options)
     # wait = WebDriverWait(driver, 10)
     driver.get(url)    
     driver.implicitly_wait(time_to_wait=1000)
@@ -114,24 +115,8 @@ def news_category_crawler(url, category):
             # print(content_text)
             
 
-        news = News(category, title, midtitle, date, writer, content, image)
+        news = News(news_category = category, news_title = title, news_midtitle = midtitle, 
+                           news_date = date, news_writer = writer, news_content = content)
         news_list.append(news)
     
 
-# 크롤링 한 뉴스 객체들을 담을 리스트
-news_list = []
-        
-# 증권정책
-# news_category_crawler('https://www.mk.co.kr/news/stock/stock-policy/', "stock_policy")
-
-# 시황
-# news_category_crawler('https://www.mk.co.kr/news/stock/conditions/', "conditions")
-
-# 공시
-# news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/', "public_announcement")
-
-# 기업정보
-# news_category_crawler('https://www.mk.co.kr/news/stock/business-information/', "business_information")
-
-# 증시지표
-news_category_crawler('https://www.mk.co.kr/news/stock/market-index/', "market_index")

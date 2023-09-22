@@ -142,7 +142,7 @@ def category_prediction(category, cnn, lstm):
 # 위험, 중립, 안전 상승/하락 예측
 danger_rise, danger_fall = category_prediction(danger, cnn, lstm)
 neutral_rise, neutral_fall = category_prediction(neutral, cnn, lstm)
-safe_rise, safe_fall = category_prediction(neutral, cnn, lstm)
+safe_rise, safe_fall = category_prediction(safe, cnn, lstm)
 
 # 각각 예상 상승폭/하락폭 큰것부터 나오게 정렬
 danger_rise.sort(key=lambda x : x[1], reverse=True)
@@ -159,6 +159,4 @@ print(len(safe_rise))
 print(len(danger_fall))
 print(len(neutral_fall))
 print(len(safe_fall))
-
-
 
