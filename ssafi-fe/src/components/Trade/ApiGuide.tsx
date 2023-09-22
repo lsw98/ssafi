@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import tmpImg from '../../assets/images/temp-image.png';
+
 interface GuideProps {
   closeModal: () => void;
 }
@@ -29,9 +31,33 @@ const ButtonBox = styled.div`
 display: flex;
 justify-content: end;
 align-items: center;
+margin-top: 20px
 `;
 
-const guideList: Array<string> = ['0', '1', '2', '3', '4', '5', '6', '7'];
+const GuideBtn = styled.button`
+font-size: 20px;
+font-weight: 400;
+color: var(--white-color);
+background-color: var(--dark-color);
+width: 80px;
+height: 40px;
+border: none;
+border-radius: 10px;
+margin-right: 10px;
+cursor: pointer;
+
+&:hover {
+  color: var(--dark-color);
+  background-color: var(--white-color);
+  border: 2px solid var(--dark-color);
+}
+`;
+
+const GuideImg = styled.img`
+width: 900px;
+`;
+
+const guideList: Array<string> = ['1. 임시 설명 1', '2. 임시 설명 2', '3. 임시 설명 3', '4. 임시 설명 4', '5. 임시 설명 5', '6. 임시 설명 6', '7. 임시 설명 7', '8. 임시 설명 8'];
 const allGuides = guideList.length - 1;
 
 const ApiGuide = ({ closeModal }: GuideProps) => {
@@ -56,20 +82,23 @@ const ApiGuide = ({ closeModal }: GuideProps) => {
   return (
     <ModalBackground onClick={closeModal}>
       <ModalContainer onClick={stopPropagation}>
-        api key 받아오는 방법 설명
         <div>
           <h3>{guideList[guideNum]}</h3>
+          <GuideImg src={tmpImg} />
           {guideNum !== allGuides
             ? <div>
                 { guideNum === 0
-                  ? <ButtonBox><button onClick={nextGuideNum}>다음</button></ButtonBox>
+                  ? <ButtonBox><GuideBtn onClick={nextGuideNum}>다음</GuideBtn></ButtonBox>
                   : <ButtonBox>
-                    <button onClick={previousGuideNum}>이전</button>
-                    <button onClick={nextGuideNum}>다음</button>
+                    <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
+                    <GuideBtn onClick={nextGuideNum}>다음</GuideBtn>
                   </ButtonBox>
                 }
               </div>
-            : <ButtonBox><button onClick={closeModal}>창 닫기</button></ButtonBox>
+            : <ButtonBox>
+                <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
+                <GuideBtn onClick={closeModal}>창 닫기</GuideBtn>
+              </ButtonBox>
           }
         </div>
       </ModalContainer>
