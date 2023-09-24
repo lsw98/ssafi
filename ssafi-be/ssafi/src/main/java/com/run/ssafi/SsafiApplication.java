@@ -1,5 +1,6 @@
 package com.run.ssafi;
 
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 @EnableJpaAuditing // JPA Auditing 활성화
 @EnableAsync
+@EnableBatchProcessing
 @SpringBootApplication
 public class SsafiApplication {
 
