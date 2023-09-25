@@ -32,34 +32,35 @@ interface MbtiPoint {
 
 export default function Result({ setSurveyDone }: Props) {
   const tempUser = '김싸피';
-  const tempMbti: MbtiPoint[] = [
+  const tempPoint = [8, 16, 6, 10];
+  const mbtiProps: MbtiPoint[] = [
     {
       element: [
         'Active\nA(외향형)',
         'Inactive\nI(내향형)',
       ],
-      percentage: 40,
+      percentage: tempPoint[0] * 5,
     },
     {
       element: [
         'Professional\nP(전문가형)',
         'Beginner\nB(탐험가형)',
       ],
-      percentage: 80,
+      percentage: tempPoint[1] * 5,
     },
     {
       element: [
         'Most Effective\nE(집중형)',
         'Well Balanced\nW(분산형)',
       ],
-      percentage: 30,
+      percentage: tempPoint[2] * 5,
     },
     {
       element: [
         'Liberal\nL(자유형)',
         'Conservative\nC(신중형)',
       ],
-      percentage: 50,
+      percentage: tempPoint[3] * 5,
     },
   ];
 
@@ -78,11 +79,11 @@ export default function Result({ setSurveyDone }: Props) {
   React.useEffect(() => {
     const getMbtiType = () => {
       let mbtiString = '';
-      tempMbti.forEach((mbtiPoint) => {
-        if (mbtiPoint.percentage < 50) {
-          mbtiString += mbtiPoint.element[1].slice(0, 1);
+      mbtiProps.forEach((mbtiProp) => {
+        if (mbtiProp.percentage < 50) {
+          mbtiString += mbtiProp.element[1].slice(0, 1);
         } else {
-          mbtiString += mbtiPoint.element[0].slice(0, 1);
+          mbtiString += mbtiProp.element[0].slice(0, 1);
         }
       });
       setMbtiType(mbtiString);
@@ -94,6 +95,9 @@ export default function Result({ setSurveyDone }: Props) {
 
   const handleSurveyDone = () => {
     setSurveyDone(false);
+    window.scrollTo({
+      top: 0,
+    });
   };
 
   return (
@@ -103,9 +107,9 @@ export default function Result({ setSurveyDone }: Props) {
         <MbtiTypeBox>{mbtiType}</MbtiTypeBox>
         <MbtiSummary></MbtiSummary>
         <BarContainer>
-          {tempMbti.map((mbtiPoint: MbtiPoint, index: number) => (
+          {mbtiProps.map((mbtiProp: MbtiPoint, index: number) => (
             <div key={index}>
-              <ProgressBar mbtiPoint={mbtiPoint} />
+              <ProgressBar mbtiPoint={mbtiProp} />
             </div>
           ))}
         </BarContainer>

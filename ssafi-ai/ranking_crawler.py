@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
-from news import News
+from models import News
 
-def ranking_news_crawler(url):  
+def ranking_news_crawler(url, news_list):  
     response = requests.get(url)
     if response.status_code == 200:
         html = response.text
@@ -82,13 +82,6 @@ def ranking_news_crawler(url):
             content += content_text + "\n"
             # print(content_text)
             
-        news = News('ranking', title, midtitle, date, writer, content, image)
+        news = News(news_category = 'ranking', news_title = title, news_midtitle = midtitle, 
+                           news_date = date, news_writer = writer, news_content = content)
         news_list.append(news)
-                
-                
-# 크롤링 한 뉴스 객체들을 담을 리스트
-news_list = []
-
-# 랭킹뉴스
-ranking_news_crawler('https://www.mk.co.kr/news/ranking/stock/')
-print(len(news_list))
