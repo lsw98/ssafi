@@ -1,6 +1,5 @@
 import FinanceDataReader as fdr
 from modules.kospi_dict import kospi_dict
-
 var_dict = {}
 
 for code in kospi_dict.keys():

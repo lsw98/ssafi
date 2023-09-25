@@ -12,4 +12,3 @@ engine = create_engine(db_url)
 
 # 세션 생성
 Session = sessionmaker(bind=engine)
-session = Session()
