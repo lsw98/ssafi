@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 @EnableJpaAuditing // JPA Auditing 활성화
 @EnableAsync
-@EnableBatchProcessing
 @SpringBootApplication
+@EnableBatchProcessing
 public class SsafiApplication {
 
 	public static void main(String[] args) {
