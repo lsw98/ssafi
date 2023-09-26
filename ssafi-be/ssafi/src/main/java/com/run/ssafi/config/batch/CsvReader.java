@@ -25,10 +25,10 @@ public class CsvReader {
 
     protected class KospiDtoFieldSetMapper implements FieldSetMapper<Kospi> {
         public Kospi mapFieldSet(FieldSet fieldSet) {
-            Kospi kospi = new Kospi();
-            kospi.setId(Long.valueOf(fieldSet.readString(0)));
-            kospi.setKospiCode(fieldSet.readString(1));
-            kospi.setKospiName(fieldSet.readString(2));
+            Kospi kospi = Kospi.builder()
+                    .kospiCode(fieldSet.readString(1))
+                    .kospiName(fieldSet.readString(2))
+                    .build();
 
             return kospi;
         }
@@ -58,7 +58,8 @@ public class CsvReader {
         while(cnt++<BatchProperties.chunkSize) {
             try {
                 Kospi kospi = flatFileItemReader.read();
-                kospiRepository.save(kospi);
+                if(kospiRepository.findByKospiCode(kospi.getKospiCode()) == null) ;
+                    kospiRepository.save(kospi);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

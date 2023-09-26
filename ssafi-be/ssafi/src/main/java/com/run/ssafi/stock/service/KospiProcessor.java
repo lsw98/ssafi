@@ -7,8 +7,6 @@ public class KospiProcessor implements ItemProcessor<Kospi, Kospi> {
 
     @Override
     public Kospi process(Kospi kospi) {
-        System.out.println(kospi.toString());
-
         return kospi;
     }
 }

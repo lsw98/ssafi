@@ -4,5 +4,6 @@ import com.run.ssafi.domain.Kospi;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface KospiRepository extends JpaRepository<Kospi, Long> {
+    Kospi findByKospiCode(String kospiCode);
 
 }

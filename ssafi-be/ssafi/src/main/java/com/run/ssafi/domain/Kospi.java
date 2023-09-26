@@ -10,21 +10,20 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "Kospi")
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
-@Data
 @Builder
+@Getter
 @Table(name="KOSPI", uniqueConstraints = {@UniqueConstraint(name="Unique_kospi_name",columnNames = {"kospi_name"}), @UniqueConstraint(name = "kospi_code", columnNames =  {"kospi_code"})})
 public class Kospi {
 
     @Id
     @Column
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "kospi_code", nullable = false)
     private String kospiCode;
