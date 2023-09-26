@@ -19,6 +19,11 @@ interface NewsMenuProps {
 }
 
 export default function News() {
+  const dateNow = new Date();
+  const localTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000);
+  const localIsoString = localTime.toISOString();
+  const timeText = `${localIsoString.slice(5, 7)}.${localIsoString.slice(8, 10)} ${localIsoString.slice(11, 16)}`;
+
   // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
@@ -90,10 +95,15 @@ export default function News() {
           <Route path="/infos" element={<NewsInfos />} />
         </Routes>
         <GraphArea>
-          <NewsChart />
-          코스피 그래프<br />
-          코스닥 그래프<br />
-          코스피 200 그래프
+          <GraphTextArea>
+            <GraphAreaTitle>이 시각 증시</GraphAreaTitle>
+            <GraphTime>{timeText}</GraphTime>
+          </GraphTextArea>
+          <ChartArea>
+            <NewsChart title="코스피" status="down"/>
+            <NewsChart title="코스닥" status="up"/>
+            <NewsChart title="코스피 200" status="down"/>
+          </ChartArea>
         </GraphArea>
       </NewsArea>
     </NewsContainer>
@@ -197,5 +207,33 @@ const GraphArea = styled.div`
   display: flex;
   width: 400px;
   flex-direction: column;
-  align-items: end;
+  align-items: center;
+`;
+
+const GraphTextArea = styled.div`
+display: flex;
+width: 340px;
+justify-content: space-between;
+align-items: end;
+`;
+
+const GraphAreaTitle = styled.p`
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--black-color);
+`;
+
+const GraphTime = styled.p`
+font-size: 18px;
+font-weight: 500;
+color: var(--gray-color);
+`;
+
+const ChartArea = styled.div`
+  display: flex;
+  width: 360px;
+  flex-direction: column;
+  align-items: center;
+  border-top: 1px solid var(--black-color);
+  padding-top: 20px;
 `;

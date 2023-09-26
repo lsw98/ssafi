@@ -42,12 +42,13 @@ module.exports = {
     'quote-props': 'off',
     'no-var-requires': 'off',
     'no-nested-ternary': 'off',
-    indent: 'off',
+    'indent': 'off',
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
     'prefer-destructuring': 'off',
     'function-paren-newline': 'off',
     'no-plusplus': 'off',
+    'max-len': 'off',
   },
   settings: {
     'import/resolver': {
