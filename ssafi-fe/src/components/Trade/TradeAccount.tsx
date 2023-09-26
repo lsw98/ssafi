@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import handleScroll from '../../utils/scrollUtils';
-// import HistoryTable from './HistoryTable';
+// import handleScroll from '../../utils/scrollUtils';
+import HistoryTable from './HistoryTable';
 
 interface StyleProps {
   width?: string;
@@ -16,7 +16,7 @@ const Container = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 558px;
-  padding: 35px 40px;
+  padding: 35px 30px;
 `;
 
 const LeftContainer = styled.div`
@@ -60,13 +60,14 @@ const Text = styled.div<StyleProps>`
 `;
 
 export default function TradeAccount() {
-  React.useEffect(() => {
-    window.addEventListener('wheel', handleScroll);
+  // 표 내부 스크롤 때문에 스크롤 컨트롤러 주석
+  // React.useEffect(() => {
+  //   window.addEventListener('wheel', handleScroll);
 
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('wheel', handleScroll);
+  //   };
+  // }, []);
 
   return (
     <Container>
@@ -110,9 +111,9 @@ export default function TradeAccount() {
         </BoxContainer>
       </LeftContainer>
       <LeftContainer>
-      <BoxContainer width='640px' maxHeight='508px' padding='30px'>
-        <Text>거래 내역</Text>
-        {/* <HistoryTable /> */}
+        <BoxContainer width='660px' maxHeight='498px' padding='30px'>
+          <Text>거래 내역</Text>
+          <HistoryTable />
         </BoxContainer>
       </LeftContainer>
     </Container>
