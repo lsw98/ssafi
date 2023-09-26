@@ -1,3 +1,4 @@
+# 한국투자증권 API
 import requests
 from collections import namedtuple
 import json
@@ -12,6 +13,7 @@ def _getResultObject(json_data):
     _tc_ = namedtuple('res', json_data.keys())
     return _tc_(**json_data)
 
+# Access Token 발급
 def _getAccessToken(member):
     access_url = f'{URL_BASE}/oauth2/tokenP'
     body = {
@@ -30,6 +32,7 @@ def _getAccessToken(member):
         print(f"Get Access Token Error: {res.status_code}")
     return access_token, access_token_expired
 
+# POST 요청 시 해시키 발급 (매도, 매수)
 def _getHashKey(member, data):
     hash_url = f'{URL_BASE}/uapi/hashkey'
     headers = _base_headers
@@ -58,11 +61,12 @@ def _getStockPrice(code, member, access_token):
     res = requests.get(stock_url, headers=headers, params=params)
     if res.status_code == 200:
         price = res.json()['output']['stck_prpr']
-        return price
+        return int(price)
     else:
         print(f"Get Stock Price Error: {res.status_code}" + " | " + res.text)
         return 0
 
+# 매수
 def _buyStock(code, member, quantity, access_token):
     buy_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/order-cash'
     data = {
@@ -93,6 +97,7 @@ def _buyStock(code, member, quantity, access_token):
         print(f"Buy Stock Error: {res.status_code}" + " | " + res.text)
         return 0
 
+# 매도
 def _sellStock(code, member, quantity, access_token):
     sell_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/order-cash'
     data = {
@@ -123,34 +128,7 @@ def _sellStock(code, member, quantity, access_token):
         print(f"Sell Stock Error: {res.status_code}" + " | " + res.text)
         return 0
 
-# 현금잔고조회
-def _getCashBalance(member, access_token):
-    balance_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/inquire-psbl-order'
-    params = {
-        "CANO": "50090046",
-        "ACNT_PRDT_CD": "01",
-        "PDNO" : "000660",
-        "ORD_UNPR" : "0",
-        "ORD_DVSN" : "01",
-        "CMA_EVLU_AMT_ICLD_YN" : "N",
-        "OVRS_ICLD_YN" : "N" 
-    }
-    headers = {
-        "Content-Type":"application/json", 
-        "authorization":f"Bearer {access_token}",
-        "appKey": member.app_key,
-        "appSecret": member.secret_key,
-        "tr_id":"VTTC8908R",
-    }
-    res = requests.get(balance_url, headers=headers, params=params)
-    if res.status_code == 200:
-        balance = res.json()['output']['ord_psbl_cash']
-        return balance
-    else:
-        print(f"Stock Balance Error: {res.status_code}" + " | " + res.text)
-        return 0
-
-# 주식잔고조회
+# 주식, 예수금 잔고 조회
 def _getStockBalance(member, access_token):
     balance_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/inquire-balance'
     headers = {
@@ -176,7 +154,8 @@ def _getStockBalance(member, access_token):
     res = requests.get(balance_url, params=params, headers=headers)
     if res.status_code == 200:
         balance = res.json()['output1']
-        return balance
+        balance2 = res.json()['output2']
+        return balance, balance2
     else:
         print(f"Stock Balance Error: {res.status_code}" + " | " + res.text)
         return 0

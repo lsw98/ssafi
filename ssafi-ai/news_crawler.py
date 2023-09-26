@@ -1,3 +1,4 @@
+# 매일경제 기사 크롤링 하여 DB에 저장
 from ranking_crawler import ranking_news_crawler
 from category_crawler import news_category_crawler
 from models import Base, News
