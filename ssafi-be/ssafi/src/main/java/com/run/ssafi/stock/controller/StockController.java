@@ -57,7 +57,7 @@ public class StockController {
     public ResponseEntity<Response> deleteInterestStock(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable("kospi-code") String kospiCode){
         if(memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
 
-        stockService.registerInterestStock(memberDetail, kospiCode);
+        stockService.deleteInterestStock(memberDetail, kospiCode);
 
         return new ResponseEntity<>(Response.of(StockResponseMessage.INTEREST_STOCK_DELETE_SUCCESS), HttpStatus.OK);
     }

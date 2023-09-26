@@ -70,9 +70,10 @@ public class StockServiceImpl implements StockService {
     @Transactional
     @Override
     public void deleteInterestStock(MemberDetail memberDetail, String kospiCode) {
+        Member member = memberDetail.getMember();
         Kospi kospi = kospiRepository.findByKospiCode(kospiCode);
         if(kospi == null) throw new StockException(StockExceptionMessage.DATA_NOT_FOUND);
-        InterestStock interestStock = interestStockRepository.findByKospi(kospi);
+        InterestStock interestStock = interestStockRepository.findByKospiAndMember(kospi, member);
         if (interestStock != null)
             interestStockRepository.delete(interestStock);
     }
