@@ -1,3 +1,5 @@
+# DB 연결
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -12,4 +14,3 @@ engine = create_engine(db_url)
 
 # 세션 생성
 Session = sessionmaker(bind=engine)
-session = Session()

@@ -1,3 +1,4 @@
+# CNN, LSTM 모델로 오늘의 주가 예측 및 추천 종목 생성
 import tensorflow as tf
 from keras.models import load_model
 import FinanceDataReader as fdr
@@ -153,10 +154,20 @@ danger_fall.sort(key=lambda x : x[1])
 neutral_fall.sort(key=lambda x : x[1])
 safe_fall.sort(key=lambda x : x[1])
 
+print(danger_rise)
 print(len(danger_rise))
-print(len(neutral_rise))
-print(len(safe_rise))
-print(len(danger_fall))
-print(len(neutral_fall))
-print(len(safe_fall))
 
+print(neutral_rise)
+print(len(neutral_rise))
+
+print(safe_rise)
+print(len(safe_rise))
+
+print(danger_fall)
+print(len(danger_fall))
+
+print(neutral_fall)
+print(len(neutral_fall))
+
+print(safe_fall)
+print(len(safe_fall))

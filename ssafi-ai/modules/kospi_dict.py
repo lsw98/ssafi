@@ -1,3 +1,4 @@
+# 코스피 200 종목 코드, 종목 명을 딕셔너리로 생성
 import pandas as pd
 
 kospi_200 = pd.read_csv('kospi200.csv', encoding='EUC-KR')

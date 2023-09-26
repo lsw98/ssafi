@@ -1,10 +1,15 @@
+# 코스피 200 종목의 1월 1일 부터 직전 거래일 까지의 분산 계산하여 위험/중립/안전 종목 분류
 import FinanceDataReader as fdr
-from modules.kospi_dict import kospi_dict
+# from modules.kospi_dict import kospi_dict
+from kospi_dict import kospi_dict
+import datetime
 
 var_dict = {}
+today = datetime.date.today()
+yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 for code in kospi_dict.keys():
-    df = fdr.DataReader(code, '2023-01-01', '2023-09-18')
+    df = fdr.DataReader(code, '2023-01-01', yesterday)
     df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
     
     # 평균
