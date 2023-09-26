@@ -20,7 +20,7 @@ const Kakao = () => {
             code,
           };
           const response = await axios.post(
-            'https://8264-211-192-210-179.ngrok-free.app/api/user/social-login',
+            'https://791b-211-192-210-179.ngrok-free.app/api/user/social-login',
             request,
           );
 

@@ -59,6 +59,8 @@ const StocksInterests = styled.div`
 `;
 
 const Tooltip = styled.div<{ color: string }>`
+  display: flex;
+  flex-direction: row;
   width: 30%;
   top: 5%;
   color: var(--black-color);
@@ -69,7 +71,6 @@ function StockTabs() {
   const [toggleState, setToggleState] = useState(1);
   const [stockInfo, setStockInfo] = useState<any[]>([]);
   const [stockData, setStockData] = useState<any[]>([]); // 종목 정보를 저장할 상태
-  const [renderedStockData, setRenderedStockData] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태를 관리하는 상태 변수
   const [searchText, setSearchText] = useState('');
@@ -118,7 +119,6 @@ function StockTabs() {
     }
 
     setStockData(updatedStockData);
-    setRenderedStockData(updatedStockData.slice(start, end));
     setIsLoading(false); // 데이터를 모두 불러왔을 때 로딩 상태를 false로 설정
   };
 
@@ -214,10 +214,10 @@ function StockTabs() {
                         stroke-width="2"
                       />
                     </svg>
-                    <div>
+                    <div style={{ marginRight: '10px' }}>
                       <span>{stock.name}</span> {/* 종목명 */}
                     </div>
-                    <div style={{ display: 'inline-block' }}>
+                    <div>
                       <Tooltip
                         color={
                           Number(stock.prdy_vrss_sign) === 5

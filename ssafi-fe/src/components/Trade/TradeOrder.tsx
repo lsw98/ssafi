@@ -51,13 +51,13 @@ const TradingAndAccountContainer = styled.div`
 `;
 
 const Trading = styled.div`
-  flex: 1;
+  flex: 2;
   background-color: #ffffff;
   padding: 10px;
 `;
 
 const Account = styled.div`
-  flex: 1;
+  flex: 3;
   background-color: #ffffff;
   padding: 10px;
 `;
