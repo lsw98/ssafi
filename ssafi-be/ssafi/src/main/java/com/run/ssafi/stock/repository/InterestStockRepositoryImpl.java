@@ -1,11 +1,7 @@
 package com.run.ssafi.stock.repository;
 
-import static com.querydsl.core.types.ExpressionUtils.count;
-
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.QInterestStock;

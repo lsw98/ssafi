@@ -1,12 +1,12 @@
 package com.run.ssafi.stock.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
-import com.run.ssafi.domain.Member;
 import com.run.ssafi.exception.customexception.MemberException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +60,31 @@ public class StockController {
         stockService.deleteInterestStock(memberDetail, kospiCode);
 
         return new ResponseEntity<>(Response.of(StockResponseMessage.INTEREST_STOCK_DELETE_SUCCESS), HttpStatus.OK);
+    }
+
+    @PostMapping("/hold/{kospi-code}")
+    public ResponseEntity<Response> registerHoldStock(@AuthenticationPrincipal MemberDetail memberDetail,
+            @PathVariable("kospi-code") String kospiCode){
+        if(memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+
+        stockService.registerHoldStock(memberDetail, kospiCode);
+
+        return new ResponseEntity<>(Response.of(StockResponseMessage.HOLD_STOCK_REGISTER_SUCCESS), HttpStatus.OK);
+    }
+    @GetMapping("/hold")
+    public ResponseEntity<HoldStockListResponseDto> getHoldStock(@AuthenticationPrincipal MemberDetail memberDetail){
+        if(memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+
+        return new ResponseEntity<>(stockService.getHoldStockList(memberDetail), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/hold/{kospi-code}")
+    public ResponseEntity<Response> deleteHoldStock(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable("kospi-code") String kospiCode){
+        if(memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+
+        stockService.deleteHoldStock(memberDetail, kospiCode);
+
+        return new ResponseEntity<>(Response.of(StockResponseMessage.HOLD_STOCK_DELETE_SUCCESS), HttpStatus.OK);
     }
 }
 
