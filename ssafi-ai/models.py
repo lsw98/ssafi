@@ -17,14 +17,13 @@ class News(Base):
 
 class Kospi(Base):
     __tablename__ = "kospi"
-    
     kospi_id = Column(Integer, primary_key=True, autoincrement=True)
-    kospi_name = Column(String(255), nullable=False)
-    kospi_code = Column(Integer)
+    kospi_name = Column(String(255))
+    kospi_code = Column(String(255))
+    kospi_type = Column(String(255))
 
 class Member(Base):
     __tablename__ = "member"
-    
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
@@ -38,7 +37,6 @@ class Member(Base):
 
 class Hold(Base):
     __tablename__ = "hold"
-    
     hold_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("member.id"))
     kospi_id = Column(Integer, ForeignKey("kospi.kospi_id"))
@@ -46,8 +44,7 @@ class Hold(Base):
 
 class Aitrade(Base):
     __tablename__ = "ai_trade"
-    
-    id = Column(Integer, ForeignKey("member.id"), primary_key=True, autoincrement=True)
+    id = Column(Integer, ForeignKey("member.id"), primary_key=True)
     ai_budget = Column(Integer)
     ai_goal = Column(Integer)
     risk_ratio = Column(Double)

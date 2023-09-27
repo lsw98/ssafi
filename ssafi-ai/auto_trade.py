@@ -1,26 +1,25 @@
 from models import Base, Member, Kospi, Aitrade, Hold
 from sqlalchemy import select
+from sqlalchemy.orm import join
 from db import engine, Session
-# from modules.kospi_dict import kospi_dict
 from KISapi import _getAccessToken, _getStockPrice, _buyStock, _sellStock, _getStockBalance
 from today_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
 import time
+
 Base.metadata.create_all(engine)
 
 session = Session()
 # new_member = Member(email="lsw@gmail.com", password="1234", role="member"
 #                     , app_key = "PSzvBwVvCqlukNKHciYB1xffeT9jS3590TMx", secret_key = "k6tJ0l9PXUzUejoFOCt/5kLDS5fFh8aQ+/WlHlKiuBd5jETKD0dXf2dZhK7Ca1Rl4klUB7zZZW2oq70VZBIRyLrIEs2s7VQcZIyslb/blJVamaKf5I+sVIFR2zEZCGrQI1Nfl/dFF306fiLhFu4Qcep6iFJGnSd5o66qLsAHWaq6Qfyp30A=")
 # session.add(new_member)
+# session.commit()
 # new_trade = Aitrade(id=1, ai_budget = 0, ai_goal = 60000000, risk_ratio = 0.4, neutral_ratio = 0.3, safety_ratio = 0.3, trading_start_yn = True)
 # session.add(new_trade)
 # session.commit()
-members = session.query(Member).all()
-
-# 코스피 200 DB에 저장  
-# for code, name in kospi_dict.items():
-#     kospi_item = Kospi(kospi_name = name, kospi_code = code)
-#     session.add(kospi_item)
+# new_hold = Hold(user_id = 1, kospi_id = 1)
+# session.add(new_hold)
 # session.commit()
+members = session.query(Member).all()
 
 for member in members:
     
@@ -28,11 +27,11 @@ for member in members:
     trade_info = session.get(Aitrade, member.id)
     
     # 홀드 (매수/매도 안 할 종목) 정보  
-    hold_statement = select(Hold).join(Kospi.kospi_id)
+    hold_statement = select(Kospi).select_from(join(Kospi, Hold)).filter(Hold.user_id == member.id)
     hold_rows = session.scalars(hold_statement).all()
     hold_info = []
     for hold in hold_rows:
-        hold_info.append(str(hold.kospi_code))
+        hold_info.append(hold.kospi_code)
 
     # 거래 중인지 확인 
     if not trade_info.trading_start_yn:
@@ -43,6 +42,7 @@ for member in members:
 
     # 보유 주식 확인 
     balance, balance2 = _getStockBalance(member, access_token)
+        
     for record in balance:
         code = record['pdno']
         
@@ -54,12 +54,8 @@ for member in members:
         print("평가손익률 : " + record['evlu_pfls_rt'])
         print("평가수익률 : " + record['evlu_erng_rt'])
         
-        
-        # 홀드 종목 확인 조건 추가해야 함. 
-        
         # 하락 예측 종목이면 매도 실행
-        if (code in item[0] for item in danger_fall) or (code in item[0] for item in neutral_fall) or (code in item[0] for item in safe_fall):
-            if code not in hold_info:
+        if (code in item[0] for item in danger_fall) or (code in item[0] for item in neutral_fall) or (code in item[0] for item in safe_fall) and code not in hold_info:
                 print(_sellStock(code, member, record['hldg_qty'], access_token))
         else:
             # 상승 예측 종목이면 매도 x, 아니면 매도하고 상승 예측 종목을 매수한다.
@@ -75,9 +71,16 @@ for member in members:
     # 다시 잔고 조회
     balance, balance2 = _getStockBalance(member, access_token)
     print(balance2)
+    
+    # 주식 + 현금 평가금액이 목표 금액 도달하면 중단
+    # if balance2[0]['tot_evlu_amt'] >= trade_info.ai_goal:
+        
+        
+        
     # D+2 예수금 조회 (투자 가능한 총 금액)
     deposit = int(balance2[0]['prvs_rcdl_excc_amt'])
     print(deposit)
+    
     # 안전 / 중립 / 위험 비용 분배 
     risk_cost = deposit * trade_info.risk_ratio
     neutral_cost = deposit * trade_info.neutral_ratio
@@ -88,10 +91,13 @@ for member in members:
     neutral_item = neutral_rise[0]
     safe_item = safe_rise[0]
     
+    # 안전 / 중립 / 위험 종목 매수
     risk_quantity = int(risk_cost / _getStockPrice(risk_item[0], member, access_token))
     print(_buyStock(risk_item[0], member, risk_quantity, access_token))
+    
     neutral_quantity = int(neutral_cost / _getStockPrice(neutral_item[0], member, access_token))
     print(_buyStock(neutral_item[0], member, neutral_quantity, access_token))
+    
     safe_quantity = int(safe_cost / _getStockPrice(safe_item[0], member, access_token))
     print(_buyStock(safe_item[0], member, safe_quantity, access_token))
 
