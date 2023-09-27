@@ -62,6 +62,7 @@ const InputBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin: 5px 0;
 `;
 
 const InputName = styled.div<{visibled?: boolean}>`
@@ -104,6 +105,13 @@ const DoubtsButton = styled(Doubts)`
   fill: var(--white-color);
   margin-left: 10px;
   cursor: pointer;
+`;
+
+const Notice = styled.div`
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--danger-color);
+  margin: 2px 0 0 144px;
 `;
 
 export default function TradeApi() {
@@ -204,6 +212,7 @@ export default function TradeApi() {
                 onChange={handleAccountChange}
               />
             </InputBox>
+            <Notice>* 숫자만 입력해주세요.</Notice>
           </div>
           <InputName visibled={apiKey !== '' && secretKey !== '' && accountNumber !== ''} className='button' onClick={handleButtonClick}>
             입력하기
