@@ -14,5 +14,6 @@ public class MemberScoreResponseDto {
     private Double pbScore;
     private Double mwScore;
     private Double lcScore;
+    private String message;
 }
 

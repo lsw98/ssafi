@@ -36,6 +36,10 @@ public class Member extends BaseTimeEntity {
     private String appKey;
     @Column(name="secret_key")
     private String secretKey;
+    @Column(name="account_prefix")
+    private String accountPrefix;
+    @Column(name="account_suffix")
+    private String accountSuffix;
     @Column(name="type")
     private String type;
 
@@ -64,6 +68,12 @@ public class Member extends BaseTimeEntity {
     }
     public void modifySecretKey(String secretKey) {
         this.secretKey=secretKey;
+    }
+    public void modifyAccountPrefix(String accountPrefix) {
+        this.accountPrefix=accountPrefix;
+    }
+    public void modifyAccountSuffix(String accountSuffix) {
+        this.accountSuffix=accountSuffix;
     }
     public void modifyPersonalAgreement(Character personalAgreement) {
         this.personalAgreement=personalAgreement;

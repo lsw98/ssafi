@@ -66,6 +66,14 @@ public class MemberController {
         return new ResponseEntity<>(memberKeyResponseDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/account")
+    public ResponseEntity<MemberAccountResponseDto> modifyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberAccountUpdateRequestDto requestDto) throws Exception {
+
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        MemberAccountResponseDto memberAccountResponseDto = memberService.updateAccount(memberDetail, requestDto);
+        return new ResponseEntity<>(memberAccountResponseDto, HttpStatus.OK);
+    }
+
     @DeleteMapping
     public ResponseEntity<Response> delete(@AuthenticationPrincipal MemberDetail memberDetail) throws Exception {
         long memberId = memberDetail.getMember().getId();

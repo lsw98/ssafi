@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-public class MemberTypeResponseDto {
-    private String type;
+public class MemberAccountResponseDto {
+    private String accountPrefix;
+    private String accountSuffix;
     private String message;
 }

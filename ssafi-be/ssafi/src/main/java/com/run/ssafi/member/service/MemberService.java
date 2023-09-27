@@ -18,5 +18,7 @@ public interface MemberService {
             throws SQLException;
     MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto memberKeyUpdateRequestDto)
             throws SQLException;
+    MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto memberAccountUpdateRequestDto)
+            throws SQLException;
     void deleteMember(long memberId) throws Exception;
 }

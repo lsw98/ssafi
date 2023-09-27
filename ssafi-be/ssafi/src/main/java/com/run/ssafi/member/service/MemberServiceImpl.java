@@ -118,6 +118,7 @@ public class MemberServiceImpl implements MemberService {
                 .pbScore(score.getPbScore())
                 .mwScore(score.getMwScore())
                 .lcScore(score.getLcScore())
+                .message(MemberResponseMessage.MEMBER_SCORE_UPDATE_SUCCESS.getMessage())
                 .build();
 
         return memberScoreResponseDto;
@@ -129,19 +130,40 @@ public class MemberServiceImpl implements MemberService {
             throws SQLException {
         Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
         member.modifyType(memberTypeUpdateRequestDto.getType());
-        return new MemberTypeResponseDto(member.getType());
+        MemberTypeResponseDto memberTypeResponseDto = MemberTypeResponseDto.builder()
+                .type(member.getType())
+                .message(MemberResponseMessage.MEMBER_TYPE_UPDATE_SUCCESS.getMessage())
+                .build();
+        return memberTypeResponseDto;
     }
 
     @Transactional
     @Override
-    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto memberKeyUpdateRequestDto)
+    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto requestDto)
             throws SQLException {
         Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
-        member.modifyAppKey(memberKeyUpdateRequestDto.getAppKey());
-        member.modifySecretKey(memberKeyUpdateRequestDto.getSecretKey());
-        MemberKeyResponseDto memberKeyResponseDto = new MemberKeyResponseDto(
-                memberKeyUpdateRequestDto.getAppKey(), memberKeyUpdateRequestDto.getSecretKey());
+        member.modifyAppKey(requestDto.getAppKey());
+        member.modifySecretKey(requestDto.getSecretKey());
+        MemberKeyResponseDto memberKeyResponseDto = MemberKeyResponseDto.builder()
+                .appKey(requestDto.getAppKey())
+                .secretKey(requestDto.getSecretKey())
+                .message(MemberResponseMessage.MEMBER_KEY_UPDATE_SUCCESS.getMessage())
+                .build();
         return memberKeyResponseDto;
+    }
+
+    @Override
+    public MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto requestDto) throws SQLException {
+        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+        member.modifyAccountPrefix(requestDto.getAccountPrefix());
+        member.modifyAccountSuffix(requestDto.getAccountSuffix());
+        MemberAccountResponseDto memberAccountResponseDto = MemberAccountResponseDto.builder()
+                .accountPrefix(requestDto.getAccountPrefix())
+                .accountSuffix(requestDto.getAccountSuffix())
+                .message(MemberResponseMessage.MEMBER_ACCOUNT_UPDATE_SUCCESS.getMessage())
+                .build();
+
+        return memberAccountResponseDto;
     }
 
     @Transactional
