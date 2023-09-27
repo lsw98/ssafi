@@ -5,6 +5,7 @@ import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
 import TradeInput from './TradeInput';
 import ConfirmModal from './ConfirmModal';
+import TradeChart from '../Charts/TradeChart';
 
 interface inputDataPorps {
   safetyRatio: number;
@@ -49,12 +50,13 @@ const Title = styled.div<StyleProps>`
 
 const BoxContainer = styled.div<StyleProps>`
   display: flex;
-  width: 1000px;
+  justify-content: space-between;
+  width: ${({ width }) => width || '1000px'};
   height: ${({ height }) => height || ''};
 `;
 
 const Box = styled.div<StyleProps>`
-  width: ${({ width }) => width || '300px'};
+  width: ${({ width }) => width || '280px'};
   height: inhert;
   background-color: ${({ color }) => color || 'none'};
   padding: 0 20px;
@@ -152,7 +154,7 @@ export default function TradeAi() {
               <EditBtn />
             </Row>
           </Box>
-          <Box width='700px' color='var(--dark-color)'>
+          <Box width='640px' color='var(--dark-color)'>
             <TradeInput
               isTrade={isTrade} setIsTrade={setIsTrade}
               setShowModal={setShowModal}
@@ -166,13 +168,15 @@ export default function TradeAi() {
       )}
       {hasResult && <SubContainer>
         <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
-        <BoxContainer>
+        <BoxContainer width='1280px' style={{ alignItems: 'center' }}>
           <Box>
             {stockRateInfo.map((item) => (
               <SemiCircleProgress color={item.category} percent={item.percent}/>
             ))}
           </Box>
-          <Box width='700px' />
+          <Box width='860px'>
+            <TradeChart />
+          </Box>
         </BoxContainer>
       </SubContainer>}
     </Container>

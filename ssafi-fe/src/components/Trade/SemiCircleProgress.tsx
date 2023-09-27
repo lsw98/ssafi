@@ -7,14 +7,14 @@ interface SemiCircleProps {
 }
 
 const DonutContainer = styled.div`
-  height: 170px;
+  height: 160px;
   margin: 20px 0;
   overflow: hidden;
 `;
 
 const Donut = styled.div<{halfPercent : number, barColor : string}>`
-  width: calc(100% - 16px);
-  padding-bottom: calc(100% - 16px);
+  width: calc(100% - 24px);
+  padding-bottom: calc(100% - 24px);
   margin: 0 auto;
   border-radius: 50%;
   position: relative;
@@ -28,29 +28,26 @@ const Donut = styled.div<{halfPercent : number, barColor : string}>`
   );
 
   &:before {
-    color: var(--black-color);
     width: 70%;
     background: var(--background-color);
     border-radius: 50%;
     position: absolute;
     left: 15%;
-    top: 14%;
+    top: 16%;
     content: attr(data-percent)'%';
     transform: skew(-0.03deg);
     font-weight: 800;
-    font-size: 36px;
-    padding: 20% 0 35% 0;
+    font-size: 32px;
+    padding: 22% 0 35% 0;
   }
 `;
 
 const StockCategoryName = styled.div`
   position: absolute;
-  top: 54px;
+  top: 56px;
   width: 100%;
   text-align: center;
-  color: var(--black-color);
-  font-weight: 400;
-  font-size: 26px;
+  font-size: 24px;
 `;
 
 const SemiCircleProgress = ({ color, percent }: SemiCircleProps) => {
