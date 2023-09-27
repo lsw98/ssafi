@@ -23,4 +23,6 @@ public interface MemberService {
     void deleteMember(long memberId) throws Exception;
 
     void enrollMBTI(MemberDetail memberDetail, MemberMBTIEnrollRequestDto requestDto);
+
+    void registerKeyAccount(MemberDetail memberDetail, MemberKeyAccountRegisterRequestDto requestDto);
 }

@@ -108,6 +108,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
+    public void registerKeyAccount(MemberDetail memberDetail,
+            MemberKeyAccountRegisterRequestDto requestDto) {
+        Member member = memberDetail.getMember();
+        member.modifyAppKey(requestDto.getAppKey());
+        member.modifySecretKey(requestDto.getSecretKey());
+        member.modifyAccountPrefix(requestDto.getAccountPrefix());
+        member.modifyAccountSuffix(requestDto.getAccountSuffix());
+    }
+
+    @Transactional
+    @Override
     public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto) {
         Member member = memberDetail.getMember();
         Double aiScore = memberScoreUpdateRequestDto.getAiScore();

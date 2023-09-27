@@ -50,6 +50,14 @@ public class MemberController {
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_MBTI_ENROLL_SUCCESS), HttpStatus.OK);
     }
 
+    @PostMapping("/key-account")
+    public ResponseEntity<Response> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) throws Exception {
+
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        memberService.registerKeyAccount(memberDetail, requestDto);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS), HttpStatus.OK);
+    }
+
     @PutMapping("/mbti/score")
     public ResponseEntity<MemberScoreResponseDto> modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberScoreUpdateRequestDto requestDto) throws Exception {
 
