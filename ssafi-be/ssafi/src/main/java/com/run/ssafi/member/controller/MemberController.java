@@ -42,7 +42,15 @@ public class MemberController {
         }
     }
 
-    @PutMapping("/score")
+    @PostMapping("/mbti")
+    public ResponseEntity<Response> enrollMBTI(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberMBTIEnrollRequestDto requestDto) throws Exception {
+
+        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
+        memberService.enrollMBTI(memberDetail, requestDto);
+        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_MBTI_ENROLL_SUCCESS), HttpStatus.OK);
+    }
+
+    @PutMapping("/mbti/score")
     public ResponseEntity<MemberScoreResponseDto> modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberScoreUpdateRequestDto requestDto) throws Exception {
 
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
@@ -50,7 +58,7 @@ public class MemberController {
         return new ResponseEntity<>(memberScoreResponseDto, HttpStatus.OK);
     }
 
-    @PatchMapping("/type")
+    @PatchMapping("/mbti/type")
     public ResponseEntity<MemberTypeResponseDto> modifyType(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberTypeUpdateRequestDto requestDto) throws Exception {
 
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);

@@ -86,9 +86,30 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public void enrollMBTI(MemberDetail memberDetail, MemberMBTIEnrollRequestDto requestDto) {
+        Member member = memberDetail.getMember();
+        Double aiScore = requestDto.getAiScore();
+        Double pbScore = requestDto.getPbScore();
+        Double mwScore = requestDto.getMwScore();
+        Double lcScore = requestDto.getLcScore();
+        String type = requestDto.getType();
+
+        Score score;
+        score = Score.builder()
+                .id(member.getId())
+                .aiScore(aiScore)
+                .pbScore(pbScore)
+                .mwScore(mwScore)
+                .lcScore(lcScore)
+                .build();
+        scoreRepository.save(score);
+        member.modifyType(type);
+    }
+
+    @Transactional
+    @Override
+    public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto) {
+        Member member = memberDetail.getMember();
         Double aiScore = memberScoreUpdateRequestDto.getAiScore();
         Double pbScore = memberScoreUpdateRequestDto.getPbScore();
         Double mwScore = memberScoreUpdateRequestDto.getMwScore();
@@ -126,9 +147,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberTypeResponseDto updateType(MemberDetail memberDetail, MemberTypeUpdateRequestDto memberTypeUpdateRequestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public MemberTypeResponseDto updateType(MemberDetail memberDetail, MemberTypeUpdateRequestDto memberTypeUpdateRequestDto) {
+        Member member = memberDetail.getMember();
         member.modifyType(memberTypeUpdateRequestDto.getType());
         MemberTypeResponseDto memberTypeResponseDto = MemberTypeResponseDto.builder()
                 .type(member.getType())
@@ -139,9 +159,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto requestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto requestDto) {
+        Member member = memberDetail.getMember();
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         MemberKeyResponseDto memberKeyResponseDto = MemberKeyResponseDto.builder()
@@ -152,9 +171,10 @@ public class MemberServiceImpl implements MemberService {
         return memberKeyResponseDto;
     }
 
+    @Transactional
     @Override
-    public MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto requestDto) throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto requestDto) {
+        Member member = memberDetail.getMember();
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
         member.modifyAccountSuffix(requestDto.getAccountSuffix());
         MemberAccountResponseDto memberAccountResponseDto = MemberAccountResponseDto.builder()
