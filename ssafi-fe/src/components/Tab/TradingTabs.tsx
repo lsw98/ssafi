@@ -7,6 +7,7 @@ import {
   fetchSellStock,
   fetchModifyStock,
 } from '../../utility/api';
+import WebSocketComponent from '../../utility/webSockets';
 
 const PriceList = styled.div`
 display-flex;
@@ -277,7 +278,9 @@ function TradingTabs() {
         <div
           className={toggleState === 1 ? 'content active-content' : 'content'}
         >
-          <PriceList>호가</PriceList>
+          <PriceList>
+            <WebSocketComponent />
+          </PriceList>
           <TradingBox>
             <PriceDivision>
               <Specified onClick={handleSpecifiedClick}>

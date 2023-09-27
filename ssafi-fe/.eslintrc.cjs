@@ -48,6 +48,9 @@ module.exports = {
     'prefer-destructuring': 'off',
     'function-paren-newline': 'off',
     'no-plusplus': 'off',
+    'prefer-template': 'off',
+    'consistent-return': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
   },
   settings: {
     'import/resolver': {

@@ -35,6 +35,7 @@ privateApi.interceptors.response.use(
           const newRefreshToken = response.headers.refreshtoken;
           localStorage.setItem('accessToken', newAccessToken);
           localStorage.setItem('refreshToken', newRefreshToken);
+          console.log(localStorage);
           privateApi.defaults.headers.Authorization = newAccessToken;
           originalRequest.headers.Authorization = newAccessToken;
           return privateApi(originalRequest);
