@@ -1,11 +1,14 @@
 package com.run.ssafi.stock.service;
 
 import com.run.ssafi.config.auth.MemberDetail;
+import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
 import com.run.ssafi.stock.dto.AuthResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 
 public interface StockService {
+
+    AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto);
 
     AuthResponseDto getAuth(MemberDetail memberDetail);
 

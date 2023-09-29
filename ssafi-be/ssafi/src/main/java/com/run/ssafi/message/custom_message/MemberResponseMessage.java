@@ -13,6 +13,7 @@ public enum MemberResponseMessage implements ResponseMessage {
     MEMBER_DELETE_SUCCESS( "회원 탈퇴가 완료되었습니다."),
     MEMBER_MBTI_ENROLL_SUCCESS("회원의 금융 MBTI가 정상적으로 등록되었습니다."),
     MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS("앱 키 및 시크릿 키, 계좌번호 등록이 완료되었습니다."),
+    MEMBER_KEY_ACCOUNT_LOADING_SUCCESS("앱 키 및 시크릿 키, 계좌번호를 정상적으로 불러왔습니다."),
     MEMBER_SCORE_UPDATE_SUCCESS("유형별 진단 점수가 수정되었습니다."),
     MEMBER_TYPE_UPDATE_SUCCESS("투자 유형 수정이 완료되었습니다."),
     MEMBER_KEY_UPDATE_SUCCESS("앱 키 및 시크릿 키 수정이 완료되었습니다."),

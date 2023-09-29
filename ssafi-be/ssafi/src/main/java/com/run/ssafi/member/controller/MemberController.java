@@ -2,8 +2,6 @@ package com.run.ssafi.member.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
-import com.run.ssafi.exception.customexception.MemberException;
-import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.service.MemberService;
 import com.run.ssafi.message.Response;
@@ -45,23 +43,25 @@ public class MemberController {
     @PostMapping("/mbti")
     public ResponseEntity<Response> enrollMBTI(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberMBTIEnrollRequestDto requestDto) {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         memberService.enrollMBTI(memberDetail, requestDto);
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_MBTI_ENROLL_SUCCESS), HttpStatus.OK);
     }
 
     @PostMapping("/key-account")
-    public ResponseEntity<Response> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) {
+    public ResponseEntity<MemberKeyAccountRegisterResponseDto> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
-        memberService.registerKeyAccount(memberDetail, requestDto);
-        return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(memberService.registerKeyAccount(memberDetail, requestDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/key-account")
+    public ResponseEntity<MemberKeyAccountResponseDto> getKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail) {
+
+        return new ResponseEntity<>(memberService.getKeyAccount(memberDetail), HttpStatus.OK);
     }
 
     @PutMapping("/mbti/score")
     public ResponseEntity<MemberScoreResponseDto> modifyScore(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberScoreUpdateRequestDto requestDto) throws Exception {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         MemberScoreResponseDto memberScoreResponseDto = memberService.updateScore(memberDetail, requestDto);
         return new ResponseEntity<>(memberScoreResponseDto, HttpStatus.OK);
     }
@@ -69,7 +69,6 @@ public class MemberController {
     @PatchMapping("/mbti/type")
     public ResponseEntity<MemberTypeResponseDto> modifyType(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberTypeUpdateRequestDto requestDto) throws Exception {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         MemberTypeResponseDto memberTypeResponseDto = memberService.updateType(memberDetail, requestDto);
         return new ResponseEntity<>(memberTypeResponseDto, HttpStatus.OK);
     }
@@ -77,7 +76,6 @@ public class MemberController {
     @PatchMapping("/key")
     public ResponseEntity<MemberKeyResponseDto> modifyKey(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyUpdateRequestDto requestDto) throws Exception {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         MemberKeyResponseDto memberKeyResponseDto = memberService.updateKey(memberDetail, requestDto);
         return new ResponseEntity<>(memberKeyResponseDto, HttpStatus.OK);
     }
@@ -85,7 +83,6 @@ public class MemberController {
     @PatchMapping("/account")
     public ResponseEntity<MemberAccountResponseDto> modifyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberAccountUpdateRequestDto requestDto) throws Exception {
 
-        if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         MemberAccountResponseDto memberAccountResponseDto = memberService.updateAccount(memberDetail, requestDto);
         return new ResponseEntity<>(memberAccountResponseDto, HttpStatus.OK);
     }

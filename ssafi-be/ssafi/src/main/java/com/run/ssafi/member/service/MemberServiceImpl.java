@@ -8,18 +8,15 @@ import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.repository.MemberRepository;
 import com.run.ssafi.member.repository.ScoreRepository;
-import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.MemberResponseMessage;
+import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.service.StockService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -31,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
     private final ScoreRepository scoreRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final StockService stockService;
 
     @Transactional
     @Override
@@ -46,25 +45,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member emailCheck(String email) throws Exception {
         return memberRepository.findByEmail(email);
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<?> updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) {
-        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
-
-        member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
-        member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
-        Map<String, Object> response = new HashMap<>();
-
-        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
-                .email(member.getEmail())
-                .personalAgreement(member.getPersonalAgreement())
-                .build();
-
-        response.put("Member", memberInfoResponseDto);
-        response.put("message", Response.of(MemberResponseMessage.MEMBER_UPDATE_SUCCESS));
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Override
@@ -129,13 +109,42 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void registerKeyAccount(MemberDetail memberDetail,
+    public MemberKeyAccountRegisterResponseDto registerKeyAccount(MemberDetail memberDetail,
             MemberKeyAccountRegisterRequestDto requestDto) {
         Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+
+        MemberKeyUpdateRequestDto memberKeyUpdateRequestDto = MemberKeyUpdateRequestDto.builder()
+                .appKey(requestDto.getAppKey())
+                .secretKey(requestDto.getSecretKey())
+                .build();
+
+        AuthResponseDto authResponseDto = stockService.getAuth(memberKeyUpdateRequestDto);
+
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
         member.modifyAccountSuffix(requestDto.getAccountSuffix());
+
+        MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
+                .accessToken(authResponseDto.getAccessToken())
+                .tokenType(authResponseDto.getTokenType())
+                .expiresIn(authResponseDto.getExpiresIn())
+                .message(MemberResponseMessage.MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS.getMessage())
+                .build();
+        return memberKeyAccountRegisterResponseDto;
+    }
+
+    @Override
+    public MemberKeyAccountResponseDto getKeyAccount(MemberDetail memberDetail) {
+        Member member = memberDetail.getMember();
+        MemberKeyAccountResponseDto memberKeyAccountResponseDto = MemberKeyAccountResponseDto.builder()
+                .appKey(member.getAppKey())
+                .secretKey(member.getSecretKey())
+                .accountPrefix(member.getAccountPrefix())
+                .accountSuffix(member.getAccountSuffix())
+                .message(MemberResponseMessage.MEMBER_KEY_ACCOUNT_LOADING_SUCCESS.getMessage())
+                .build();
+        return memberKeyAccountResponseDto;
     }
 
     @Transactional

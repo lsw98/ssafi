@@ -82,8 +82,6 @@ public class SocialController {
                 .message(AuthResponseMessage.SOCIAL_LOGIN_SUCCESS.getMessage())
                 .build();
 
-        System.out.println("로그인 시 accessToken : " + accessToken);
-
         return new ResponseEntity<>(socialLoginResponse, HttpStatus.OK);
     }
 }

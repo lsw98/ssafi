@@ -8,6 +8,7 @@ import com.run.ssafi.domain.Kospi;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.StockExceptionMessage;
+import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
 import com.run.ssafi.message.custom_message.AuthResponseMessage;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
@@ -22,6 +23,7 @@ import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
+import feign.FeignException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,14 @@ public class StockServiceImpl implements StockService {
     private final KospiRepository kospiRepository;
     private final InterestStockRepository interestStockRepository;
     private final HoldStockRepository holdStockRepository;
+
+    @Override
+    public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
+        AuthResponseDto authResponseDto = new AuthResponseDto();
+        extracted(authResponseDto, requestDto);
+
+        return authResponseDto;
+    }
 
     @Override
     public AuthResponseDto getAuth(MemberDetail memberDetail) {
@@ -120,32 +130,44 @@ public class StockServiceImpl implements StockService {
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {
+        getAccessToken(authResponseDto, member.getAppKey(), member.getSecretKey());
+    }
+
+    public void extracted(AuthResponseDto authResponseDto, MemberKeyUpdateRequestDto requestDto) {
+        getAccessToken(authResponseDto, requestDto.getAppKey(), requestDto.getSecretKey());
+    }
+
+    private void getAccessToken(AuthResponseDto authResponseDto, String appKey, String secretKey) {
         KISAuthResponse kisAuthResponse;
         KISAccessTokenRequestDto kisAccessTokenRequestDto;
 
-        if (member.getAppKey() != null) {
-            authResponseDto.setAppKey(member.getAppKey());
+        if (appKey != null) {
+            authResponseDto.setAppKey(appKey);
         }
-        if (member.getSecretKey() != null) {
-            authResponseDto.setSecretKey(member.getSecretKey());
+        if (secretKey != null) {
+            authResponseDto.setSecretKey(secretKey);
         }
-        if (member.getAppKey() != null && member.getSecretKey() != null) {
-            kisAccessTokenRequestDto = KISAccessTokenRequestDto.builder()
-                    .appKey(member.getAppKey())
-                    .appSecret(member.getSecretKey())
-                    .grantType(KISAuthProperties.grantType)
-                    .build();
+        if (appKey != null && secretKey != null) {
+            try {
+                kisAccessTokenRequestDto = KISAccessTokenRequestDto.builder()
+                        .appKey(appKey)
+                        .appSecret(secretKey)
+                        .grantType(KISAuthProperties.grantType)
+                        .build();
 
-            ResponseEntity<String> response = kisAuthApi.getAccessToken(kisAccessTokenRequestDto);
-            kisAuthResponse = new Gson()
-                    .fromJson(
-                            String.valueOf(response.getBody())
-                            , KISAuthResponse.class
-                    );
-            authResponseDto.setAccessToken(kisAuthResponse.getAccessToken());
-            authResponseDto.setTokenType(kisAuthResponse.getTokenType());
-            authResponseDto.setExpiresIn(kisAuthResponse.getExpiresIn());
-            authResponseDto.setMessage(AuthResponseMessage.KIS_ACCESS_TOKEN_ISSUE_SUCCESS.getMessage());
+                ResponseEntity<String> response = kisAuthApi.getAccessToken(kisAccessTokenRequestDto);
+                kisAuthResponse = new Gson()
+                        .fromJson(
+                                String.valueOf(response.getBody())
+                                , KISAuthResponse.class
+                        );
+                authResponseDto.setAccessToken(kisAuthResponse.getAccessToken());
+                authResponseDto.setTokenType(kisAuthResponse.getTokenType());
+                authResponseDto.setExpiresIn(kisAuthResponse.getExpiresIn());
+                authResponseDto.setMessage(AuthResponseMessage.KIS_ACCESS_TOKEN_ISSUE_SUCCESS.getMessage());
+            } catch (FeignException e){
+                throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
+            }
         }
     }
 }
