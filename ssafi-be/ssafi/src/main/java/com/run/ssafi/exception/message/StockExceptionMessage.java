@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum StockExceptionMessage {
+    TOKEN_NOT_FOUND("토큰을 불러올 수 없습니다.", HttpStatus.NOT_FOUND),
     DATA_NOT_FOUND("해당 종목을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String message;
