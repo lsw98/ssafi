@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -221,7 +220,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void deleteMember(long memberId) throws Exception {
+    public void deleteMember(long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
             member.modifyExit(true);

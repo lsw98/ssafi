@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PostMapping("/mbti")
-    public ResponseEntity<Response> enrollMBTI(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberMBTIEnrollRequestDto requestDto) throws Exception {
+    public ResponseEntity<Response> enrollMBTI(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberMBTIEnrollRequestDto requestDto) {
 
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         memberService.enrollMBTI(memberDetail, requestDto);
@@ -51,7 +51,7 @@ public class MemberController {
     }
 
     @PostMapping("/key-account")
-    public ResponseEntity<Response> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) throws Exception {
+    public ResponseEntity<Response> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) {
 
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
         memberService.registerKeyAccount(memberDetail, requestDto);
