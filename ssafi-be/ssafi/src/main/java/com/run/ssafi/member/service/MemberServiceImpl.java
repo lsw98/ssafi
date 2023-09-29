@@ -51,8 +51,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public ResponseEntity<?> updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
-        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
+    public ResponseEntity<?> updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
 
         member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
         member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
@@ -71,15 +71,37 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberInfoResponseDto getMemberInfo(String memberId) throws Exception {
         Member member = memberRepository.findByEmail(memberId);
+        Score score = scoreRepository.findById(member.getId()).orElse(null);
 
-        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
-                .email(member.getEmail())
-                .snsType(member.getSnsType())
-                .type(member.getType())
-                .appKey(member.getAppKey())
-                .secretKey(member.getSecretKey())
-                .personalAgreement(member.getPersonalAgreement())
-                .build();
+        MemberInfoResponseDto memberInfoResponseDto;
+
+        if(score == null) {
+            memberInfoResponseDto = MemberInfoResponseDto.builder()
+                    .email(member.getEmail())
+                    .snsType(member.getSnsType())
+                    .type(member.getType())
+                    .appKey(member.getAppKey())
+                    .secretKey(member.getSecretKey())
+                    .personalAgreement(member.getPersonalAgreement())
+                    .accountPrefix(member.getAccountPrefix())
+                    .accountSuffix(member.getAccountSuffix())
+                    .build();
+        } else {
+            memberInfoResponseDto = MemberInfoResponseDto.builder()
+                    .email(member.getEmail())
+                    .snsType(member.getSnsType())
+                    .type(member.getType())
+                    .appKey(member.getAppKey())
+                    .secretKey(member.getSecretKey())
+                    .personalAgreement(member.getPersonalAgreement())
+                    .accountPrefix(member.getAccountPrefix())
+                    .accountSuffix(member.getAccountSuffix())
+                    .aiScore(score.getAiScore())
+                    .pbScore(score.getPbScore())
+                    .mwScore(score.getMwScore())
+                    .lcScore(score.getLcScore())
+                    .build();
+        }
 
         return memberInfoResponseDto;
     }
@@ -87,12 +109,13 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void enrollMBTI(MemberDetail memberDetail, MemberMBTIEnrollRequestDto requestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         Double aiScore = requestDto.getAiScore();
         Double pbScore = requestDto.getPbScore();
         Double mwScore = requestDto.getMwScore();
         Double lcScore = requestDto.getLcScore();
         String type = requestDto.getType();
+        member.modifyType(type);
 
         Score score;
         score = Score.builder()
@@ -103,14 +126,13 @@ public class MemberServiceImpl implements MemberService {
                 .lcScore(lcScore)
                 .build();
         scoreRepository.save(score);
-        member.modifyType(type);
     }
 
     @Transactional
     @Override
     public void registerKeyAccount(MemberDetail memberDetail,
             MemberKeyAccountRegisterRequestDto requestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
@@ -120,7 +142,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         Double aiScore = memberScoreUpdateRequestDto.getAiScore();
         Double pbScore = memberScoreUpdateRequestDto.getPbScore();
         Double mwScore = memberScoreUpdateRequestDto.getMwScore();
@@ -159,7 +181,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public MemberTypeResponseDto updateType(MemberDetail memberDetail, MemberTypeUpdateRequestDto memberTypeUpdateRequestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         member.modifyType(memberTypeUpdateRequestDto.getType());
         MemberTypeResponseDto memberTypeResponseDto = MemberTypeResponseDto.builder()
                 .type(member.getType())
@@ -171,7 +193,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto requestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         MemberKeyResponseDto memberKeyResponseDto = MemberKeyResponseDto.builder()
@@ -185,7 +207,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto requestDto) {
-        Member member = memberDetail.getMember();
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
         member.modifyAccountSuffix(requestDto.getAccountSuffix());
         MemberAccountResponseDto memberAccountResponseDto = MemberAccountResponseDto.builder()

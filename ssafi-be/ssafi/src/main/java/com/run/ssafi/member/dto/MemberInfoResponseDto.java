@@ -11,20 +11,30 @@ public class MemberInfoResponseDto {
 
     private String email;
     private SnsType snsType;
-    private String score;
     private String type;
     private Character personalAgreement;
     private String appKey;
     private String secretKey;
+    private String accountPrefix;
+    private String accountSuffix;
+    private Double aiScore;
+    private Double pbScore;
+    private Double mwScore;
+    private Double lcScore;
 
     @Builder
-    public MemberInfoResponseDto(String email, SnsType snsType, String score, String type, String appKey, String secretKey, Character personalAgreement) {
+    public MemberInfoResponseDto(String email, SnsType snsType, String type, String appKey, String secretKey, Character personalAgreement, String accountPrefix, String accountSuffix, Double aiScore, Double pbScore, Double mwScore, Double lcScore) {
         this.email = email;
         this.snsType = snsType;
-        this.score = score;
         this.type = type;
         this.appKey = appKey;
         this.secretKey = secretKey;
         this.personalAgreement = personalAgreement;
+        this.accountPrefix = accountPrefix;
+        this.accountSuffix = accountSuffix;
+        this.aiScore = aiScore;
+        this.pbScore = pbScore;
+        this.mwScore = mwScore;
+        this.lcScore = lcScore;
     }
 }
