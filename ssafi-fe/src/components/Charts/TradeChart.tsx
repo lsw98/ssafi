@@ -26,9 +26,9 @@ ChartJS.register(
 );
 
 const options = {
-  maxBarThickness: 50,
+  maxBarThickness: 40,
   maintainAspectRatio: true,
-  grouped: false,
+  // grouped: false,
   responsive: true,
   interaction: {
     mode: 'index' as const,
@@ -42,10 +42,23 @@ const options = {
   //   },
   // },
   scales: {
+    x: {
+      grid: {
+        drawOnChartArea: false,
+      },
+      // ticks: {
+      //   display: true,
+      // },
+    },
     y: {
       type: 'linear' as const,
       display: true,
       position: 'left' as const,
+      ticks: {
+        font: {
+          size: 12,
+        },
+      },
     },
     y1: {
       type: 'linear' as const,
@@ -54,55 +67,78 @@ const options = {
       grid: {
         drawOnChartArea: false,
       },
+      ticks: {
+        font: {
+          size: 12,
+        },
+      },
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
+const totalData = [200000, 190000, 210000, 210000, 200800, 200000, 188000, 195000, 205400, 205000, 210000, 210000, 200800, 200000, 188000, 195000, 205400, 205000];
+const dangerData = [48200, 60020, 25500, 16070, 26000, 32000, 40500, 50020, 25500, 19070, 25500, 16070, 26000, 32000, 40500, 50020, 25500, 19070];
+const middleData = [50420, 34500, 52700, 48320, 52200, 32600, 55240, 52700, 48320, 52200, 52700, 48320, 52200, 32600, 55240, 52700, 48320, 52200];
+const safeData = [77000, 79000, 89000, 71020, 86000, 90000, 89080, 90000, 89080, 79000, 89000, 71020, 86000, 90000, 89080, 90000, 89080, 79000];
+const profitData = [-423, 489, -193, -330, 108, -20, 110, 112, 99, 90, -193, -487, 108, -35, 60, 222, 129, 90];
 
 export const data = {
   labels,
   datasets: [
     {
       type: 'line' as const,
+      label: '전체',
+      borderColor: '#325488',
+      borderWidth: 3,
+      fill: false,
+      data: totalData,
+      yAxisID: 'y',
+    },
+    {
+      type: 'line' as const,
       label: '위험형',
-      borderColor: '#FD5353',
+      borderColor: '#FF9292',
       borderWidth: 2,
       fill: false,
-      data: [4820, 602, 2550, 1500, 2600, 3200, 4500],
+      data: dangerData,
       yAxisID: 'y',
+      hidden: true,
     },
     {
       type: 'line' as const,
       label: '중립형',
-      borderColor: '#EFDA4C',
+      borderColor: '#F9F085',
       borderWidth: 2,
       fill: false,
-      data: [520, 3200, 5200, 4820, 5220, 3200, 520],
+      data: middleData,
       yAxisID: 'y',
+      hidden: true,
     },
     {
       type: 'line' as const,
       label: '안정형',
-      borderColor: '#3AB67A',
+      borderColor: '#8CD6AF',
       borderWidth: 2,
       fill: false,
-      data: [870, 2500, 1000, 1102, 200, 1000, 810],
+      data: safeData,
       yAxisID: 'y',
+      hidden: true,
     },
+    // {
+    //   type: 'bar' as const,
+    //   label: 'Dataset 2',
+    //   data: [0, 699, 0, 0, 108, 0, 60],
+    //   backgroundColor: '#FF6464',
+    //   borderWidth: 0,
+    //   yAxisID: 'y1',
+    // },
     {
       type: 'bar' as const,
-      label: 'Dataset 2',
-      data: [0, 699, 0, 0, 108, 0, 60],
-      backgroundColor: '#FF6464',
-      borderWidth: 0,
-      yAxisID: 'y1',
-    },
-    {
-      type: 'bar' as const,
-      label: 'Dataset 2',
-      data: [-423, 0, -193, -847, 0, -20, 0],
-      backgroundColor: '#434FD9',
+      label: '실현손익',
+      data: profitData,
+      backgroundColor: profitData.map((value) => (value < 0 ? '#434FD9' : '#FF6464')),
+      // backgroundColor: '#92D2BE',
       borderWidth: 0,
       yAxisID: 'y1',
     },
