@@ -1,5 +1,6 @@
-public class CICDTest_1 {
+public class cicdTest {
 
     public String plz = "can do it";
+
 
 }
