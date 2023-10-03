@@ -22,6 +22,8 @@ public interface MemberService {
 
     void enrollMBTI(MemberDetail memberDetail, MemberMBTIEnrollRequestDto requestDto);
 
+    MemberMBTIResponseDto getMBTI(MemberDetail memberDetail);
+
     MemberKeyAccountRegisterResponseDto registerKeyAccount(MemberDetail memberDetail, MemberKeyAccountRegisterRequestDto requestDto);
     MemberKeyAccountResponseDto getKeyAccount(MemberDetail memberDetail);
 }
