@@ -52,10 +52,10 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
   try {
     const currentTime = getCurrentTime();
     const response = await axios.get(
-      '/uapi/domestic-stock/v1/quotations/volume-rank',
+      'https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/volume-rank',
       config,
     );
-    // console.log(response);
+    console.log(response.data);
 
     if (response.data.rt_cd === '0') {
       callback(currentTime); // 현재 시간을 callback 함수에 전달
@@ -73,7 +73,7 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
 };
 
 // 종목코드를 가져오는 함수
-export async function fetchStockInfo() {
+export async function fetchStockCode() {
   const response = await fetch('/kospi200.txt');
   const text = await response.text();
   const lines = text.trim().split('\n'); // 빈 줄 제거 후 줄 단위로 나눔
@@ -316,6 +316,131 @@ export const fetchCheckAccount = async () => {
       });
 
       return refinedOutput;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return [];
+  }
+};
+
+export const fetchAskingPrice = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST01010200',
+    },
+    params: {
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      console.log(response);
+      const output = response.data.output1;
+
+      return {
+        askp1: output.askp1,
+        askp2: output.askp2,
+        askp3: output.askp3,
+        askp_rsqn1: output.askp_rsqn1,
+        askp_rsqn2: output.askp_rsqn2,
+        askp_rsqn3: output.askp_rsqn3,
+        bidp1: output.bidp1,
+        bidp2: output.bidp2,
+        bidp3: output.bidp3,
+        bidp_rsqn1: output.bidp_rsqn1,
+        bidp_rsqn2: output.bidp_rsqn2,
+        bidp_rsqn3: output.bidp_rsqn3,
+      };
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return null;
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return null;
+  }
+};
+
+export const fetchStockInfo = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST03010100',
+    },
+    params: {
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+      fid_input_date_1: '20230101', // 시작일자
+      fid_input_date_2: '20231231', // 종료일자
+      fid_period_div_code: 'D', // 기간분류코드 (D:일봉, W:주봉, M:월봉, Y:년봉)
+      fid_org_adj_prc: '1', // 수정주가 원주가 가격여부 (0:수정주가 1:원주가)
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output1;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return [];
+  }
+};
+
+export const fetchMinutePrices = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST03010200',
+    },
+    params: {
+      fid_etc_cls_code: '',
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+      fid_input_hour_1: '100000', // 현재시간
+      fid_pw_data_incu_yn: 'Y',
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output2;
     } else {
       console.error('API Error:', response.data.msg1);
       return [];

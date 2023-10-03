@@ -52,6 +52,8 @@ module.exports = {
     'consistent-return': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     'max-len': 'off',
+    radix: 'off',
+    'object-shorthand': 'off',
   },
   settings: {
     'import/resolver': {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './StockTabs.css';
 import searchIcon from '../../assets/icons/search-icon.svg';
-import { fetchStockInfo } from '../../utility/api';
+import { fetchStockCode } from '../../utility/api';
 import { fetchStockPrice } from '../../utility/api';
 
 // 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
@@ -66,8 +66,11 @@ const Tooltip = styled.div<{ color: string }>`
   color: var(--black-color);
   color: ${(props) => props.color};
 `;
+interface StockTabsProps {
+  onStockClick: (stockCode: string) => void;
+}
 
-function StockTabs() {
+function StockTabs({ onStockClick }: StockTabsProps) {
   const [toggleState, setToggleState] = useState(1);
   const [stockInfo, setStockInfo] = useState<any[]>([]);
   const [stockData, setStockData] = useState<any[]>([]); // 종목 정보를 저장할 상태
@@ -87,7 +90,7 @@ function StockTabs() {
 
   // 모든 주식 코드를 미리 가져온다
   useEffect(() => {
-    fetchStockInfo().then((info) => {
+    fetchStockCode().then((info) => {
       setStockInfo(info);
 
       // 모든 주식 이름을 먼저 stockData에 설정
@@ -198,7 +201,12 @@ function StockTabs() {
 
               if (index >= start && index < end) {
                 return (
-                  <li key={index}>
+                  <li
+                    key={index}
+                    onClick={() => {
+                      onStockClick(stock.code);
+                    }}
+                  >
                     <svg
                       className={`star ${clickedStar[index] ? 'filled' : ''}`}
                       onClick={() => toggleStar(stock, index)}

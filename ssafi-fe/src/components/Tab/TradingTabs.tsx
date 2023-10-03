@@ -6,14 +6,24 @@ import {
   fetchBuyStock,
   fetchSellStock,
   fetchModifyStock,
+  fetchAskingPrice,
 } from '../../utility/api';
-import WebSocketComponent from '../../utility/webSockets';
+// import WebSocketComponent from '../../utility/webSockets';
 
 const PriceList = styled.div`
-display-flex;
-justify-content: start;
-width:30%;
-height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 30%;
+  height: 90%;
+`;
+
+const PriceItem = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
+
+  .volume {
+    font-size: 0.8em;
+    color: black;
 `;
 
 const TradingBox = styled.div`
@@ -142,15 +152,46 @@ const ModalContent = styled.div`
     }
   }
 `;
+interface PriceData {
+  askp1: number;
+  askp2: number;
+  askp3: number;
+  bidp1: number;
+  bidp2: number;
+  bidp3: number;
+  askp_rsqn1: number;
+  askp_rsqn2: number;
+  askp_rsqn3: number;
+  bidp_rsqn1: number;
+  bidp_rsqn2: number;
+  bidp_rsqn3: number;
+}
 
 function TradingTabs() {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index: number) => {
     setToggleState(index);
   };
+  const [askingPrices, setAskingPrices] = useState<PriceData | null>(null);
+  const stockCode = '005930';
   const [division, setDivision] = useState('01');
   const [isSpecifiedChecked, setSpecifiedChecked] = useState(false);
   const [isMarketChecked, setMarketChecked] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [price, setPrice] = useState('');
+  const [total, setTotal] = useState(0);
+  const [buyModalOpen, setBuyModalOpen] = useState(false);
+  const [sellModalOpen, setSellModalOpen] = useState(false);
+  const [modifyModalOpen, setModifyModalOpen] = useState(false);
+
+  useEffect(() => {
+    const getAskingPrices = async () => {
+      const prices = await fetchAskingPrice(stockCode);
+      setAskingPrices(prices);
+    };
+    getAskingPrices();
+  }, [stockCode]); // stockCode가 변경될 경우에만 useEffect가 다시 실행됩니다.
+
   const handleSpecifiedClick = () => {
     if (division === '01') {
       setDivision(''); // 지정이 이미 선택되어 있다면 선택 해제
@@ -159,6 +200,7 @@ function TradingTabs() {
       setDivision('01'); // 지정을 선택
       setSpecifiedChecked(true);
       setMarketChecked(false); // 시장은 선택 해제
+      setPrice(''); // 지정가 선택 시, 가격을 초기화
     }
   };
 
@@ -166,15 +208,17 @@ function TradingTabs() {
     if (division === '00') {
       setDivision(''); // 시장이 이미 선택되어 있다면 선택 해제
       setMarketChecked(false);
+      setPrice(''); // 시장가 선택 해제 시, 가격을 초기화
     } else {
       setDivision('00'); // 시장을 선택
       setMarketChecked(true);
       setSpecifiedChecked(false); // 지정은 선택 해제
+      // 시장가 선택 시, 매도호가 중 askingPrices.askp1를 가격으로 설정
+      if (askingPrices) {
+        setPrice(askingPrices.askp1.toString()); // 숫자를 문자열로 변환
+      }
     }
   };
-  const [amount, setAmount] = useState('');
-  const [price, setPrice] = useState('');
-  const [total, setTotal] = useState(0);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
@@ -187,10 +231,6 @@ function TradingTabs() {
     // amount와 price가 숫자형태이면 아래와 같이 곱셈을 바로 할 수 있습니다.
     setTotal(Number(amount) * Number(price));
   }, [amount, price]); // amount나 price 상태가 변경될 때마다 이 훅을 실행
-
-  const [buyModalOpen, setBuyModalOpen] = useState(false);
-  const [sellModalOpen, setSellModalOpen] = useState(false);
-  const [modifyModalOpen, setModifyModalOpen] = useState(false);
 
   const handleOpenBuyModal = () => {
     setBuyModalOpen(true);
@@ -279,7 +319,43 @@ function TradingTabs() {
           className={toggleState === 1 ? 'content active-content' : 'content'}
         >
           <PriceList>
-            <WebSocketComponent />
+            {askingPrices ? (
+              <>
+                <PriceItem color="blue">
+                  {askingPrices.askp3}
+                  <div className="volume">{askingPrices.askp_rsqn3}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp2}
+                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp1}
+                  <div className="volume">{askingPrices.askp_rsqn1}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+
+            {askingPrices ? (
+              <>
+                <PriceItem color="red">
+                  {askingPrices.bidp1}
+                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp2}
+                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp3}
+                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
           </PriceList>
           <TradingBox>
             <PriceDivision>
@@ -334,7 +410,10 @@ function TradingTabs() {
             </PriceDivision>
             <PriceAble>
               주문가능
-              <Budget>1000</Budget>
+              <Budget>
+                1000
+                {/* {계좌잔고} */}
+              </Budget>
             </PriceAble>
             <InputWrapper>
               <InputLabel>수량</InputLabel>
@@ -383,7 +462,45 @@ function TradingTabs() {
         <div
           className={toggleState === 2 ? 'content active-content' : 'content'}
         >
-          <PriceList>호가</PriceList>
+          <PriceList>
+            {askingPrices ? (
+              <>
+                <PriceItem color="blue">
+                  {askingPrices.askp3}
+                  <div className="volume">{askingPrices.askp_rsqn3}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp2}
+                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp1}
+                  <div className="volume">{askingPrices.askp_rsqn1}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+
+            {askingPrices ? (
+              <>
+                <PriceItem color="red">
+                  {askingPrices.bidp1}
+                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp2}
+                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp3}
+                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+          </PriceList>
           <TradingBox>
             <PriceDivision>
               <Specified onClick={handleSpecifiedClick}>
@@ -456,12 +573,12 @@ function TradingTabs() {
                 value={price}
                 onChange={handlePriceChange}
               />
-              <InputSpan right="20px">원</InputSpan>
+              <InputSpan right="1px">원</InputSpan>
             </InputWrapper>
             <InputWrapper>
               <InputLabel>총액</InputLabel>
               <InputTotal placeholder="0" value={total} />
-              <InputSpan right="20px">원</InputSpan>
+              <InputSpan right="1px">원</InputSpan>
             </InputWrapper>
             <ButtonContainer>
               <ButtonReset onClick={handleOpenSellModal}>초기화</ButtonReset>
@@ -487,7 +604,45 @@ function TradingTabs() {
         <div
           className={toggleState === 3 ? 'content active-content' : 'content'}
         >
-          <PriceList>호가</PriceList>
+          <PriceList>
+            {askingPrices ? (
+              <>
+                <PriceItem color="blue">
+                  {askingPrices.askp3}
+                  <div className="volume">{askingPrices.askp_rsqn3}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp2}
+                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="blue">
+                  {askingPrices.askp1}
+                  <div className="volume">{askingPrices.askp_rsqn1}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+
+            {askingPrices ? (
+              <>
+                <PriceItem color="red">
+                  {askingPrices.bidp1}
+                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp2}
+                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                </PriceItem>
+                <PriceItem color="red">
+                  {askingPrices.bidp3}
+                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
+                </PriceItem>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+          </PriceList>
           <TradingBox>
             <PriceDivision>
               <Specified onClick={handleSpecifiedClick}>
@@ -560,12 +715,12 @@ function TradingTabs() {
                 value={price}
                 onChange={handlePriceChange}
               />
-              <InputSpan right="20px">원</InputSpan>
+              <InputSpan right="1px">원</InputSpan>
             </InputWrapper>
             <InputWrapper>
               <InputLabel>총액</InputLabel>
               <InputTotal placeholder="0" value={total} />
-              <InputSpan right="20px">원</InputSpan>
+              <InputSpan right="1px">원</InputSpan>
             </InputWrapper>
             <ButtonContainer>
               <ButtonReset onClick={handleOpenModifyModal}>초기화</ButtonReset>

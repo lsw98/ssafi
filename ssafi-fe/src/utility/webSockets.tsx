@@ -1,71 +1,96 @@
-import React, { useEffect, useRef, useState } from 'react';
-import CryptoJS from 'crypto-js';
+import React, { useState, useEffect, useCallback } from 'react';
 
-interface WebSocketTestProps {}
+const WebSocketComponent = () => {
+  const [webSocket, setWebSocket] = useState(null);
+  const [logs, setLogs] = useState([]);
+  const [data, setData] = useState({});
+  const [stockCode1, setStockCode1] = useState('');
+  const [stockCode2, setStockCode2] = useState('');
+  const [encryptKey, setEncryptKey] = useState('');
+  const [iv, setIv] = useState('');
 
-const WebSocketTest: React.FC<WebSocketTestProps> = () => {
-  const [aes256DecodeData, setAes256DecodeData] = useState<string>('');
-  const [logBuffer, setLogBuffer] = useState<string[]>([]);
-  const [log1Buffer, setLog1Buffer] = useState<string[]>([]);
+  // 로그 추가 함수
+  // const addLog = useCallback((message, type) => {
+  //   setLogs((prev) => [...prev, { message, type }]);
+  // }, []);
 
-  // 상태를 추가하세요.
-  const [encryptkey, setEncryptkey] = useState<string>('');
-  const [iv, setIv] = useState<string>('');
+  // useEffect(() => {
+  //   const ws = new WebSocket('wss://your-websocket-url');
+  //   setWebSocket(ws);
 
-  const handleLog = (s: string, f: number) => {
-    console.log(s);
-    if (f === 1) {
-      // 다루려는 HTML 요소를 관리하세요.
-    } else if (f === 2) {
-      // 다루려는 다른 HTML 요소를 관리하세요.
-    }
-  };
+  //   ws.onopen = () => {
+  //     addLog('Connected to the server', 'info');
+  //   };
 
-  const handleLog1 = (a: string, s: string) => {
-    console.log(s);
-    if (a === '02') {
-      // 빨간색 로그 핸들링.
-    } else if (a === '01') {
-      // 파란색 로그 핸들링.
-    }
-  };
+  //   ws.onmessage = (e) => {
+  //     const recvdata = filterUnicode(e.data);
+  //     addLog(`Received: ${recvdata}`, 'received');
 
-  const aes256Decode = (
-    secretKey: string,
-    Iv: string,
-    data: string,
-  ): string => {
-    const cipher = CryptoJS.AES.decrypt(
-      data,
-      CryptoJS.enc.Utf8.parse(secretKey),
-      {
-        iv: CryptoJS.enc.Utf8.parse(Iv),
-        padding: CryptoJS.pad.Pkcs7,
-        mode: CryptoJS.mode.CBC,
-      },
-    );
+  //     if (recvdata[0] === '0' || recvdata[0] === '1') {
+  //       const strArray = recvdata.split('|');
 
-    const decodedData = cipher.toString(CryptoJS.enc.Utf8);
-    setAes256DecodeData(decodedData);
-    return decodedData;
-  };
+  //       const trid = strArray[1];
+  //       const bodydata = strArray[3];
 
-  const filterUnicode = (quoted: string): string => {
-    const escapable =
-      /[\x00-\x1f\ud800-\udfff\u200c\u2028-\u202f\u2060-\u206f\ufff0-\uffff]/g;
-    return quoted.replace(escapable, '');
-  };
+  //       if (trid === 'H0STCNT0') {
+  //         addLog(bodydata, 'data');
+  //       }
 
-  // 이벤트 핸들러나 다른 함수를 여기에 추가하십시오.
+  //       // 이후에는 데이터 처리 로직을 다룹니다.
+  //       // 예를 들면, 상태를 변경하거나, 다른 컴포넌트로 데이터를 전달합니다.
+  //       // ...
+  //     } else {
+  //       try {
+  //         const obj = JSON.parse(recvdata);
+  //         const trid = obj.header.tr_id;
+  //         const encyn = obj.header.encrypt;
 
-  return (
-    <div>
-      <button onClick={/* 해당 버튼의 이벤트 핸들러를 여기에 연결하세요. */}>
-        주식호가 등록
-      </button>
-      {/* 출력과 관련된 로그를 보여주는 컴포넌트를 여기에 추가하세요. */}
-    </div>
-  );
+  //         // 여기서도 상태를 업데이트하거나, 필요한 로직을 구현합니다.
+  //         // 예를 들면, 키와 IV를 상태에 저장합니다.
+  //         if (trid === 'H0STCNI0' || trid === 'H0STCNI9') {
+  //           setEncryptKey(obj.body.output.key);
+  //           setIv(obj.body.output.iv);
+  //         }
+  //       } catch (error) {
+  //         addLog(`Error: ${error.message}`, 'error');
+  //       }
+  //     }
+  //   };
+
+  //   ws.onclose = () => {
+  //     addLog('Connection closed', 'info');
+  //   };
+
+  //   ws.onerror = (error) => {
+  //     addLog(`WebSocket Error: ${error.message}`, 'error');
+  //   };
+
+  //   return () => {
+  //     ws.close();
+  //   };
+  // }, [addLog]);
+
+  // return (
+  //   <div>
+  //     {/* 로그 출력 섹션 */}
+  //     <div>
+  //       {logs.map((log, index) => (
+  //         <div key={index} className={log.type}>
+  //           {log.message}
+  //         </div>
+  //       ))}
+  //     </div>
+
+  //     {/* 데이터 출력 섹션 */}
+  //     <div>
+  //       {Object.entries(data).map(([key, value]) => (
+  //         <div key={key}>
+  //           {key}: {value}
+  //         </div>
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
 };
 
-export default WebSocketTest;
+export default WebSocketComponent;
