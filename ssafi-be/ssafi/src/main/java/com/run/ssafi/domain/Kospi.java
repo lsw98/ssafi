@@ -29,5 +29,7 @@ public class Kospi {
     private String kospiCode;
     @Column(name = "kospi_name", nullable = false)
     private String kospiName;
+    @Column(name = "kospi_type")
+    private String kospiType;
 
 }
