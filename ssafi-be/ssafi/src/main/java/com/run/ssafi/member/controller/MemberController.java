@@ -51,6 +51,12 @@ public class MemberController {
         return new ResponseEntity<>(Response.of(MemberResponseMessage.MEMBER_MBTI_ENROLL_SUCCESS), HttpStatus.OK);
     }
 
+    @GetMapping("/mbti")
+    public ResponseEntity<MemberMBTIResponseDto> getMBTI(@AuthenticationPrincipal MemberDetail memberDetail) {
+
+        return new ResponseEntity<>(memberService.getMBTI(memberDetail), HttpStatus.OK);
+    }
+
     @PostMapping("/key-account")
     public ResponseEntity<MemberKeyAccountRegisterResponseDto> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) {
         MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto;

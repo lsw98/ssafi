@@ -116,6 +116,30 @@ public class MemberServiceImpl implements MemberService {
         scoreRepository.save(score);
     }
 
+    @Override
+    public MemberMBTIResponseDto getMBTI(MemberDetail memberDetail) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+        Score score = scoreRepository.findById(member.getId()).orElse(null);
+        MemberMBTIResponseDto memberMBTIResponseDto;
+        if(score == null){
+            return MemberMBTIResponseDto.builder()
+                    .type(member.getType())
+                    .message(MemberResponseMessage.MEMBER_MBTI_LOADING_SUCCESS.getMessage())
+                    .build();
+        }
+
+        memberMBTIResponseDto = MemberMBTIResponseDto.builder()
+                .aiScore(score.getAiScore())
+                .pbScore(score.getPbScore())
+                .mwScore(score.getMwScore())
+                .lcScore(score.getLcScore())
+                .type(member.getType())
+                .message(MemberResponseMessage.MEMBER_MBTI_LOADING_SUCCESS.getMessage())
+                .build();
+
+        return memberMBTIResponseDto;
+    }
+
     @Transactional
     @Override
     public MemberKeyAccountRegisterResponseDto registerKeyAccount(MemberDetail memberDetail,
