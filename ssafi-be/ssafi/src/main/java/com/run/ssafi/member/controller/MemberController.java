@@ -2,7 +2,9 @@ package com.run.ssafi.member.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.exception.customexception.AccountException;
 import com.run.ssafi.exception.customexception.StockException;
+import com.run.ssafi.exception.message.AccountExceptionMessage;
 import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.service.MemberService;
@@ -59,9 +61,9 @@ public class MemberController {
                     .message(StockExceptionMessage.TOKEN_NOT_FOUND.getMessage())
                     .build();
             return new ResponseEntity<>(memberKeyAccountRegisterResponseDto, HttpStatus.NOT_FOUND);
-        } catch (Exception e){
+        } catch (AccountException e){
             memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
-                    .message(StockExceptionMessage.TOKEN_NOT_FOUND.getMessage())
+                    .message(AccountExceptionMessage.ACCOUNT_NOT_FOUND.getMessage())
                     .build();
             return new ResponseEntity<>(memberKeyAccountRegisterResponseDto, HttpStatus.BAD_REQUEST);
         }
