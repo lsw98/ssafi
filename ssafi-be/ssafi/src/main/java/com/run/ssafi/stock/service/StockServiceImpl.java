@@ -12,6 +12,7 @@ import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
 import com.run.ssafi.message.custom_message.AuthResponseMessage;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.BalanceHistoryResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
 import com.run.ssafi.stock.dto.InquireBalanceRequestHeaderDto;
@@ -25,9 +26,11 @@ import com.run.ssafi.stock.dto.KISAuthResponse;
 import com.run.ssafi.stock.feign.KISAuthApi;
 import com.run.ssafi.stock.feign.KISTradingAPI;
 import com.run.ssafi.stock.properties.KISAuthProperties;
+import com.run.ssafi.stock.repository.BalanceHistoryRepository;
 import com.run.ssafi.stock.repository.HoldStockRepository;
 import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
+import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
 import java.util.List;
@@ -47,6 +50,7 @@ public class StockServiceImpl implements StockService {
     private final KospiRepository kospiRepository;
     private final InterestStockRepository interestStockRepository;
     private final HoldStockRepository holdStockRepository;
+    private final BalanceHistoryRepository balanceHistoryRepository;
 
     @Override
     public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
@@ -196,6 +200,18 @@ public class StockServiceImpl implements StockService {
         HoldStock holdStock = holdStockRepository.findByKospiAndMember(kospi, member);
         if (holdStock != null)
             holdStockRepository.delete(holdStock);
+    }
+
+    @Override
+    public BalanceHistoryResponseDto getBalanceHistoryList(MemberDetail memberDetail) {
+        Member member = memberDetail.getMember();
+        List<BalanceHistoryVo> balanceHistoryVoList = balanceHistoryRepository.findByMember(member);
+        BalanceHistoryResponseDto balanceHistoryResponseDto = BalanceHistoryResponseDto.builder()
+                .balanceHistoryVoList(balanceHistoryVoList)
+                .message(StockResponseMessage.BALANCE_HISTORY_LOADING_SUCCESS.getMessage())
+                .build();
+
+        return balanceHistoryResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {
