@@ -4,23 +4,22 @@ import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Score;
 import com.run.ssafi.exception.customexception.MemberException;
+import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
+import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.repository.MemberRepository;
 import com.run.ssafi.member.repository.ScoreRepository;
-import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.MemberResponseMessage;
+import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.service.StockService;
+import feign.FeignException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -32,6 +31,8 @@ public class MemberServiceImpl implements MemberService {
     private final ScoreRepository scoreRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final StockService stockService;
 
     @Transactional
     @Override
@@ -50,45 +51,115 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<?> updateMemberInfo(MemberDetail memberDetail, MemberInfoUpdateRequestDto memberInfoUpdateRequestDto) throws Exception {
-        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElse(null);
-
-        member.modifyPassword(bCryptPasswordEncoder.encode(memberInfoUpdateRequestDto.getPassword()));
-        member.modifyPersonalAgreement(memberInfoUpdateRequestDto.getPersonalAgreement());
-        Map<String, Object> response = new HashMap<>();
-
-        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
-                .email(member.getEmail())
-                .personalAgreement(member.getPersonalAgreement())
-                .build();
-
-        response.put("Member", memberInfoResponseDto);
-        response.put("message", Response.of(MemberResponseMessage.MEMBER_UPDATE_SUCCESS));
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @Override
     public MemberInfoResponseDto getMemberInfo(String memberId) throws Exception {
         Member member = memberRepository.findByEmail(memberId);
+        Score score = scoreRepository.findById(member.getId()).orElse(null);
 
-        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
-                .email(member.getEmail())
-                .snsType(member.getSnsType())
-                .type(member.getType())
-                .appKey(member.getAppKey())
-                .secretKey(member.getSecretKey())
-                .personalAgreement(member.getPersonalAgreement())
-                .build();
+        MemberInfoResponseDto memberInfoResponseDto;
+
+        if(score == null) {
+            memberInfoResponseDto = MemberInfoResponseDto.builder()
+                    .email(member.getEmail())
+                    .snsType(member.getSnsType())
+                    .type(member.getType())
+                    .appKey(member.getAppKey())
+                    .secretKey(member.getSecretKey())
+                    .personalAgreement(member.getPersonalAgreement())
+                    .accountPrefix(member.getAccountPrefix())
+                    .accountSuffix(member.getAccountSuffix())
+                    .build();
+        } else {
+            memberInfoResponseDto = MemberInfoResponseDto.builder()
+                    .email(member.getEmail())
+                    .snsType(member.getSnsType())
+                    .type(member.getType())
+                    .appKey(member.getAppKey())
+                    .secretKey(member.getSecretKey())
+                    .personalAgreement(member.getPersonalAgreement())
+                    .accountPrefix(member.getAccountPrefix())
+                    .accountSuffix(member.getAccountSuffix())
+                    .aiScore(score.getAiScore())
+                    .pbScore(score.getPbScore())
+                    .mwScore(score.getMwScore())
+                    .lcScore(score.getLcScore())
+                    .build();
+        }
 
         return memberInfoResponseDto;
     }
 
     @Transactional
     @Override
-    public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public void enrollMBTI(MemberDetail memberDetail, MemberMBTIEnrollRequestDto requestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+        Double aiScore = requestDto.getAiScore();
+        Double pbScore = requestDto.getPbScore();
+        Double mwScore = requestDto.getMwScore();
+        Double lcScore = requestDto.getLcScore();
+        String type = requestDto.getType();
+        member.modifyType(type);
+
+        Score score;
+        score = Score.builder()
+                .id(member.getId())
+                .aiScore(aiScore)
+                .pbScore(pbScore)
+                .mwScore(mwScore)
+                .lcScore(lcScore)
+                .build();
+        scoreRepository.save(score);
+    }
+
+    @Transactional
+    @Override
+    public MemberKeyAccountRegisterResponseDto registerKeyAccount(MemberDetail memberDetail,
+            MemberKeyAccountRegisterRequestDto requestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+
+        MemberKeyUpdateRequestDto memberKeyUpdateRequestDto = MemberKeyUpdateRequestDto.builder()
+                .appKey(requestDto.getAppKey())
+                .secretKey(requestDto.getSecretKey())
+                .build();
+        AuthResponseDto authResponseDto;
+        MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto;
+        try {
+         authResponseDto = stockService.getAuth(memberKeyUpdateRequestDto);
+        } catch (FeignException e){
+         throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
+        }
+
+        member.modifyAppKey(requestDto.getAppKey());
+        member.modifySecretKey(requestDto.getSecretKey());
+        member.modifyAccountPrefix(requestDto.getAccountPrefix());
+        member.modifyAccountSuffix(requestDto.getAccountSuffix());
+
+        memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
+                .accessToken(authResponseDto.getAccessToken())
+                .tokenType(authResponseDto.getTokenType())
+                .expiresIn(authResponseDto.getExpiresIn())
+                .message(MemberResponseMessage.MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS.getMessage())
+                .build();
+
+        return memberKeyAccountRegisterResponseDto;
+    }
+
+    @Override
+    public MemberKeyAccountResponseDto getKeyAccount(MemberDetail memberDetail) {
+        Member member = memberDetail.getMember();
+        MemberKeyAccountResponseDto memberKeyAccountResponseDto = MemberKeyAccountResponseDto.builder()
+                .appKey(member.getAppKey())
+                .secretKey(member.getSecretKey())
+                .accountPrefix(member.getAccountPrefix())
+                .accountSuffix(member.getAccountSuffix())
+                .message(MemberResponseMessage.MEMBER_KEY_ACCOUNT_LOADING_SUCCESS.getMessage())
+                .build();
+        return memberKeyAccountResponseDto;
+    }
+
+    @Transactional
+    @Override
+    public MemberScoreResponseDto updateScore(MemberDetail memberDetail, MemberScoreUpdateRequestDto memberScoreUpdateRequestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         Double aiScore = memberScoreUpdateRequestDto.getAiScore();
         Double pbScore = memberScoreUpdateRequestDto.getPbScore();
         Double mwScore = memberScoreUpdateRequestDto.getMwScore();
@@ -118,6 +189,7 @@ public class MemberServiceImpl implements MemberService {
                 .pbScore(score.getPbScore())
                 .mwScore(score.getMwScore())
                 .lcScore(score.getLcScore())
+                .message(MemberResponseMessage.MEMBER_SCORE_UPDATE_SUCCESS.getMessage())
                 .build();
 
         return memberScoreResponseDto;
@@ -125,28 +197,48 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberTypeResponseDto updateType(MemberDetail memberDetail, MemberTypeUpdateRequestDto memberTypeUpdateRequestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
+    public MemberTypeResponseDto updateType(MemberDetail memberDetail, MemberTypeUpdateRequestDto memberTypeUpdateRequestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
         member.modifyType(memberTypeUpdateRequestDto.getType());
-        return new MemberTypeResponseDto(member.getType());
+        MemberTypeResponseDto memberTypeResponseDto = MemberTypeResponseDto.builder()
+                .type(member.getType())
+                .message(MemberResponseMessage.MEMBER_TYPE_UPDATE_SUCCESS.getMessage())
+                .build();
+        return memberTypeResponseDto;
     }
 
     @Transactional
     @Override
-    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto memberKeyUpdateRequestDto)
-            throws SQLException {
-        Member member = memberRepository.findByEmail(memberDetail.getMember().getEmail());
-        member.modifyAppKey(memberKeyUpdateRequestDto.getAppKey());
-        member.modifySecretKey(memberKeyUpdateRequestDto.getSecretKey());
-        MemberKeyResponseDto memberKeyResponseDto = new MemberKeyResponseDto(
-                memberKeyUpdateRequestDto.getAppKey(), memberKeyUpdateRequestDto.getSecretKey());
+    public MemberKeyResponseDto updateKey(MemberDetail memberDetail, MemberKeyUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+        member.modifyAppKey(requestDto.getAppKey());
+        member.modifySecretKey(requestDto.getSecretKey());
+        MemberKeyResponseDto memberKeyResponseDto = MemberKeyResponseDto.builder()
+                .appKey(requestDto.getAppKey())
+                .secretKey(requestDto.getSecretKey())
+                .message(MemberResponseMessage.MEMBER_KEY_UPDATE_SUCCESS.getMessage())
+                .build();
         return memberKeyResponseDto;
     }
 
     @Transactional
     @Override
-    public void deleteMember(long memberId) throws Exception {
+    public MemberAccountResponseDto updateAccount(MemberDetail memberDetail, MemberAccountUpdateRequestDto requestDto) {
+        Member member = memberRepository.findById(memberDetail.getMember().getId()).orElseThrow(() -> new MemberException(MemberExceptionMessage.DATA_NOT_FOUND));
+        member.modifyAccountPrefix(requestDto.getAccountPrefix());
+        member.modifyAccountSuffix(requestDto.getAccountSuffix());
+        MemberAccountResponseDto memberAccountResponseDto = MemberAccountResponseDto.builder()
+                .accountPrefix(requestDto.getAccountPrefix())
+                .accountSuffix(requestDto.getAccountSuffix())
+                .message(MemberResponseMessage.MEMBER_ACCOUNT_UPDATE_SUCCESS.getMessage())
+                .build();
+
+        return memberAccountResponseDto;
+    }
+
+    @Transactional
+    @Override
+    public void deleteMember(long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
             member.modifyExit(true);

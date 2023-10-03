@@ -36,7 +36,6 @@ const ListTitleText = styled.p`
 font-size: 24px;
 font-weight: 700;
 color: var(--black-color);
-margin-top: 0px;
 `;
 
 // 위 테두리가 존재하는 가장 위 box

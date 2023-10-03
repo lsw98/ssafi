@@ -1,3 +1,4 @@
+# 매일경제 랭킹뉴스 크롤링
 from bs4 import BeautifulSoup
 import requests
 from models import News
