@@ -4,13 +4,16 @@ import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Score;
 import com.run.ssafi.exception.customexception.MemberException;
+import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
+import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.repository.MemberRepository;
 import com.run.ssafi.member.repository.ScoreRepository;
 import com.run.ssafi.message.custom_message.MemberResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
 import com.run.ssafi.stock.service.StockService;
+import feign.FeignException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -117,20 +120,26 @@ public class MemberServiceImpl implements MemberService {
                 .appKey(requestDto.getAppKey())
                 .secretKey(requestDto.getSecretKey())
                 .build();
-
-        AuthResponseDto authResponseDto = stockService.getAuth(memberKeyUpdateRequestDto);
+        AuthResponseDto authResponseDto;
+        MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto;
+        try {
+         authResponseDto = stockService.getAuth(memberKeyUpdateRequestDto);
+        } catch (FeignException e){
+         throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
+        }
 
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
         member.modifyAccountSuffix(requestDto.getAccountSuffix());
 
-        MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
+        memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
                 .accessToken(authResponseDto.getAccessToken())
                 .tokenType(authResponseDto.getTokenType())
                 .expiresIn(authResponseDto.getExpiresIn())
                 .message(MemberResponseMessage.MEMBER_KEY_ACCOUNT_REGISTER_SUCCESS.getMessage())
                 .build();
+
         return memberKeyAccountRegisterResponseDto;
     }
 

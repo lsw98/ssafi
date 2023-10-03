@@ -23,7 +23,6 @@ import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
-import feign.FeignException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -148,26 +147,22 @@ public class StockServiceImpl implements StockService {
             authResponseDto.setSecretKey(secretKey);
         }
         if (appKey != null && secretKey != null) {
-            try {
-                kisAccessTokenRequestDto = KISAccessTokenRequestDto.builder()
-                        .appKey(appKey)
-                        .appSecret(secretKey)
-                        .grantType(KISAuthProperties.grantType)
-                        .build();
+            kisAccessTokenRequestDto = KISAccessTokenRequestDto.builder()
+                    .appKey(appKey)
+                    .appSecret(secretKey)
+                    .grantType(KISAuthProperties.grantType)
+                    .build();
 
-                ResponseEntity<String> response = kisAuthApi.getAccessToken(kisAccessTokenRequestDto);
-                kisAuthResponse = new Gson()
-                        .fromJson(
-                                String.valueOf(response.getBody())
-                                , KISAuthResponse.class
-                        );
-                authResponseDto.setAccessToken(kisAuthResponse.getAccessToken());
-                authResponseDto.setTokenType(kisAuthResponse.getTokenType());
-                authResponseDto.setExpiresIn(kisAuthResponse.getExpiresIn());
-                authResponseDto.setMessage(AuthResponseMessage.KIS_ACCESS_TOKEN_ISSUE_SUCCESS.getMessage());
-            } catch (FeignException e){
-                throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
-            }
+            ResponseEntity<String> response = kisAuthApi.getAccessToken(kisAccessTokenRequestDto);
+            kisAuthResponse = new Gson()
+                    .fromJson(
+                            String.valueOf(response.getBody())
+                            , KISAuthResponse.class
+                    );
+            authResponseDto.setAccessToken(kisAuthResponse.getAccessToken());
+            authResponseDto.setTokenType(kisAuthResponse.getTokenType());
+            authResponseDto.setExpiresIn(kisAuthResponse.getExpiresIn());
+            authResponseDto.setMessage(AuthResponseMessage.KIS_ACCESS_TOKEN_ISSUE_SUCCESS.getMessage());
         }
     }
 }
