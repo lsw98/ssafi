@@ -70,8 +70,8 @@ def _getStockPrice(code, member, access_token):
 def _buyStock(code, member, quantity, access_token):
     buy_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/order-cash'
     data = {
-    "CANO": "50090046",
-    "ACNT_PRDT_CD": "01",
+    "CANO": member.account_prefix,
+    "ACNT_PRDT_CD": member.account_suffix,
     # 종목코드
     "PDNO": code,
     # 시장가 구매
@@ -101,8 +101,8 @@ def _buyStock(code, member, quantity, access_token):
 def _sellStock(code, member, quantity, access_token):
     sell_url = f'{URL_BASE}/uapi/domestic-stock/v1/trading/order-cash'
     data = {
-    "CANO": "50090046",
-    "ACNT_PRDT_CD": "01",
+    "CANO": member.account_prefix,
+    "ACNT_PRDT_CD": member.account_suffix,
     # 종목코드
     "PDNO": code,
     # 시장가 구매
@@ -139,8 +139,8 @@ def _getStockBalance(member, access_token):
         'tr_cont' : ""
     }
     params = {
-        "CANO": "50090046",
-        "ACNT_PRDT_CD": "01",
+        "CANO": member.account_prefix,
+        "ACNT_PRDT_CD": member.account_suffix,
         "AFHR_FLPR_YN" : "N",
         "OFL_YN" : "",
         "INQR_DVSN" : "02",

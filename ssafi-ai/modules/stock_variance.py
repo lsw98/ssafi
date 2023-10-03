@@ -14,9 +14,9 @@ yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 Base.metadata.create_all(engine)
 session = Session()
-# statement = delete(Kospi)
-# session.execute(statement)
-# session.commit()
+statement = delete(Kospi)
+session.execute(statement)
+session.commit()
 
 for code, name in kospi_dict.items():
     session.add(Kospi(kospi_code = code, kospi_name = name))

@@ -9,13 +9,17 @@
 
 ``` news_craler.py ```
 
-### LSTM 모델 학습 및 저장, 개장 전 실행
+### 캔들차트 생성
 
-``` lstm_python.py ```
+``` candle_chart.py ```
 
 ### CNN 모델 학습 및 저장, 개장 전 실행
 
 ``` cnn_python.py ```
+
+### LSTM 모델 학습 및 저장, 개장 전 실행
+
+``` lstm_python.py ```
 
 ### 자동매매 (LSTM, CNN 저장 후 실행), 매일 아침 실행
 

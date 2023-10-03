@@ -1,24 +1,24 @@
+# 자동매도
 from models import Base, Member, Kospi, Aitrade, Hold
 from sqlalchemy import select
 from sqlalchemy.orm import join
 from db import engine, Session
 from KISapi import _getAccessToken, _getStockPrice, _buyStock, _sellStock, _getStockBalance
 from today_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
-import time
 
 Base.metadata.create_all(engine)
 
 session = Session()
-# new_member = Member(email="lsw@gmail.com", password="1234", role="member", account_prefix = '50090046', account_suffix = '01',
-#                     app_key = "PSzvBwVvCqlukNKHciYB1xffeT9jS3590TMx", secret_key = "k6tJ0l9PXUzUejoFOCt/5kLDS5fFh8aQ+/WlHlKiuBd5jETKD0dXf2dZhK7Ca1Rl4klUB7zZZW2oq70VZBIRyLrIEs2s7VQcZIyslb/blJVamaKf5I+sVIFR2zEZCGrQI1Nfl/dFF306fiLhFu4Qcep6iFJGnSd5o66qLsAHWaq6Qfyp30A=")
-# session.add(new_member)
-# session.commit()
-# new_trade = Aitrade(id=1, ai_budget = 0, ai_goal = 60000000, risk_ratio = 0.4, neutral_ratio = 0.3, safety_ratio = 0.3, trading_start_yn = True)
-# session.add(new_trade)
-# session.commit()
-# new_hold = Hold(user_id = 1, kospi_id = 1)
-# session.add(new_hold)
-# session.commit()
+new_member = Member(email="lsw@gmail.com", password="1234", role="member", account_prefix = '50090046', account_suffix = '01',
+                    app_key = "PSzvBwVvCqlukNKHciYB1xffeT9jS3590TMx", secret_key = "k6tJ0l9PXUzUejoFOCt/5kLDS5fFh8aQ+/WlHlKiuBd5jETKD0dXf2dZhK7Ca1Rl4klUB7zZZW2oq70VZBIRyLrIEs2s7VQcZIyslb/blJVamaKf5I+sVIFR2zEZCGrQI1Nfl/dFF306fiLhFu4Qcep6iFJGnSd5o66qLsAHWaq6Qfyp30A=")
+session.add(new_member)
+session.commit()
+new_trade = Aitrade(id=1, ai_budget = 0, ai_goal = 60000000, risk_ratio = 0.4, neutral_ratio = 0.3, safety_ratio = 0.3, trading_start_yn = True)
+session.add(new_trade)
+session.commit()
+new_hold = Hold(user_id = 1, kospi_id = 1)
+session.add(new_hold)
+session.commit()
 members = session.query(Member).all()
 
 for member in members:
@@ -64,42 +64,5 @@ for member in members:
             else:
                 if code not in hold_info:
                     print(_sellStock(code, member, record['hldg_qty'], access_token))
-    
-    
-    # 체결 대기시간 임의로 부여
-    time.sleep(10)
-    # 다시 잔고 조회
-    balance, balance2 = _getStockBalance(member, access_token)
-    print(balance2)
-    
-    # 주식 + 현금 평가금액이 목표 금액 도달하면 중단
-    if balance2[0]['tot_evlu_amt'] >= trade_info.ai_goal:
-        trade_info.trading_start_yn = False
-        continue
-        
-        
-    # D+2 예수금 조회 (투자 가능한 총 금액)
-    deposit = int(balance2[0]['prvs_rcdl_excc_amt'])
-    print(deposit)
-    
-    # 안전 / 중립 / 위험 비용 분배 
-    risk_cost = deposit * trade_info.risk_ratio
-    neutral_cost = deposit * trade_info.neutral_ratio
-    safe_cost = deposit * trade_info.safety_ratio
-    
-    # 안전 / 중립 / 위험 자동 구매 종목 선정 (예측 상승률 가장 높은 것으로)
-    risk_item = danger_rise[0]
-    neutral_item = neutral_rise[0]
-    safe_item = safe_rise[0]
-    
-    # 안전 / 중립 / 위험 종목 매수
-    risk_quantity = int(risk_cost / _getStockPrice(risk_item[0], member, access_token))
-    print(_buyStock(risk_item[0], member, risk_quantity, access_token))
-    
-    neutral_quantity = int(neutral_cost / _getStockPrice(neutral_item[0], member, access_token))
-    print(_buyStock(neutral_item[0], member, neutral_quantity, access_token))
-    
-    safe_quantity = int(safe_cost / _getStockPrice(safe_item[0], member, access_token))
-    print(_buyStock(safe_item[0], member, safe_quantity, access_token))
 
 session.close()
