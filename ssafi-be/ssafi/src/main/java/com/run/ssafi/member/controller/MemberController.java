@@ -2,6 +2,8 @@ package com.run.ssafi.member.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.exception.customexception.StockException;
+import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.*;
 import com.run.ssafi.member.service.MemberService;
 import com.run.ssafi.message.Response;
@@ -49,8 +51,22 @@ public class MemberController {
 
     @PostMapping("/key-account")
     public ResponseEntity<MemberKeyAccountRegisterResponseDto> registerKeyAccount(@AuthenticationPrincipal MemberDetail memberDetail, @Valid @RequestBody MemberKeyAccountRegisterRequestDto requestDto) {
+        MemberKeyAccountRegisterResponseDto memberKeyAccountRegisterResponseDto;
+        try {
+            memberKeyAccountRegisterResponseDto = memberService.registerKeyAccount(memberDetail, requestDto);
+        } catch (StockException e){
+            memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
+                    .message(StockExceptionMessage.TOKEN_NOT_FOUND.getMessage())
+                    .build();
+            return new ResponseEntity<>(memberKeyAccountRegisterResponseDto, HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            memberKeyAccountRegisterResponseDto = MemberKeyAccountRegisterResponseDto.builder()
+                    .message(StockExceptionMessage.TOKEN_NOT_FOUND.getMessage())
+                    .build();
+            return new ResponseEntity<>(memberKeyAccountRegisterResponseDto, HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(memberService.registerKeyAccount(memberDetail, requestDto), HttpStatus.OK);
+        return new ResponseEntity<>(memberKeyAccountRegisterResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/key-account")
