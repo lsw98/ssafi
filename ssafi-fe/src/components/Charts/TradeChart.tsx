@@ -98,7 +98,7 @@ export const data = {
     {
       type: 'line' as const,
       label: '위험형',
-      borderColor: '#FF9292',
+      borderColor: '#392121',
       borderWidth: 2,
       fill: false,
       data: dangerData,
@@ -108,7 +108,7 @@ export const data = {
     {
       type: 'line' as const,
       label: '중립형',
-      borderColor: '#F9F085',
+      borderColor: '#FAC152',
       borderWidth: 2,
       fill: false,
       data: middleData,
@@ -118,7 +118,7 @@ export const data = {
     {
       type: 'line' as const,
       label: '안정형',
-      borderColor: '#8CD6AF',
+      borderColor: '#65A398',
       borderWidth: 2,
       fill: false,
       data: safeData,
