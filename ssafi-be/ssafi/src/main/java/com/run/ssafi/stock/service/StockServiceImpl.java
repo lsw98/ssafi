@@ -23,6 +23,7 @@ import com.run.ssafi.stock.dto.InquireBalanceResponseHeaderDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KISAccessTokenRequestDto;
 import com.run.ssafi.stock.dto.KISAuthResponse;
+import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.feign.KISAuthApi;
 import com.run.ssafi.stock.feign.KISTradingAPI;
 import com.run.ssafi.stock.properties.KISAuthProperties;
@@ -33,6 +34,8 @@ import com.run.ssafi.stock.repository.KospiRepository;
 import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
+import com.run.ssafi.stock.vo.KospiVo;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -212,6 +215,23 @@ public class StockServiceImpl implements StockService {
                 .build();
 
         return balanceHistoryResponseDto;
+    }
+
+    @Override
+    public KospiListResponseDto getKospiList() {
+
+        List<Kospi> kospiList = kospiRepository.findAll();
+        List<KospiVo> kospiVoList = new ArrayList<>();
+        for (Kospi kospi : kospiList) {
+            KospiVo kospiVo = new KospiVo(kospi.getKospiCode(), kospi.getKospiName());
+            kospiVoList.add(kospiVo);
+        }
+
+        KospiListResponseDto kospiListResponseDto = KospiListResponseDto.builder()
+                .kospiVoList(kospiVoList)
+                .message(StockResponseMessage.KOSPI_LIST_LOADING_SUCCESS.getMessage())
+                .build();
+        return kospiListResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {

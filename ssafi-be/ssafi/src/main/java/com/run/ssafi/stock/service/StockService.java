@@ -8,6 +8,7 @@ import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
 import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
+import com.run.ssafi.stock.dto.KospiListResponseDto;
 
 public interface StockService {
 
@@ -27,4 +28,6 @@ public interface StockService {
     void deleteHoldStock(MemberDetail memberDetail, String kospiCode);
 
     BalanceHistoryResponseDto getBalanceHistoryList(MemberDetail memberDetail);
+
+    KospiListResponseDto getKospiList();
 }
