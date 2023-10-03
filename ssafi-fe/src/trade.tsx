@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios'; // 임시
 import TradeApi from './components/Trade/TradeApi';
 import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
 import TradeAccount from './components/Trade/TradeAccount';
+
+const BASE_URL = 'https://ssafi';
 
 interface TradeMenuProps {
   active?: boolean;
@@ -61,13 +64,21 @@ export default function Trade() {
   // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasApi, setHasApi] = useState(false);
+
+  useEffect(() => {
+    // API 호출
+    axios.get('/member/key-account').then((res) => {
+      if (res.data.apikey.length > 0) {
+        setHasApi(true)
+      } else {
+        setHasApi(false)
+      }
+    });
+  });
 
   const toAI = () => {
-    // 임시로 설정
-    const hasAPI = false;
-    // const hasAPI = true;
-
-    if (!hasAPI) {
+    if (!hasApi) {
       navigate('/trade/api');
     } else {
       navigate('/trade');
