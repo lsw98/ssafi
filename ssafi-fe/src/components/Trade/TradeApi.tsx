@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios'; // 임시
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 import ApiGuide from './ApiGuide';
 import handleScroll from '../../utils/scrollUtils';
@@ -165,9 +166,15 @@ export default function TradeApi() {
     } else if (accountNumber === '') {
       alert('계좌 번호를 입력해 주세요!');
     } else {
-      // axios 요청
-      // 200 이면 ai 트레이딩 페이지로 이동 (임시로 그냥 이동)
-      navigate('/trade');
+      axios.post('/member/key-account', {
+        apikey: apiKey,
+        secretkey: secretKey,
+        accountPrefix: accountNumber, // 확인 필요
+        accountSuffix: accountNumber, // 확인 필요
+      }).then((res) => {
+        // 200 이면 ai 트레이딩 페이지로 이동
+        navigate('/trade');
+      });
     }
   };
 
