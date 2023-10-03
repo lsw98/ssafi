@@ -3,8 +3,10 @@ package com.run.ssafi.member.service;
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Score;
+import com.run.ssafi.exception.customexception.AccountException;
 import com.run.ssafi.exception.customexception.MemberException;
 import com.run.ssafi.exception.customexception.StockException;
+import com.run.ssafi.exception.message.AccountExceptionMessage;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.*;
@@ -12,6 +14,10 @@ import com.run.ssafi.member.repository.MemberRepository;
 import com.run.ssafi.member.repository.ScoreRepository;
 import com.run.ssafi.message.custom_message.MemberResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestHeaderDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestParameterDto;
+import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
 import com.run.ssafi.stock.service.StockService;
 import feign.FeignException;
 import java.util.Optional;
@@ -128,6 +134,37 @@ public class MemberServiceImpl implements MemberService {
          throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
         }
 
+        InquireBalanceRequestHeaderDto inquireBalanceRequestHeaderDto = InquireBalanceRequestHeaderDto.builder()
+                .authorization(authResponseDto.getTokenType() + " " + authResponseDto.getAccessToken())
+                .appKey(authResponseDto.getAppKey())
+                .appSecret(authResponseDto.getSecretKey())
+                .trId("VTTC8434R")
+                .build();
+
+        InquireBalanceRequestParameterDto inquireBalanceRequestParameterDto = InquireBalanceRequestParameterDto.builder()
+                .CANO(requestDto.getAccountPrefix())
+                .ACNT_PRDT_CD(requestDto.getAccountSuffix())
+                .AFHR_FLPR_YN("N")
+                .OFL_YN("")
+                .INQR_DVSN("02")
+                .UNPR_DVSN("01")
+                .FUND_STTL_ICLD_YN("N")
+                .FNCG_AMT_AUTO_RDPT_YN("N")
+                .PRCS_DVSN("01")
+                .CTX_AREA_FK100("")
+                .CTX_AREA_NK100("")
+                .build();
+
+        InquireBalanceRequestDto inquireBalanceRequestDto = new InquireBalanceRequestDto(inquireBalanceRequestHeaderDto, inquireBalanceRequestParameterDto);
+
+        try {
+
+            InquireBalanceResponseDto inquireBalanceResponseDto = stockService.getInquireBalance(inquireBalanceRequestDto);
+            if (!inquireBalanceResponseDto.getInquireBalanceResponseBodyDto().getRtCd().equals("0")) throw new AccountException(AccountExceptionMessage.ACCOUNT_NOT_FOUND);
+
+        } catch (FeignException e){
+            throw new StockException(StockExceptionMessage.TOKEN_NOT_FOUND);
+        }
         member.modifyAppKey(requestDto.getAppKey());
         member.modifySecretKey(requestDto.getSecretKey());
         member.modifyAccountPrefix(requestDto.getAccountPrefix());
