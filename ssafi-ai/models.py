@@ -57,8 +57,8 @@ class Hold(Base):
     
 # 회원 별 AI 설정 정보
 class Aitrade(Base):
-    __tablename__ = "ai_trade"
-    id = Column(BigInteger, ForeignKey("member.id"), primary_key=True)
+    __tablename__ = "aitrade"
+    id = Column('user_id', BigInteger, ForeignKey("member.id"), primary_key=True)
     ai_budget = Column(BigInteger)
     ai_goal = Column(BigInteger)
     risk_ratio = Column(Double)
