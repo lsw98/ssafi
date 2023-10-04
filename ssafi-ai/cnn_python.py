@@ -1,3 +1,4 @@
+# CNN 모델 생성 및 학습 후 h5 파일로 저장
 import tensorflow as tf
 import os
 import cv2

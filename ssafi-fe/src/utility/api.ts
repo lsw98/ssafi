@@ -1,14 +1,19 @@
 import axios from 'axios';
-
+// 실제투자
 const apiDomain = process.env.REACT_APP_PROD;
+const apiCano = process.env.REACT_APP_CANO_REAL;
 const apiToken = process.env.REACT_APP_PROD_TOKEN;
 const apiKey = process.env.REACT_APP_PROD_APPKEY;
 const apiSecret = process.env.REACT_APP_PROD_APPSECRET;
+// 모의투자
 const vtsDomain = process.env.REACT_APP_VTS;
+const vtsCano = process.env.REACT_APP_CANO;
 const vtsToken = process.env.REACT_APP_VTS_TOKEN;
 const vtsKey = process.env.REACT_APP_VTS_APPKEY;
 const vtsSecret = process.env.REACT_APP_VTS_APPSECRET;
-const vtsHash = process.env.REACT_APP_VTS_HASH;
+// const vtsToken = localStorage.getItem('apiAccessToken') || '';
+// const vtsKey = localStorage.getItem('appKey') || '';
+// const vtsSecret = localStorage.getItem('secretKey') || '';
 
 function getCurrentTime() {
   const date = new Date();
@@ -47,10 +52,10 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
   try {
     const currentTime = getCurrentTime();
     const response = await axios.get(
-      '/uapi/domestic-stock/v1/quotations/volume-rank',
+      'https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/volume-rank',
       config,
     );
-    // console.log(response);
+    console.log(response.data);
 
     if (response.data.rt_cd === '0') {
       callback(currentTime); // 현재 시간을 callback 함수에 전달
@@ -68,7 +73,7 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
 };
 
 // 종목코드를 가져오는 함수
-export async function fetchStockInfo() {
+export async function fetchStockCode() {
   const response = await fetch('/kospi200.txt');
   const text = await response.text();
   const lines = text.trim().split('\n'); // 빈 줄 제거 후 줄 단위로 나눔
@@ -85,9 +90,9 @@ export const fetchStockPrice = async (stockCode: string) => {
   const config = {
     headers: {
       'content-type': 'application/json',
-      authorization: `Bearer ${apiToken}`,
-      appkey: apiKey,
-      appsecret: apiSecret,
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
       tr_id: 'FHKST01010100',
     },
     params: {
@@ -120,7 +125,12 @@ export const fetchStockPrice = async (stockCode: string) => {
   }
 };
 
-export const fetchBuyStock = async (stockCode: string) => {
+export const fetchBuyStock = async (
+  stockCode: string,
+  division: string,
+  amount: string,
+  price: string,
+) => {
   const config = {
     headers: {
       'content-type': 'application/json',
@@ -128,7 +138,7 @@ export const fetchBuyStock = async (stockCode: string) => {
       appkey: vtsKey,
       appsecret: vtsSecret,
       tr_id: 'VTTC0802U',
-      hashkey: vtsHash,
+      // hashkey: vtsHash,
     },
   };
   const request = {
@@ -136,9 +146,9 @@ export const fetchBuyStock = async (stockCode: string) => {
       CANO: '50090047', // 계좌번호 앞 8자리
       ACNT_PRDT_CD: '01', // 계좌번호 뒤 2자리
       PDNO: stockCode, // 종목코드(6자리)
-      ORD_DVSN: '00', // 주문구분(00:지정가, 01:시장가)
-      ORD_QTY: '1', // 주문수량
-      ORD_UNPR: '55000', // 주문단가
+      ORD_DVSN: division, // 주문구분(00:지정가, 01:시장가)
+      ORD_QTY: amount, // 주문수량
+      ORD_UNPR: price, // 주문단가
     },
   };
   try {
@@ -151,6 +161,286 @@ export const fetchBuyStock = async (stockCode: string) => {
 
     if (response.data.rt_cd === '0') {
       return response.data.output;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Network Error:', error);
+    console.error('Server Response:', error.response); // 서버 응답 로깅
+    return [];
+  }
+};
+
+export const fetchSellStock = async (
+  stockCode: string,
+  division: string,
+  amount: string,
+  price: string,
+) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'VTTC0801U',
+      // hashkey: vtsHash,
+    },
+  };
+  const request = {
+    body: {
+      CANO: '50090047', // 계좌번호 앞 8자리
+      ACNT_PRDT_CD: '01', // 계좌번호 뒤 2자리
+      PDNO: stockCode, // 종목코드(6자리)
+      ORD_DVSN: division, // 주문구분(00:지정가, 01:시장가)
+      ORD_QTY: amount, // 주문수량
+      ORD_UNPR: price, // 주문단가
+    },
+  };
+  try {
+    const response = await axios.post(
+      '/uapi/domestic-stock/v1/trading/order-cash',
+      request,
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Network Error:', error);
+    console.error('Server Response:', error.response); // 서버 응답 로깅
+    return [];
+  }
+};
+
+export const fetchModifyStock = async (
+  stockCode: string,
+  division: string,
+  amount: string,
+  price: string,
+) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'VTTC0803U',
+      // hashkey: vtsHash,
+    },
+  };
+  const request = {
+    body: {
+      CANO: '50090047', // 계좌번호 앞 8자리
+      ACNT_PRDT_CD: '01', // 계좌번호 뒤 2자리
+      KRX_FWDG_ORD_ORGNO: '00950', // 주문시 한국투자증권 시스템에서 지정된 영업점코드
+      ORGN_ODNO: '6635', // 주식일별주문체결조회 API output1의 odno(주문번호) 값 입력
+      ORD_DVSN: '00', // 주문구분(00:지정가, 01:시장가)
+      RVSE_CNCL_DVSN_CD: '02', // 정정취소구분(01:정정, 02:취소)
+      ORD_QTY: '1', // 주문수량 [잔량전부 취소] "0" 설정
+      ORD_UNPR: '55000', // 주문단가 [취소] "0" 설정
+      QTY_ALL_ORD_YN: 'Y', // [정정/취소] Y : 잔량전부 N : 잔량일부
+    },
+  };
+  try {
+    const response = await axios.post(
+      '/uapi/domestic-stock/v1/trading/order-rvsecncl',
+      request,
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Network Error:', error);
+    console.error('Server Response:', error.response); // 서버 응답 로깅
+    return [];
+  }
+};
+
+export const fetchCheckAccount = async () => {
+  console.log('fetchCheckAccount is called');
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'VTTC8434R',
+    },
+    params: {
+      CANO: vtsCano,
+      ACNT_PRDT_CD: '01', // 계좌번호 뒤 2자리
+      AFHR_FLPR_YN: 'N', // 기본값(or 시간외단일가) -> N만 사용
+      OFL_YN: '', // 공란 Default
+      INQR_DVSN: '01', // 조회구분(01: 대출일별, 02: 종목별)
+      UNPR_DVSN: '01', // 단기구분(01: 기본값)
+      FUND_STTL_ICLD_YN: 'N', // Default
+      FNCG_AMT_AUTO_RDPT_YN: 'N', // Default
+      PRCS_DVSN: '01', // 전일매매(00: 포함, 01: 미포함)
+      CTX_AREA_FK100: '', // 공란
+      CTX_AREA_NK100: '', // 공란
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-balance',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      const refinedOutput = response.data.output1.map((item: any) => {
+        return {
+          pdno: item.pdno, // 종목코드
+          prdt_name: item.prdt_name, // 종목명
+          hldg_qty: item.hldg_qty, // 보유수량
+          pchs_avg_pric: item.pchs_avg_pric, // 매입평균가
+          prpr: item.prpr, // 현재가
+          evlu_amt: item.evlu_amt, // 평가금액
+          evlu_pfls_amt: item.evlu_pfls_amt, // 손익금액
+          evlu_pfls_rt: item.evlu_pfls_rt, // 손익률
+        };
+      });
+
+      return refinedOutput;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return [];
+  }
+};
+
+export const fetchAskingPrice = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST01010200',
+    },
+    params: {
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      console.log(response);
+      const output = response.data.output1;
+
+      return {
+        askp1: output.askp1,
+        askp2: output.askp2,
+        askp3: output.askp3,
+        askp_rsqn1: output.askp_rsqn1,
+        askp_rsqn2: output.askp_rsqn2,
+        askp_rsqn3: output.askp_rsqn3,
+        bidp1: output.bidp1,
+        bidp2: output.bidp2,
+        bidp3: output.bidp3,
+        bidp_rsqn1: output.bidp_rsqn1,
+        bidp_rsqn2: output.bidp_rsqn2,
+        bidp_rsqn3: output.bidp_rsqn3,
+      };
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return null;
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return null;
+  }
+};
+
+export const fetchStockInfo = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST03010100',
+    },
+    params: {
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+      fid_input_date_1: '20230101', // 시작일자
+      fid_input_date_2: '20231231', // 종료일자
+      fid_period_div_code: 'D', // 기간분류코드 (D:일봉, W:주봉, M:월봉, Y:년봉)
+      fid_org_adj_prc: '1', // 수정주가 원주가 가격여부 (0:수정주가 1:원주가)
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output1;
+    } else {
+      console.error('API Error:', response.data.msg1);
+      return [];
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    return [];
+  }
+};
+
+export const fetchMinutePrices = async (stockCode: string) => {
+  const config = {
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${vtsToken}`,
+      appkey: vtsKey,
+      appsecret: vtsSecret,
+      tr_id: 'FHKST03010200',
+    },
+    params: {
+      fid_etc_cls_code: '',
+      fid_cond_mrkt_div_code: 'J',
+      fid_input_iscd: stockCode,
+      fid_input_hour_1: '100000', // 현재시간
+      fid_pw_data_incu_yn: 'Y',
+    },
+  };
+
+  try {
+    const response = await axios.get(
+      '/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice',
+      config,
+    );
+    console.log(response);
+
+    if (response.data.rt_cd === '0') {
+      return response.data.output2;
     } else {
       console.error('API Error:', response.data.msg1);
       return [];

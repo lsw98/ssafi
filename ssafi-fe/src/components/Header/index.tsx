@@ -76,7 +76,7 @@ export default function Header() {
   // 기능 코드 파트
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useAuth();
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
   const navigate = useNavigate();
   const location = useLocation();
   const toMain = () => {
@@ -94,14 +94,13 @@ export default function Header() {
   useEffect(() => {
     // 페이지 로딩 시 localStorage에서 토큰 유무를 확인하여 로그인 상태 설정
     const token = localStorage.getItem('accessToken');
-    console.log(token);
-    if (token != null) {
+    // console.log(token);
+    if (token !== null) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-    console.log(isLoggedIn);
-  }, []);
+  }, [setIsLoggedIn]);
 
   // isLoggedIn 상태가 변경될 때마다 로그를 출력
   // useEffect(() => {
@@ -111,7 +110,9 @@ export default function Header() {
   const handleLogin = () => {
     window.location.href = kakaoURL;
   };
+  // const handleTest = () => {
 
+  // }
   const handleLogout = async () => {
     const token = localStorage.getItem('accessToken');
     console.log(token);
@@ -122,7 +123,7 @@ export default function Header() {
     }
     try {
       await axios.post(
-        'https://8264-211-192-210-179.ngrok-free.app/api/logout',
+        'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/logout',
         {},
         {
           headers: {
@@ -130,6 +131,7 @@ export default function Header() {
           },
         },
       );
+      console.log(token);
       localStorage.removeItem('accessToken');
       setIsLoggedIn(false);
       window.alert('로그아웃되었습니다.');
@@ -164,6 +166,7 @@ export default function Header() {
           </SiteMenu>
         </NavbarLeft>
         <NavbarRight>
+          {/* <button onClick={}>테스트</button> */}
           {/* 로그인 상태에 따라 버튼을 동적으로 렌더링 */}
           {!isLoggedIn && (
             <LoginButton onClick={handleLogin}>로그인</LoginButton>

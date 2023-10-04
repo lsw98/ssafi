@@ -3,10 +3,9 @@ package com.run.ssafi.ai.controller;
 import com.run.ssafi.ai.dto.AiModifyStatusRequestDto;
 import com.run.ssafi.ai.dto.AiStartRequestDto;
 import com.run.ssafi.ai.dto.AiStatusResponseDto;
+import com.run.ssafi.ai.dto.AiStopResponseDto;
 import com.run.ssafi.ai.service.AiService;
 import com.run.ssafi.config.auth.MemberDetail;
-import com.run.ssafi.message.Response;
-import com.run.ssafi.message.custom_message.AiResponseMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -52,11 +51,8 @@ public class AiController {
     }
 
     @PatchMapping("/stop")
-    public ResponseEntity<Response> aiTradingStop(@AuthenticationPrincipal MemberDetail memberDetail){
+    public ResponseEntity<AiStopResponseDto> aiTradingStop(@AuthenticationPrincipal MemberDetail memberDetail){
 
-        aiService.stopAiTrading(memberDetail);
-
-        return new ResponseEntity<>(Response.of(AiResponseMessage.AI_TRADING_STOP_SUCCESS),
-                HttpStatus.OK);
+        return new ResponseEntity<>(aiService.stopAiTrading(memberDetail), HttpStatus.OK);
     }
 }

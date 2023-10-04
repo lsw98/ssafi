@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import StockTabs from '../Tab/StockTabs';
 import TradingTabs from '../Tab/TradingTabs';
 import AccountTabs from '../Tab/AccountTabs';
-import { fetchTradeVolumeRanking } from '../../utility/api';
+import {
+  fetchTradeVolumeRanking,
+  fetchStockInfo,
+  fetchMinutePrices,
+} from '../../utility/api';
+import CandleChart from '../Charts/CandleChart';
 
 const Container = styled.div`
   display: flex;
@@ -38,9 +43,6 @@ const StockInfo = styled.div`
 display-flex;
 height: 20%;
 `;
-const CandleChart = styled.div`
-display-flex;
-height: 80%;`;
 
 const TradingAndAccountContainer = styled.div`
   display: flex;
@@ -51,13 +53,13 @@ const TradingAndAccountContainer = styled.div`
 `;
 
 const Trading = styled.div`
-  flex: 1;
+  flex: 2;
   background-color: #ffffff;
   padding: 10px;
 `;
 
 const Account = styled.div`
-  flex: 1;
+  flex: 3;
   background-color: #ffffff;
   padding: 10px;
 `;
@@ -110,11 +112,32 @@ const Tooltip = styled.div<{ show: boolean; color: string }>`
   }
 `;
 
+interface StockInfoType {
+  hts_kor_isnm: string;
+  stck_prpr: string;
+  prdy_vrss: string;
+  prdy_vrss_sign: string;
+  prdy_ctrt: string;
+  stck_prdy_clpr: string;
+  stck_hgpr: string;
+  stck_mxpr: string;
+  acml_vol: string;
+  stck_oprc: string;
+  stck_lwpr: string;
+  stck_llam: string;
+  acml_tr_pbmn: string;
+}
+
 export default function TradeOrder() {
+  const [stockCode, setStockCode] = useState<string>('005930');
+  const [stockInfo, setStockInfo] = useState<StockInfoType | null>(null);
+  const [minutePricesData, setMinutePricesData] = useState<any[]>([]);
   const [rankingData, setRankingData] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState<string | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<null | number>(null);
-
+  const handleStockClick = (selectedStockCode: string) => {
+    setStockCode(selectedStockCode);
+  };
   const handleMouseEnter = (index: number) => {
     setHoveredIndex(index);
   };
@@ -122,6 +145,41 @@ export default function TradeOrder() {
   const handleMouseLeave = () => {
     setHoveredIndex(null);
   };
+
+  useEffect(() => {
+    const loadStockInfo = async () => {
+      console.log(stockCode);
+      if (stockCode) {
+        const data = await fetchStockInfo(stockCode);
+        setStockInfo(data);
+      }
+    };
+    loadStockInfo();
+    console.log(stockInfo);
+  }, [stockCode]);
+
+  useEffect(() => {
+    const fetchMinutePricesData = async () => {
+      if (stockCode) {
+        const result = await fetchMinutePrices(stockCode);
+        setMinutePricesData(result);
+        console.log('여기여기여기여기여기여기여기여기여기여기', result);
+      }
+    };
+
+    fetchMinutePricesData();
+    console.log(minutePricesData);
+  }, [stockCode]);
+
+  const transformedData = minutePricesData.map((item) => ({
+    x: `${item.stck_bsop_date}T${item.stck_cntg_hour}`,
+    y: [
+      parseInt(item.stck_oprc),
+      parseInt(item.stck_hgpr),
+      parseInt(item.stck_lwpr),
+      parseInt(item.stck_prpr),
+    ] as [number, number, number, number], // 이렇게 명확하게 지정해주면 됩니다.
+  }));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,14 +201,38 @@ export default function TradeOrder() {
   return (
     <Container>
       <LeftColumn>
-        {/* 왼쪽 열 컨텐츠 (Stocks) */}
-        <StockTabs />
+        <StockTabs onStockClick={handleStockClick} />{' '}
       </LeftColumn>
       <CenterColumn>
-        {/* 가운데 열 컨텐츠 (Graph, Trading, Account) */}
         <GraphContainer>
-          <StockInfo>주식정보</StockInfo>
-          <CandleChart>캔들차트</CandleChart>
+          <StockInfo>
+            {stockInfo ? (
+              <>
+                <div>
+                  {stockInfo.hts_kor_isnm} {stockCode}
+                </div>
+                <div>
+                  {stockInfo.stck_prpr}
+                  <br />
+                  전일대비: {stockInfo.prdy_vrss} {stockInfo.prdy_vrss_sign}{' '}
+                  {stockInfo.prdy_ctrt}%
+                </div>
+                <div>
+                  전일: {stockInfo.stck_prdy_clpr} / 고가(상한가):{' '}
+                  {stockInfo.stck_hgpr}({stockInfo.stck_mxpr}) / 거래량:{' '}
+                  {stockInfo.acml_vol}
+                </div>
+                <div>
+                  시가: {stockInfo.stck_oprc} / 저가(하한가):{' '}
+                  {stockInfo.stck_lwpr}({stockInfo.stck_llam}) / 거래대금:{' '}
+                  {stockInfo.acml_tr_pbmn}
+                </div>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+          </StockInfo>
+          <CandleChart data={transformedData} />
         </GraphContainer>
         <TradingAndAccountContainer>
           <Trading>
