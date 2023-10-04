@@ -25,12 +25,12 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false)
     private Role role;
-    @Column(name="exit")
-    private Boolean exit;
+    @Column(name="exited", columnDefinition = "TINYINT(1)")
+    private Boolean exited;
     @Enumerated(EnumType.STRING)
     @Column(name="sns_type")
     private SnsType snsType;
-    @Column(name="personal_agreement_yn")
+    @Column(name="personal_agreement_yn", columnDefinition = "char(1)")
     private Character personalAgreement;
     @Column(name="app_key")
     private String appKey;
@@ -44,11 +44,11 @@ public class Member extends BaseTimeEntity {
     private String type;
 
     @Builder
-    public Member(String email, String password, Role role, Boolean exit, SnsType snsType, Character personalAgreement) {
+    public Member(String email, String password, Role role, Boolean exited, SnsType snsType, Character personalAgreement) {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.exit = exit;
+        this.exited = exited;
         this.snsType = snsType;
         this.personalAgreement = personalAgreement;
     }
@@ -57,8 +57,8 @@ public class Member extends BaseTimeEntity {
     public void modifyPassword(String password) {
         this.password=password;
     }
-    public void modifyExit(Boolean exit) {
-        this.exit=exit;
+    public void modifyExited(Boolean exited) {
+        this.exited=exited;
     }
     public void modifyType(String type) {
         this.type=type;
