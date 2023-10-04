@@ -100,6 +100,8 @@ public class SecurityConfiguration {
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "POST")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/ai", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PATCH")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
