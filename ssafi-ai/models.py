@@ -80,6 +80,6 @@ class TradeRecord(Base):
 class StockIndex(Base):
     __tablename__ = "stock_index"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    category = Column(String(255))
-    number = Column(Double)
-    date = Column(Date)
+    index_category = Column(String(255))
+    index_number = Column(Double)
+    index_date = Column(String(255))

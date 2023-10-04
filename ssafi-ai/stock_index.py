@@ -20,7 +20,7 @@ for index, data in df_kospi.iterrows():
     index_date = date.strftime(index, '%Y-%m-%d')
     print(index_date)
     print(data['Close'])
-    stock_index = StockIndex(category = 'kospi', number = data['Close'], date = index_date)
+    stock_index = StockIndex(index_category = 'kospi', index_number = data['Close'], index_date = index_date)
     session.add(stock_index) 
 session.commit()
 
@@ -28,7 +28,7 @@ for index, data in df_kospi_200.iterrows():
     index_date = date.strftime(index, '%Y-%m-%d')
     print(index_date)
     print(data['Close'])
-    stock_index = StockIndex(category = 'kospi200', number = data['Close'], date = index_date)
+    stock_index = StockIndex(index_category = 'kospi200', index_number = data['Close'], index_date = index_date)
     session.add(stock_index) 
 session.commit()
 
@@ -36,7 +36,7 @@ for index, data in df_kosdaq.iterrows():
     index_date = date.strftime(index, '%Y-%m-%d')
     print(index_date)
     print(data['Close'])
-    stock_index = StockIndex(category = 'kosdaq', number = data['Close'], date = index_date)
+    stock_index = StockIndex(index_category = 'kosdaq', index_number = data['Close'], index_date = index_date)
     session.add(stock_index) 
 session.commit()
 
