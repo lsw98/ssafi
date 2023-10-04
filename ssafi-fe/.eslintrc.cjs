@@ -14,6 +14,7 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     'linebreak-style': 0,
     'operator-linebreak': 'off',
+    'import/no-unresolved': 'off',
     'no-use-before-define': ['error', { variables: false }],
     'import/extensions': [
       'error',
@@ -47,6 +48,12 @@ module.exports = {
     'prefer-destructuring': 'off',
     'function-paren-newline': 'off',
     'no-plusplus': 'off',
+    'prefer-template': 'off',
+    'consistent-return': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
+    'max-len': 'off',
+    radix: 'off',
+    'object-shorthand': 'off',
   },
   settings: {
     'import/resolver': {

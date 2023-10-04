@@ -80,12 +80,10 @@
 
 li {
   display: flex;
+  flex-direction: row;
   margin-bottom: 1%; /* 각 li 사이의 마진을 추가 (선택적) */
   font-size: 15px;
-}
-
-li > div {
-  margin-bottom: 5%; /* 각 div 사이에 마진을 추가 (선택적) */
+  gap: 5%;
 }
 
 .stock-interested {

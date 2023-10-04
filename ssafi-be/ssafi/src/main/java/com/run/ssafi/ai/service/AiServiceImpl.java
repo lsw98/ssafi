@@ -3,6 +3,7 @@ package com.run.ssafi.ai.service;
 import com.run.ssafi.ai.dto.AiModifyStatusRequestDto;
 import com.run.ssafi.ai.dto.AiStartRequestDto;
 import com.run.ssafi.ai.dto.AiStatusResponseDto;
+import com.run.ssafi.ai.dto.AiStopResponseDto;
 import com.run.ssafi.ai.repository.AiRepository;
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.AiTrade;
@@ -44,6 +45,7 @@ public class AiServiceImpl implements AiService {
                 .riskRatio(aiTrade.getRiskRatio())
                 .neutralRatio(aiTrade.getNeutralRatio())
                 .safetyRatio(aiTrade.getSafetyRatio())
+                .tradingStartYn(aiTrade.getTradingStartYn())
                 .message(AiResponseMessage.AI_TRADING_START_SUCCESS.getMessage())
                 .build();
 
@@ -64,6 +66,7 @@ public class AiServiceImpl implements AiService {
                 .riskRatio(aiTrade.getRiskRatio())
                 .neutralRatio(aiTrade.getNeutralRatio())
                 .safetyRatio(aiTrade.getSafetyRatio())
+                .tradingStartYn(aiTrade.getTradingStartYn())
                 .message(AiResponseMessage.AI_STATUS_LOADING_SUCCESS.getMessage())
                 .build();
 
@@ -109,7 +112,7 @@ public class AiServiceImpl implements AiService {
 
     @Transactional
     @Override
-    public void stopAiTrading(MemberDetail memberDetail) {
+    public AiStopResponseDto stopAiTrading(MemberDetail memberDetail) {
         if (memberDetail == null) throw new MemberException(MemberExceptionMessage.DATA_NOT_FOUND);
 
         AiTrade aiTrade = aiRepository.findById(memberDetail.getMember().getId()).orElseThrow(()-> new AiException(
@@ -117,5 +120,9 @@ public class AiServiceImpl implements AiService {
 
         aiTrade.modifyTradingStartYn('N');
 
+        return AiStopResponseDto.builder()
+                .tradingStartYn('N')
+                .message(AiResponseMessage.AI_TRADING_STOP_SUCCESS.getMessage())
+                .build();
     }
 }

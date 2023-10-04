@@ -6,6 +6,7 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: 'https://openapi.koreainvestment.com:29443', // 타겟 서버 주소
       changeOrigin: true, // 호스트 헤더를 타겟 서버에 맞춰 변경합니다.
+      secure: false, // SSL/TLS 검증 비활성화
     }),
   );
 };
