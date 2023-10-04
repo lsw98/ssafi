@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "stock_index")
 @Entity(name = "stockIndex")
-public class StockIndex extends BaseTimeEntity {
+public class StockIndex {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +27,7 @@ public class StockIndex extends BaseTimeEntity {
     private String indexCategory;
     @Column(name = "index_number")
     private Double indexNumber;
+    @Column(name = "index_date")
+    private String indexDate;
 
 }

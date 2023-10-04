@@ -19,19 +19,13 @@ public class QStockIndex extends EntityPathBase<StockIndex> {
 
     public static final QStockIndex stockIndex = new QStockIndex("stockIndex");
 
-    public final com.run.ssafi.QBaseTimeEntity _super = new com.run.ssafi.QBaseTimeEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath indexCategory = createString("indexCategory");
 
-    public final NumberPath<Double> indexNumber = createNumber("indexNumber", Double.class);
+    public final StringPath indexDate = createString("indexDate");
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
+    public final NumberPath<Double> indexNumber = createNumber("indexNumber", Double.class);
 
     public QStockIndex(String variable) {
         super(StockIndex.class, forVariable(variable));
