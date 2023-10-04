@@ -2,6 +2,7 @@
 from ranking_crawler import ranking_news_crawler
 from category_crawler import news_category_crawler
 from models import Base, News
+from sqlalchemy import delete
 from db import engine, Session
 news_list = []
 # 랭킹뉴스
@@ -20,6 +21,10 @@ news_category_crawler('https://www.mk.co.kr/news/stock/market-index/', "market_i
 Base.metadata.create_all(engine)
 
 session = Session()
+
+statement = delete(News)
+session.execute(statement)
+session.commit()
 
 for news in news_list:
     session.add(news)

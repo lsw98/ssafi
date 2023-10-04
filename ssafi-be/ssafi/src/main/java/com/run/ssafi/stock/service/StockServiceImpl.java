@@ -6,6 +6,7 @@ import com.run.ssafi.domain.HoldStock;
 import com.run.ssafi.domain.InterestStock;
 import com.run.ssafi.domain.Kospi;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.domain.StockIndex;
 import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
@@ -24,6 +25,7 @@ import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KISAccessTokenRequestDto;
 import com.run.ssafi.stock.dto.KISAuthResponse;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
+import com.run.ssafi.stock.dto.StockIndexResponseDto;
 import com.run.ssafi.stock.feign.KISAuthApi;
 import com.run.ssafi.stock.feign.KISTradingAPI;
 import com.run.ssafi.stock.properties.KISAuthProperties;
@@ -31,10 +33,12 @@ import com.run.ssafi.stock.repository.BalanceHistoryRepository;
 import com.run.ssafi.stock.repository.HoldStockRepository;
 import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
+import com.run.ssafi.stock.repository.StockIndexRepository;
 import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
 import com.run.ssafi.stock.vo.KospiVo;
+import com.run.ssafi.stock.vo.StockIndexVo;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +58,7 @@ public class StockServiceImpl implements StockService {
     private final InterestStockRepository interestStockRepository;
     private final HoldStockRepository holdStockRepository;
     private final BalanceHistoryRepository balanceHistoryRepository;
+    private final StockIndexRepository stockIndexRepository;
 
     @Override
     public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
@@ -232,6 +237,26 @@ public class StockServiceImpl implements StockService {
                 .message(StockResponseMessage.KOSPI_LIST_LOADING_SUCCESS.getMessage())
                 .build();
         return kospiListResponseDto;
+    }
+
+    @Override
+    public StockIndexResponseDto getStockIndex() {
+        List<StockIndexVo> stockIndexVoList = new ArrayList<>();
+        List<StockIndex> stockIndexList = stockIndexRepository.findAll();
+        for (StockIndex stockIndex : stockIndexList){
+            stockIndexVoList.add(new StockIndexVo(
+                    stockIndex.getIndexCategory(),
+                    stockIndex.getIndexNumber(),
+                    stockIndex.getCreatedDate()
+            ));
+        }
+
+        StockIndexResponseDto stockIndexResponseDto = StockIndexResponseDto.builder()
+                .stockIndexVoList(stockIndexVoList)
+                .message(StockResponseMessage.STOCK_INDEX_LOADING_SUCCESS.getMessage())
+                .build();
+
+        return stockIndexResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {

@@ -2,10 +2,7 @@
 import tensorflow as tf
 import os
 import cv2
-import pandas as pd
 import numpy as np
-import FinanceDataReader as fdr
-import matplotlib.pyplot as plt
 from mplfinance.original_flavor import candlestick2_ohlc
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -79,72 +76,4 @@ history = cnn_model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
 
 # 모델 저장
 cnn_model.save('cnn_model.h5')
-
-# kospi_200 = pd.read_csv('kospi200.csv', encoding='EUC-KR')
-# kospi = pd.DataFrame(kospi_200)
-# kospi_dict = {}
-
-# import FinanceDataReader as fdr
-# import matplotlib.pyplot as plt
-# from mplfinance.original_flavor import candlestick2_ohlc
-
-# # 최근 날짜의 주가 상승/하락 리스트
-# recent = []
-
-# for code in kospi_dict.keys():
-#     df = fdr.DataReader(code, '2023-08-01', '2023-09-19')
-    
-#     # 실제 결과가 상승이면 1, 하락이면 0
-#     data = df.iloc[df.shape[0] - 11: df.shape[0] - 1]
-#     if df.iloc[df.shape[0] - 2]['Close'] > df.iloc[df.shape[0] - 1]['Close']:
-#         recent.append(0)
-#     else:
-#         recent.append(1)
-        
-#     fig = plt.figure(figsize=(1,1))
-#     ax = fig.add_subplot(1, 1, 1)
-#     candlestick2_ohlc(ax, data['Open'], data['High'],
-#                         data['Low'], data['Close'], width=0.7, colorup='r', colordown='b')
-#     ax.grid(False)
-#     ax.set_xticklabels([])
-#     ax.set_yticklabels([])
-#     ax.xaxis.set_visible(False)
-#     ax.yaxis.set_visible(False)
-#     ax.axis('off')
-#     plt.tight_layout()
-#     # 최근 10일의 캔들차트 저장
-#     plt.savefig('C:/ssafy/candle/recent/{}.png'.format(code), dpi=fig.dpi)
-#     plt.close()
-
-# # 최근 10일 캔들차트 가져와 테스트
-# recent_data_dir = "C:/ssafy/candle/recent/"
-# test_data = []
-# image_files = [f for f in os.listdir(recent_data_dir) if f.endswith('.png')]
-    
-# # 이미지 파일 반복 처리
-# for image_file in image_files:
-#     # 이미지 파일 경로 생성
-#     image_path = os.path.join(recent_data_dir, image_file)
-        
-#     # 이미지 읽기 (OpenCV 사용)
-#     image = cv2.imread(image_path)
-        
-#     # 이미지 데이터추가
-#     test_data.append(image)
-
-# test_data = np.array(test_data)
-# print(test_data.shape)
-# test_data = test_data.astype('float32') / 255
-# prediction = cnn_model.predict(test_data)
-
-# acc = 0
-# for i in range (200):
-#     pre_value = 1
-#     if prediction[i][0] < 0.5:
-#         pre_value = 0
-#     if recent[i] == pre_value:
-#         acc += 1
-#     print(prediction[i][0])
-# print("정확도 : " + str(acc/200))
-
 
