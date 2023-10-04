@@ -5,6 +5,7 @@ import ProgressBar from './ProgressBar';
 import InvestGraph from './InvestGraph';
 import mbtiTraitsJson from '../../assets/mbti-traits.json';
 import tempImg from '../../assets/images/temp-image.png';
+import instance from '../../api/apiControlller';
 
 interface Props {
   setSurveyDone: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,35 +33,44 @@ interface MbtiPoint {
 
 export default function Result({ setSurveyDone }: Props) {
   const tempUser = '김싸피';
-  const tempPoint = [8, 16, 6, 10];
+  const [mbtiPoint, setMbtiPoint] = React.useState<number[]>([0, 0, 0, 0]);
+
+  React.useEffect(() => {
+    const fetchMbtiPoint = async () => {
+      const data = await instance.get('/member/mbti');
+      console.log(data);
+    };
+    fetchMbtiPoint();
+  }, []);
+
   const mbtiProps: MbtiPoint[] = [
     {
       element: [
         'Active\nA(외향형)',
         'Inactive\nI(내향형)',
       ],
-      percentage: tempPoint[0] * 5,
+      percentage: mbtiPoint[0] * 5,
     },
     {
       element: [
         'Professional\nP(전문가형)',
         'Beginner\nB(탐험가형)',
       ],
-      percentage: tempPoint[1] * 5,
+      percentage: mbtiPoint[1] * 5,
     },
     {
       element: [
         'Most Effective\nE(집중형)',
         'Well Balanced\nW(분산형)',
       ],
-      percentage: tempPoint[2] * 5,
+      percentage: mbtiPoint[2] * 5,
     },
     {
       element: [
         'Liberal\nL(자유형)',
         'Conservative\nC(신중형)',
       ],
-      percentage: tempPoint[3] * 5,
+      percentage: mbtiPoint[3] * 5,
     },
   ];
 
