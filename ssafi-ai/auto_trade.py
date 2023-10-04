@@ -79,7 +79,7 @@ for member in members:
     print(balance2)
     
     # 주식 + 현금 평가금액이 목표 금액 도달하면 중단
-    if balance2[0]['tot_evlu_amt'] >= trade_info.ai_goal:
+    if int(balance2[0]['tot_evlu_amt']) >= trade_info.ai_goal:
         trade_info.trading_start_yn = False
         continue
         

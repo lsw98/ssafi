@@ -3,7 +3,7 @@ import FinanceDataReader as fdr
 from modules.kospi_dict import kospi_dict
 # from kospi_dict import kospi_dict
 import datetime
-from sqlalchemy import update, delete
+from sqlalchemy import text
 from db import Session, engine
 from models import Base, Kospi
 
@@ -14,12 +14,8 @@ yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
 Base.metadata.create_all(engine)
 session = Session()
-# statement = delete(Kospi)
-# session.execute(statement)
-# session.commit()
 
 for code, name in kospi_dict.items():
-    # session.add(Kospi(kospi_code = code, kospi_name = name))
     df = fdr.DataReader(code, '2023-01-01', yesterday)
     df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
     
@@ -50,16 +46,52 @@ safe = var_dic[133:]
 
 
 for item in danger:
-    statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="risk")
-    session.execute(statement)
+    upsert_sql = text("""
+    INSERT INTO kospi (kospi_code, kospi_name, kospi_type)
+    VALUES (:kospi_code, :kospi_name, :kospi_type)
+    ON DUPLICATE KEY UPDATE kospi_code=VALUES(kospi_code), kospi_type=VALUES(kospi_type)
+    """)
+
+    # SQL 문 실행
+    session.execute(upsert_sql, {"kospi_code": item[0], "kospi_name": kospi_dict[item[0]], "kospi_type": "risk"})
+
+    # 변경 내용을 커밋
+    session.commit()
+    
+    # statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="risk")
+    # session.execute(statement)
 
 for item in neutral:
-    statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="neutral")
-    session.execute(statement)     
+    upsert_sql = text("""
+    INSERT INTO kospi (kospi_code, kospi_name, kospi_type)
+    VALUES (:kospi_code, :kospi_name, :kospi_type)
+    ON DUPLICATE KEY UPDATE kospi_code=VALUES(kospi_code), kospi_type=VALUES(kospi_type)
+    """)
+
+    # SQL 문 실행
+    session.execute(upsert_sql, {"kospi_code": item[0], "kospi_name": kospi_dict[item[0]], "kospi_type": "neutral"})
+    
+    # 변경 내용을 커밋
+    session.commit()
+    
+    # statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="neutral")
+    # session.execute(statement)     
 
 for item in safe:
-    statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="safe")
-    session.execute(statement)    
+    upsert_sql = text("""
+    INSERT INTO kospi (kospi_code, kospi_name, kospi_type)
+    VALUES (:kospi_code, :kospi_name, :kospi_type)
+    ON DUPLICATE KEY UPDATE kospi_code=VALUES(kospi_code), kospi_type=VALUES(kospi_type)
+    """)
+
+    # SQL 문 실행
+    session.execute(upsert_sql, {"kospi_code": item[0], "kospi_name": kospi_dict[item[0]], "kospi_type": "safe"})
+    
+    # 변경 내용을 커밋
+    session.commit()
+    
+    # statement = update(Kospi).where(Kospi.kospi_code.in_([item[0]])).values(kospi_type="safe")
+    # session.execute(statement)    
 
 session.commit()
 

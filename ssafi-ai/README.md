@@ -1,3 +1,5 @@
+PYTHON 3.11.5
+
 ### 필요한 라이브러리/패키지 설치
  
 ``` $ pip install -r requirements.txt ```
