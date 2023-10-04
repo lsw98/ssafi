@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity(name = "Member")
 @NoArgsConstructor
@@ -25,7 +26,8 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false)
     private Role role;
-    @Column(name="exited", columnDefinition = "TINYINT(1)")
+    @Column(name="exited", columnDefinition = "tinyint")
+    @ColumnDefault("false")
     private Boolean exited;
     @Enumerated(EnumType.STRING)
     @Column(name="sns_type")
