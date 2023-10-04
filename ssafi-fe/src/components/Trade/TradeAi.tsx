@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios'; // 임시
 import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
@@ -64,7 +65,7 @@ const Box = styled.div<StyleProps>`
 
 const Text = styled.div<StyleProps>`
   text-align: center;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 400;
   color: ${({ color }) => color || 'var(--white-color)'};
 `;
@@ -93,10 +94,10 @@ const Row = styled.div`
 
 export default function TradeAi() {
   // hasResult: 분석 결과가 있는지를 나타내는 boolean(처음이 아닐 때) - 임시 데이터
-  const hasResult = true;
-  // ai 트레이딩이 진행 중인지 아닌지
+  const [hasResult, setHasResult] = useState(false);
+  // ai 트레이딩이 진행 중인지 아닌지(ai 거래로드에서 보내줘야 함)
   const [isTrade, setIsTrade] = useState(false);
-  const [botName, setBotName] = useState('');
+  // const [botName, setBotName] = useState('');
   // ai 시작버튼 눌렀을 때 확인 모달창
   const [showModal, setShowModal] = useState(false);
   const [inputData, setInputData] = useState<inputDataPorps>({
@@ -121,7 +122,7 @@ export default function TradeAi() {
     },
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('wheel', handleScroll);
 
     return () => {
@@ -129,22 +130,57 @@ export default function TradeAi() {
     };
   }, []);
 
-  const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBotName(event.target.value);
-  };
+  useEffect(() => {
+    axios.get('/ai').then((res) => {
+      if (res.data.aiBudget > 0) {
+        setHasResult(true);
+      } else {
+        setHasResult(false);
+      }
+    });
+  });
+
+  // const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setBotName(event.target.value);
+  // };
 
   return (
     <Container>
+      {hasResult && <SubContainer>
+        {isTrade ? (
+          <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
+          ) : (
+          <Title color='var(--dark-color)'>최근 진행하신 트레이딩 결과입니다</Title>
+        )}
+        <BoxContainer width='1280px' style={{ alignItems: 'center' }}>
+          <Box>
+            {stockRateInfo.map((item) => (
+              <SemiCircleProgress color={item.category} percent={item.percent}/>
+            ))}
+          </Box>
+          <Box width='860px'>
+            <TradeChart />
+          </Box>
+        </BoxContainer>
+      </SubContainer>}
       <SubContainer className='small'>
         <div style={{ display: 'flex', marginTop: '16px' }}>
-          <Title weight={600} color='var(--point-color)'>{botName}</Title>
-          <Title>이 주식 투자 중이에요</Title>
+          {/* <Title weight={600} color='var(--point-color)'>{botName}</Title> */}
+          {isTrade ? (
+            <Title>현재 진행 중인 트레이딩의 투자 정보입니다</Title>
+          ) : (
+            <Title>AI로 주식 투자를 시작해보세요</Title>
+          )}
         </div>
         <BoxContainer height={'450px'}>
           <Box color='var(--white-color)'>
             <div style={{ margin: '120px' }} />
-            <Text color='var(--dark-color)'>여러분의 SSAFI AI에 이름을 붙여주세요</Text>
-            <Row>
+            {/* <Text color='var(--dark-color)'>여러분의 SSAFI AI에 이름을 붙여주세요</Text> */}
+            <Text color='var(--dark-color)'>
+              투자 전략을 알려주세요!<br/>
+              <br/>입력한 값을 바탕으로 <br/>트레이딩이 진행됩니다.
+            </Text>
+            {/* <Row>
               <InputBox
                 placeholder="싸피봇"
                 value={botName}
@@ -152,7 +188,7 @@ export default function TradeAi() {
               >
               </InputBox>
               <EditBtn />
-            </Row>
+            </Row> */}
           </Box>
           <Box width='640px' color='var(--dark-color)'>
             <TradeInput
@@ -166,19 +202,6 @@ export default function TradeAi() {
       {showModal && (
         <ConfirmModal inputData={inputData} closeModal={setShowModal} setIsTrade={setIsTrade}/>
       )}
-      {hasResult && <SubContainer>
-        <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
-        <BoxContainer width='1280px' style={{ alignItems: 'center' }}>
-          <Box>
-            {stockRateInfo.map((item) => (
-              <SemiCircleProgress color={item.category} percent={item.percent}/>
-            ))}
-          </Box>
-          <Box width='860px'>
-            <TradeChart />
-          </Box>
-        </BoxContainer>
-      </SubContainer>}
     </Container>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios'; // 임시
 import convertToKoreannum from '../../utils/convertToKorean';
 
 interface ConfirmModalProps {
@@ -112,8 +113,16 @@ const ConfirmModal = ({ inputData, closeModal, setIsTrade }: ConfirmModalProps) 
     if (start) {
       // check 눌려있으면 api 요청 보내서 ai 트레이딩 시작
       // 요청 성공하면 모달 닫고 트레이딩 중으로 상태 변경
-      closeModal(false);
-      setIsTrade(true);
+      axios.post('/ai', {
+        aiBudget: parseInt(inputData.aiBudget.replace(/[^0-9]/g, ''), 10),
+        aiGoal: parseInt(inputData.aiGoal.replace(/[^0-9]/g, ''), 10),
+        riskRatio: inputData.riskRatio,
+        neutralRatio: inputData.neutralRatio,
+        safetyRatio: inputData.safetyRatio,
+      }).then((res) => {
+        closeModal(false);
+        setIsTrade(true);
+      });
     }
   };
 

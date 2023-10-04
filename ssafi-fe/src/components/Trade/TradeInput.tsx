@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios'; // 임시
 import DoubtsButton from './ToolTip';
 import convertToKoreanNumber from '../../utils/convertToKorean';
 
@@ -163,6 +164,7 @@ export default function TradeInput({
     }
   };
 
+  // 비율 값 바꿀 때
   const createRatioHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(event.target.value, 10);
     setInputData({
@@ -171,6 +173,7 @@ export default function TradeInput({
     });
   };
 
+  // 금액 값 바꿀 때
   const createAmountHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value.replace(/[^0-9]/g, '');
     setInputData({
@@ -182,7 +185,10 @@ export default function TradeInput({
   const handleAiButton = (stop: boolean) => {
     if (stop) {
       // 트레이딩 중일 경우 -> ai 중지 axios 요청 성공하면
-      setIsTrade(!stop);
+      axios.patch('/ai/stop', {
+      }).then((res) => {
+        setIsTrade(!stop);
+      });
     } else if (inputData.safetyRatio + inputData.neutralRatio + inputData.riskRatio !== 100) {
       // 에러 처리, 에러 처리 통과하면 모달 띄워서 확인 버튼
       alert('투자 비율의 합이 100이 아닙니다.');
