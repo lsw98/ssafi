@@ -4,6 +4,7 @@ import './StockTabs.css';
 import searchIcon from '../../assets/icons/search-icon.svg';
 import { fetchStockCode } from '../../utility/api';
 import { fetchStockPrice } from '../../utility/api';
+// import StockEach from './StockEach';
 
 // 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
 const StocksSearchBarArea = styled.div`
@@ -141,6 +142,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
       setFilteredStockData(filteredData);
     }
   }, [searchText, stockData]);
+  console.log(filteredStockData);
 
   const toggleStar = (stock: string, index: number) => {
     const isClicked = clickedStar[index] || false;
@@ -184,6 +186,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
         <div
           className={toggleState === 1 ? 'content active-content' : 'content'}
         >
+          {/* 서치바 */}
           <StocksSearchBarArea>
             <StocksSearchBar>
               <StocksSearchIcon />
@@ -193,6 +196,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
               />{' '}
             </StocksSearchBar>
           </StocksSearchBarArea>
+          {/* 전체목록 */}
           <StocksAllList>
             {/* 종목 데이터를 맵핑하여 표시 */}
             {filteredStockData.map((stock, index) => {
@@ -207,39 +211,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
                       onStockClick(stock.code);
                     }}
                   >
-                    <svg
-                      className={`star ${clickedStar[index] ? 'filled' : ''}`}
-                      onClick={() => toggleStar(stock, index)}
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="19"
-                      viewBox="0 0 20 19"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 2.60396L11.7217 6.74345L11.9563 7.30742L12.5651 7.35623L17.0341 7.7145L13.6292 10.6311L13.1653 11.0285L13.307 11.6226L14.3473 15.9835L10.5213 13.6466L10 13.3282L9.47875 13.6466L5.65272 15.9835L6.69296 11.6226L6.83468 11.0285L6.3708 10.6311L2.96595 7.7145L7.43488 7.35623L8.04372 7.30742L8.27829 6.74345L10 2.60396Z"
-                        stroke="#EFDA4C"
-                        stroke-width="2"
-                      />
-                    </svg>
-                    <div style={{ marginRight: '10px' }}>
-                      <span>{stock.name}</span> {/* 종목명 */}
-                    </div>
-                    <div>
-                      <Tooltip
-                        color={
-                          Number(stock.prdy_vrss_sign) === 5
-                            ? 'blue'
-                            : Number(stock.prdy_vrss_sign) === 2
-                            ? 'red'
-                            : 'black'
-                        }
-                      >
-                        {Number.isNaN(Number(stock.stck_prpr))
-                          ? 'Loading...'
-                          : Number(stock.stck_prpr).toLocaleString()}
-                      </Tooltip>
-                    </div>
+                    {/* <StockEach></StockEach> */}
                   </li>
                 );
               }
@@ -247,6 +219,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
               return null; // 현재 페이지에 속하지 않는 주식은 렌더링하지 않음
             })}
           </StocksAllList>
+          {/* 버튼 */}
           <div className="button-container">
             <button
               disabled={currentPage === 1}

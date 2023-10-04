@@ -18,8 +18,7 @@ const Container = styled.div`
 
 const LeftColumn = styled.div`
   flex: 20; /* 왼쪽 열을 20%로 설정 */
-  background-color: #f0f0f0;
-  padding: 20px;
+  padding: 20px 10px 20px 0px;
 `;
 
 const CenterColumn = styled.div`
@@ -40,8 +39,8 @@ const GraphContainer = styled.div`
 `;
 
 const StockInfo = styled.div`
-display-flex;
-height: 20%;
+  display-flex;
+  height: 20%;
 `;
 
 const TradingAndAccountContainer = styled.div`
@@ -68,8 +67,7 @@ const Price = styled.div``;
 
 const RightColumn = styled.div`
   flex: 20; /* 오른쪽 열을 20%로 설정 */
-  background-color: #f0f0f0;
-  padding: 20px;
+  padding: 20px 0px 20px 10px;
 `;
 const AmountRanking = styled.div`
   width: 100%;
