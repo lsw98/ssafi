@@ -157,9 +157,9 @@ export default function TradeInput({
     if (selectedOption) {
       setInputData({
         ...inputData,
-        safetyRatio: selectedOption.rates[0],
+        safetyRatio: selectedOption.rates[2],
         neutralRatio: selectedOption.rates[1],
-        riskRatio: selectedOption.rates[2],
+        riskRatio: selectedOption.rates[0],
       });
     }
   };
@@ -208,69 +208,69 @@ export default function TradeInput({
   const options = [
     {
       type: '타고난 리더형 투자 지도자(APML)',
-      rates: [25, 68, 7],
+      rates: [50, 30, 20],
     },
     {
       type: '박학다식한 투자의 달인(APMC)',
-      rates: [100, 0, 0],
+      rates: [60, 30, 10],
     },
     {
       type: '똘똘한 분산투자 능력자(APWL)',
-      rates: [10, 80, 10],
+      rates: [30, 40, 30],
     },
     {
       type: '당당하고 유능한 투자자(APWC)',
-      rates: [0, 100, 0],
+      rates: [20, 30, 50],
     },
     {
       type: '똑똑한 투자 트렌디세터(ABML)',
-      rates: [1, 2, 97],
+      rates: [40, 30, 30],
     },
     {
       type: '시대를 앞서는 투자 리더(ABMC)',
-      rates: [58, 26, 16],
+      rates: [50, 25, 25],
     },
     {
       type: '용감한 투자 탐정가(ABWL)',
-      rates: [22, 55, 23],
+      rates: [40, 35, 25],
     },
     {
       type: '통찰력있는 투자 예술인(ABWC)',
-      rates: [20, 50, 30],
-    },
-    {
-      type: '전략적인 투자 연구자(IPML)',
-      rates: [25, 68, 7],
-    },
-    {
-      type: '미래지향적 투자 탐험가(IPMC)',
-      rates: [25, 68, 7],
-    },
-    {
-      type: '노련한 투자의 아이콘(IPWL)',
-      rates: [68, 25, 7],
-    },
-    {
-      type: '다재다능한 투자 지휘관(IPWC)',
-      rates: [38, 12, 50],
-    },
-    {
-      type: '도전을 즐기는 투자 샛별(IBML)',
-      rates: [50, 20, 30],
-    },
-    {
-      type: '탐구하는 투자 탐색가(IBMC)',
       rates: [20, 40, 40],
     },
     {
+      type: '전략적인 투자 연구자(IPML)',
+      rates: [50, 30, 20],
+    },
+    {
+      type: '미래지향적 투자 탐험가(IPMC)',
+      rates: [50, 30, 20],
+    },
+    {
+      type: '노련한 투자의 아이콘(IPWL)',
+      rates: [30, 40, 30],
+    },
+    {
+      type: '다재다능한 투자 지휘관(IPWC)',
+      rates: [30, 20, 50],
+    },
+    {
+      type: '도전을 즐기는 투자 샛별(IBML)',
+      rates: [60, 20, 20],
+    },
+    {
+      type: '탐구하는 투자 탐색가(IBMC)',
+      rates: [40, 30, 30],
+    },
+    {
       type: '호기심 가득한 투자 관찰가(IBWL)',
-      rates: [25, 50, 25],
+      rates: [30, 40, 30],
     },
     {
       type: '잠재력있는 새싹 투자자(IBWC)',
       rates: [33, 33, 34],
     },
-  ];
+];
 
   return (
     <Container>

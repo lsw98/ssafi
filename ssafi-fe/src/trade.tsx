@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import axios, { BASE_URL } from './api/apiControlller';
+// import axios from './api/apiControlller';
+import axios from 'axios';
 import TradeApi from './components/Trade/TradeApi';
 import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
@@ -65,26 +66,43 @@ export default function Trade() {
   const [hasApi, setHasApi] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const responseData = await axios.get('/member/key-account');
-        if (responseData.status === 200) {
-          console.log(responseData);
-          if (responseData.data.appkey !== null) {
-            setHasApi(true);
-          } else {
-            setHasApi(false);
-            navigate('/trade/api');
-          }
-        } else {
-          console.log(`Request failed with status: ${responseData.status}`);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, [navigate]);
+    const token = localStorage.getItem('accessToken');
+    axios.get('https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/member/key-account',
+      {
+        headers: {
+          Authorization: token,
+        },
+      },
+    ).then((res) => {
+      console.log(res);
+    });
+  });
+  //   const fetchData = async () => {
+  //     try {
+  //       const responseData = await axios.get('/member/key-account');
+  //       if (responseData.status === 200) {
+  //         console.log(responseData);
+  //         if (responseData.data.appkey !== null) {
+  //           setHasApi(true);
+  //         } else {
+  //           setHasApi(false);
+  //           navigate('/trade/api');
+  //         }
+  //       } else {
+  //         console.log(`Request failed with status: ${responseData.status}`);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [navigate]);
+
+  // useEffect(() => {
+  //   axios.get('/member/key-account').then((res) => {
+  //     console.log(res);
+  //   });
+  // }, []);
 
   const toAI = () => {
     if (!hasApi) {
