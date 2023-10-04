@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios'; // 임시
+import axios from '../../api/apiControlller';
 import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
@@ -130,15 +130,15 @@ export default function TradeAi() {
     };
   }, []);
 
-  useEffect(() => {
-    axios.get('/ai').then((res) => {
-      if (res.data.aiBudget > 0) {
-        setHasResult(true);
-      } else {
-        setHasResult(false);
-      }
-    });
-  });
+  // useEffect(() => {
+  //   axios.get('/ai').then((res) => {
+  //     if (res.data.aiBudget > 0) {
+  //       setHasResult(true);
+  //     } else {
+  //       setHasResult(false);
+  //     }
+  //   });
+  // });
 
   // const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setBotName(event.target.value);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios'; // 임시
+import axios from '../../api/apiControlller';
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 import ApiGuide from './ApiGuide';
 import handleScroll from '../../utils/scrollUtils';
@@ -124,7 +124,7 @@ export default function TradeApi() {
     };
   }, []);
 
-  const [apiKey, setApiKey] = useState('');
+  const [appKey, setApiKey] = useState('');
   const [secretKey, setSecretKey] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -144,12 +144,12 @@ export default function TradeApi() {
   };
 
   const handleApiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 입력 값이 변경될 때마다 apiKey 상태를 업데이트
+    // 입력 값이 변경될 때마다 appKey 상태를 업데이트
     setApiKey(event.target.value);
   };
 
   const handleSecretChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 입력 값이 변경될 때마다 apiKey 상태를 업데이트
+    // 입력 값이 변경될 때마다 appKey 상태를 업데이트
     setSecretKey(event.target.value);
   };
 
@@ -159,22 +159,23 @@ export default function TradeApi() {
   };
 
   const handleButtonClick = () => {
-    if (apiKey === '') {
+    if (appKey === '') {
       alert('API Key를 입력해 주세요!');
     } else if (secretKey === '') {
       alert('SECRET Key를 입력해 주세요!');
     } else if (accountNumber === '') {
       alert('계좌 번호를 입력해 주세요!');
     } else {
-      axios.post('/member/key-account', {
-        apikey: apiKey,
-        secretkey: secretKey,
-        accountPrefix: accountNumber, // 확인 필요
-        accountSuffix: accountNumber, // 확인 필요
-      }).then((res) => {
-        // 200 이면 ai 트레이딩 페이지로 이동
-        navigate('/trade');
-      });
+      // axios.post('/member/key-account', {
+      //   appkey: appKey,
+      //   secretkey: secretKey,
+      //   accountPrefix: 12345678, // 확인 필요
+      //   accountSuffix: 12, // 확인 필요
+      // }).then((res) => {
+        // if (res.status === 200) {
+          navigate('/trade');
+        // }
+      // });
     }
   };
 
@@ -183,11 +184,11 @@ export default function TradeApi() {
       <Container dark={true}>
         <div style={{ width: '540px' }}>
           <InnerContainer>
-            <Text>API Key가 없으신가요? <DoubtsButton onClick={handleOpenModal}/></Text>
-            <Text className='small'>SSAFI에서는 한국투자증권 API Key를 통해 계좌 인증을 진행하고 있으며,
-              <br />API Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
+            <Text>APP Key가 없으신가요? <DoubtsButton onClick={handleOpenModal}/></Text>
+            <Text className='small'>SSAFI에서는 한국투자증권 APP Key를 통해 계좌 인증을 진행하고 있으며,
+              <br />APP Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
             </Text>
-            <Text className='button' onClick={openApiPage}>API Key 발급/확인하기 &gt;</Text>
+            <Text className='button' onClick={openApiPage}>APP Key 발급/확인하기 &gt;</Text>
           </InnerContainer>
         </div>
       </Container>
@@ -196,10 +197,10 @@ export default function TradeApi() {
           <InputName className='header'>자동 투자를 위한 정보를 입력해주세요.</InputName>
           <div>
             <InputBox>
-              <InputName className='name'>API Key :</InputName>
+              <InputName className='name'>APP Key :</InputName>
               <Input
-                placeholder="API Key를 입력하세요"
-                value={apiKey}
+                placeholder="APP Key를 입력하세요"
+                value={appKey}
                 onChange={handleApiChange}
               />
             </InputBox>
@@ -221,7 +222,7 @@ export default function TradeApi() {
             </InputBox>
             <Notice>* 숫자만 입력해주세요.</Notice>
           </div>
-          <InputName visibled={apiKey !== '' && secretKey !== '' && accountNumber !== ''} className='button' onClick={handleButtonClick}>
+          <InputName visibled={appKey !== '' && secretKey !== '' && accountNumber !== ''} className='button' onClick={handleButtonClick}>
             입력하기
           </InputName>
         </InnerContainer>
