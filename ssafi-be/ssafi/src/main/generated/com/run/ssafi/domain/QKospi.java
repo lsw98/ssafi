@@ -25,6 +25,8 @@ public class QKospi extends EntityPathBase<Kospi> {
 
     public final StringPath kospiName = createString("kospiName");
 
+    public final NumberPath<Long> kospiRank = createNumber("kospiRank", Long.class);
+
     public final StringPath kospiType = createString("kospiType");
 
     public QKospi(String variable) {

@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class KospiVo {
     private String kospiCode;
     private String kospiName;
+    private String kospiType;
+    private Long kospiRank;
 }

@@ -57,7 +57,7 @@ for member in members:
         
 
         sell_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == code)).first().kospi_id
-        trade_record = TradeRecord(trade_price = _getStockPrice(code, member, access_token), trade_date = datetime.now(), trade_quantity = record['hldg_qty'], user_id = member.id, kospi_id = sell_id)
+        trade_record = TradeRecord(trade_type = 'S', trade_price = _getStockPrice(code, member, access_token), trade_date = datetime.now(), trade_quantity = record['hldg_qty'], user_id = member.id, kospi_id = sell_id)
         # 하락 예측 종목이면 매도 실행
         if (code in item[0] for item in danger_fall) or (code in item[0] for item in neutral_fall) or (code in item[0] for item in safe_fall) and code not in hold_info:
                 print(_sellStock(code, member, record['hldg_qty'], access_token))
@@ -104,7 +104,7 @@ for member in members:
     risk_quantity = int(risk_cost / risk_price)
     print(_buyStock(risk_item[0], member, risk_quantity, access_token))  
     # 위험 종목 거래 내역 저장
-    risk_record = TradeRecord(trade_price = risk_price, trade_date = datetime.now(), trade_quantity = risk_quantity, user_id = member.id, kospi_id = risk_id)
+    risk_record = TradeRecord(trade_type = 'P', trade_price = risk_price, trade_date = datetime.now(), trade_quantity = risk_quantity, user_id = member.id, kospi_id = risk_id)
     session.add(risk_record)
     
     neutral_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == neutral_item[0])).first().kospi_id
@@ -112,7 +112,7 @@ for member in members:
     neutral_quantity = int(neutral_cost / neutral_price)
     print(_buyStock(neutral_item[0], member, neutral_quantity, access_token))  
     # 중립 종목 거래 내역 저장
-    neutral_record = TradeRecord(trade_price =  neutral_price, trade_date = datetime.now(), trade_quantity = neutral_quantity, user_id = member.id, kospi_id = neutral_id)
+    neutral_record = TradeRecord(trade_type = 'P', trade_price =  neutral_price, trade_date = datetime.now(), trade_quantity = neutral_quantity, user_id = member.id, kospi_id = neutral_id)
     session.add(neutral_record)
     
     safe_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == safe_item[0])).first().kospi_id
@@ -120,7 +120,7 @@ for member in members:
     safe_quantity = int(safe_cost / safe_price)
     print(_buyStock(safe_item[0], member, safe_quantity, access_token))  
     # 안전 종목 거래 내역 저장
-    safe_record = TradeRecord(trade_price = safe_price, trade_date = datetime.now(), trade_quantity = safe_quantity, user_id = member.id, kospi_id = safe_id)
+    safe_record = TradeRecord(trade_type = 'P', trade_price = safe_price, trade_date = datetime.now(), trade_quantity = safe_quantity, user_id = member.id, kospi_id = safe_id)
     session.add(safe_record)
     
 session.close()
