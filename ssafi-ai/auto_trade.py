@@ -1,10 +1,11 @@
-from models import Base, Member, Kospi, Aitrade, Hold
+from models import Base, Member, Kospi, Aitrade, Hold, TradeRecord
 from sqlalchemy import select
 from sqlalchemy.orm import join
 from db import engine, Session
 from KISapi import _getAccessToken, _getStockPrice, _buyStock, _sellStock, _getStockBalance
 from today_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
 import time
+from datetime import datetime
 
 Base.metadata.create_all(engine)
 
@@ -27,7 +28,7 @@ for member in members:
     trade_info = session.get(Aitrade, member.id)
     
     # 홀드 (매수/매도 안 할 종목) 정보  
-    hold_statement = select(Kospi).select_from(join(Kospi, Hold)).filter(Hold.member == member.id)
+    hold_statement = select(Kospi).select_from(join(Kospi, Hold)).filter(Hold.hold_id == member.id)
     hold_rows = session.scalars(hold_statement).all()
     hold_info = []
     for hold in hold_rows:
@@ -54,9 +55,13 @@ for member in members:
         print("평가손익률 : " + record['evlu_pfls_rt'])
         print("평가수익률 : " + record['evlu_erng_rt'])
         
+
+        sell_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == code)).first().kospi_id
+        trade_record = TradeRecord(trade_price = _getStockPrice(code, member, access_token), trade_date = datetime.now(), trade_quantity = record['hldg_qty'], user_id = member.id, kospi_id = sell_id)
         # 하락 예측 종목이면 매도 실행
         if (code in item[0] for item in danger_fall) or (code in item[0] for item in neutral_fall) or (code in item[0] for item in safe_fall) and code not in hold_info:
                 print(_sellStock(code, member, record['hldg_qty'], access_token))
+                session.add(trade_record)
         else:
             # 상승 예측 종목이면 매도 x, 아니면 매도하고 상승 예측 종목을 매수한다.
             if (code in danger_rise) or (code in neutral_rise) or (code in safe_rise):
@@ -64,6 +69,7 @@ for member in members:
             else:
                 if code not in hold_info:
                     print(_sellStock(code, member, record['hldg_qty'], access_token))
+                    session.add(trade_record)
     
     
     # 체결 대기시간 임의로 부여
@@ -93,13 +99,28 @@ for member in members:
     safe_item = safe_rise[0]
     
     # 안전 / 중립 / 위험 종목 매수
-    risk_quantity = int(risk_cost / _getStockPrice(risk_item[0], member, access_token))
-    print(_buyStock(risk_item[0], member, risk_quantity, access_token))
+    risk_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == risk_item[0])).first().kospi_id
+    risk_price = _getStockPrice(risk_item[0], member, access_token)
+    risk_quantity = int(risk_cost / risk_price)
+    print(_buyStock(risk_item[0], member, risk_quantity, access_token))  
+    # 위험 종목 거래 내역 저장
+    risk_record = TradeRecord(trade_price = risk_price, trade_date = datetime.now(), trade_quantity = risk_quantity, user_id = member.id, kospi_id = risk_id)
+    session.add(risk_record)
     
-    neutral_quantity = int(neutral_cost / _getStockPrice(neutral_item[0], member, access_token))
-    print(_buyStock(neutral_item[0], member, neutral_quantity, access_token))
+    neutral_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == neutral_item[0])).first().kospi_id
+    neutral_price = _getStockPrice(neutral_item[0], member, access_token)
+    neutral_quantity = int(neutral_cost / neutral_price)
+    print(_buyStock(neutral_item[0], member, neutral_quantity, access_token))  
+    # 중립 종목 거래 내역 저장
+    neutral_record = TradeRecord(trade_price =  neutral_price, trade_date = datetime.now(), trade_quantity = neutral_quantity, user_id = member.id, kospi_id = neutral_id)
+    session.add(neutral_record)
     
-    safe_quantity = int(safe_cost / _getStockPrice(safe_item[0], member, access_token))
-    print(_buyStock(safe_item[0], member, safe_quantity, access_token))
-
+    safe_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == safe_item[0])).first().kospi_id
+    safe_price = _getStockPrice(safe_item[0], member, access_token)
+    safe_quantity = int(safe_cost / safe_price)
+    print(_buyStock(safe_item[0], member, safe_quantity, access_token))  
+    # 안전 종목 거래 내역 저장
+    safe_record = TradeRecord(trade_price = safe_price, trade_date = datetime.now(), trade_quantity = safe_quantity, user_id = member.id, kospi_id = safe_id)
+    session.add(safe_record)
+    
 session.close()

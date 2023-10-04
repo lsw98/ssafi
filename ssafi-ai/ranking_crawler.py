@@ -36,7 +36,7 @@ def ranking_news_crawler(url, news_list):
             # 작성자 정보 : 이름 + 이메일
             name = soup.select('.author')[0].select('.name')[0].text
             email = soup.select('.author')[0].select('.email')[0].text
-            writer = email + name             
+            writer = email + ' ' + name             
         date = soup.select('.time_area')[0].select('.registration')[0].get_text()
     
         midtitle = ""
