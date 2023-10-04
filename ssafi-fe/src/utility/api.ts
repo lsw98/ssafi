@@ -16,6 +16,11 @@ const vtsHash = process.env.REACT_APP_VTS_HASH;
 // const vtsKey = localStorage.getItem('appKey') || '';
 // const vtsSecret = localStorage.getItem('secretKey') || '';
 
+type FetchAccountResult = {
+  refinedOutput: any[];
+  AccountData: any;
+};
+
 function getCurrentTime() {
   const date = new Date();
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 0-based index
@@ -169,13 +174,16 @@ export const fetchBuyStock = async (
 
     if (response.data.rt_cd === '0') {
       return response.data.output;
+      window.alert('매수 성공!');
     } else {
       console.error('API Error:', response.data.msg1);
+      window.alert(`매수 실패, ${response.data.msg1}`);
       return [];
     }
   } catch (error: any) {
     console.error('Network Error:', error);
     console.error('Server Response:', error.response); // 서버 응답 로깅
+    window.alert('매수 실패');
     return [];
   }
 };
@@ -214,13 +222,16 @@ export const fetchSellStock = async (
 
     if (response.data.rt_cd === '0') {
       return response.data.output;
+      window.alert('매도 성공!');
     } else {
       console.error('API Error:', response.data.msg1);
+      window.alert(`매도 실패, ${response.data.msg1}`);
       return [];
     }
   } catch (error: any) {
     console.error('Network Error:', error);
     console.error('Server Response:', error.response); // 서버 응답 로깅
+    window.alert('매도 실패');
     return [];
   }
 };
@@ -273,7 +284,9 @@ export const fetchModifyStock = async (
   }
 };
 
-export const fetchCheckAccount = async () => {
+export const fetchCheckAccount = async (): Promise<
+  FetchAccountResult | never[]
+> => {
   const config = {
     headers: {
       'content-type': 'application/json',
@@ -317,8 +330,8 @@ export const fetchCheckAccount = async () => {
           evlu_pfls_rt: item.evlu_pfls_rt, // 손익률
         };
       });
-
-      return refinedOutput;
+      const AccountData = response.data.output2;
+      return { refinedOutput, AccountData };
     } else {
       console.error('API Error:', response.data.msg1);
       return [];

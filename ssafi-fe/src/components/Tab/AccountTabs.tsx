@@ -87,22 +87,29 @@ function AccountTabs() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedData = await fetchCheckAccount();
-        console.log('balance', fetchedData); // 데이터 로그 출력
+        const result = await fetchCheckAccount();
 
-        const updatedBalance = fetchedData.map((item: any) => ({
-          stockName: item.prdt_name,
-          amount: item.hldg_qty,
-          purchasePrice: item.pchs_avg_pric,
-          nowPrice: item.prpr,
-          totalPrice: item.evlu_pfls_amt,
-          profitRate: item.evlu_pfls_rt,
-        }));
-        setBalance(updatedBalance);
+        if (!Array.isArray(result)) {
+          console.log('balance', result.refinedOutput);
+
+          const updatedBalance = result.refinedOutput.map((item: any) => ({
+            stockName: item.prdt_name,
+            amount: item.hldg_qty,
+            purchasePrice: item.pchs_avg_pric,
+            nowPrice: item.prpr,
+            totalPrice: item.evlu_pfls_amt,
+            profitRate: item.evlu_pfls_rt,
+          }));
+
+          setBalance(updatedBalance);
+        } else {
+          // Handle the case where the result is an empty array, if necessary.
+        }
       } catch (error) {
         console.error('Fetching Error:', error);
       }
     };
+
     fetchData();
   }, []);
 

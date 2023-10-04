@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 // import handleScroll from '../../utils/scrollUtils';
 import HistoryTable from './HistoryTable';
+import { fetchCheckAccount } from '../../utility/api';
+import AccountTabs from '../Tab/AccountTabs';
 
 interface StyleProps {
   width?: string;
@@ -31,8 +33,8 @@ const BoxContainer = styled.div<StyleProps>`
   padding: ${({ padding }) => padding || '30px 40px'};
   background-color: var(--white-color);
   border-radius: 16px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
-  `;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+`;
 
 const RowContainer = styled.div<StyleProps>`
   display: flex;
@@ -58,8 +60,12 @@ const Text = styled.div<StyleProps>`
     color: ${({ color }) => color || 'var(--dark-color)'};
   }
 `;
+function formatNumber(num: string | number) {
+  return Intl.NumberFormat().format(Number(num));
+}
 
 export default function TradeAccount() {
+  const [accountData, setAccountData] = useState<any | null>(null);
   // 표 내부 스크롤 때문에 스크롤 컨트롤러 주석
   // React.useEffect(() => {
   //   window.addEventListener('wheel', handleScroll);
@@ -68,50 +74,94 @@ export default function TradeAccount() {
   //     window.removeEventListener('wheel', handleScroll);
   //   };
   // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchCheckAccount();
+
+      if (!Array.isArray(result) && result.AccountData) {
+        setAccountData(result.AccountData[0]);
+      }
+    };
+
+    fetchData();
+    console.log(accountData);
+  }, []);
 
   return (
     <Container>
       <LeftContainer>
         <BoxContainer>
           <Text>총 계좌 잔액</Text>
-          <RowContainerBorder marginTop='20px'>
-            <Text className='big' color='var(--gray-color)'>&#8361;</Text>
-            <Text className='big'>1,064,700 원</Text>
+          <RowContainerBorder marginTop="20px">
+            <Text className="big" color="var(--gray-color)">
+              &#8361;
+            </Text>
+            <Text className="big">
+              {accountData
+                ? `${formatNumber(accountData.nass_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainerBorder>
-          <RowContainer marginTop='20px' style={{ justifyContent: 'flex-end' }}>
+          <RowContainer marginTop="20px" style={{ justifyContent: 'flex-end' }}>
             탭 들어갈 자리
           </RowContainer>
           <RowContainer>
-            <Text className='gray'>투자금액</Text>
-            <Text>500,000 원</Text>
+            <Text className="gray">투자금액</Text>
+            <Text>
+              {accountData
+                ? `${formatNumber(accountData.scts_evlu_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainer>
           <RowContainer>
-            <Text className='gray'>투자잔액</Text>
-            <Text>532,500 원</Text>
+            <Text className="gray">투자잔액</Text>
+            <Text>
+              {accountData
+                ? `${formatNumber(accountData.dnca_tot_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainer>
-          <RowContainer marginTop='20px'>
+          <RowContainer marginTop="20px">
             <Text>총 손익</Text>
-            <Text className='big' color='var(--upper-color)'>+6.5 %</Text>
+            <Text className="big" color="var(--upper-color)">
+              {accountData
+                ? `${parseFloat(accountData.asst_icdc_erng_rt).toFixed(2)} %`
+                : 'Loading...'}
+            </Text>
           </RowContainer>
         </BoxContainer>
         <BoxContainer>
           <Text>예수금</Text>
-          <RowContainerBorder marginTop='20px'>
-            <Text className='big' color='var(--gray-color)'>&#8361;</Text>
-            <Text className='big'>0 원</Text>
+          <RowContainerBorder marginTop="20px">
+            <Text className="big" color="var(--gray-color)">
+              &#8361;
+            </Text>
+            <Text className="big">
+              {accountData
+                ? `${formatNumber(accountData.dnca_tot_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainerBorder>
-          <RowContainer marginTop='20px'>
-            <Text className='gray'>D + 1</Text>
-            <Text>0 원</Text>
+          <RowContainer marginTop="20px">
+            <Text className="gray">D + 1</Text>
+            <Text>
+              {accountData
+                ? `${formatNumber(accountData.nxdy_excc_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainer>
           <RowContainer>
-            <Text className='gray'>D + 2</Text>
-            <Text>71,500 원</Text>
+            <Text className="gray">D + 2</Text>
+            <Text>
+              {accountData
+                ? `${formatNumber(accountData.prvs_rcdl_excc_amt)} 원`
+                : 'Loading...'}
+            </Text>
           </RowContainer>
         </BoxContainer>
       </LeftContainer>
       <LeftContainer>
-        <BoxContainer width='660px' maxHeight='498px' padding='30px'>
+        <BoxContainer width="660px" maxHeight="498px" padding="30px">
           <Text>거래 내역</Text>
           <HistoryTable />
         </BoxContainer>
