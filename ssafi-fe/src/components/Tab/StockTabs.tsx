@@ -85,7 +85,6 @@ function StockTabs({ onStockClick }: StockTabsProps) {
   useEffect(() => {
     fetchStockCode().then((info) => {
       setStockInfo(info);
-
       // 모든 주식 이름을 먼저 stockData에 설정
       const initialData = info.map(({ stockCode, stockName }) => ({
         code: stockCode,
@@ -134,23 +133,21 @@ function StockTabs({ onStockClick }: StockTabsProps) {
       setFilteredStockData(filteredData);
     }
   }, [searchText, stockData]);
-  console.log(filteredStockData);
 
-  const toggleStar = (stock: Stock, index: number) => {
-    const isClicked = clickedStar[index] || false;
-
-    setClickedStar({
-      ...clickedStar,
-      [index]: !isClicked,
-    });
-
-    if (!isClicked) {
-      // 관심 종목에 추가
-      setInterests([...interests, stock]);
-    } else {
-      // 관심 종목에서 제거
+  const toggleStar = (stock: Stock) => {
+    if (interests.includes(stock)) {
       const newInterests = interests.filter((item) => item !== stock);
       setInterests(newInterests);
+      setClickedStar({
+        ...clickedStar,
+        [stock.code]: false,
+      });
+    } else {
+      setInterests([...interests, stock]);
+      setClickedStar({
+        ...clickedStar,
+        [stock.code]: true,
+      });
     }
   };
 
@@ -193,13 +190,13 @@ function StockTabs({ onStockClick }: StockTabsProps) {
               const end = currentPage * itemsPerPage;
               if (index >= start && index < end) {
                 return (
-                    <StockEach
-                      index = {index}
-                      stock = {stock}
-                      clickedStar = {clickedStar}
-                      toggleStar = {toggleStar}
-                      onStockClick = {onStockClick}
-                    />
+                  <StockEach
+                    stock = {stock}
+                    clickedStar = {clickedStar}
+                    toggleStar = {toggleStar}
+                    onStockClick = {onStockClick}
+                    toggleState = {toggleState}
+                  />
                 );
               }
               return null; // 현재 페이지에 속하지 않는 주식은 렌더링하지 않음
@@ -255,11 +252,11 @@ function StockTabs({ onStockClick }: StockTabsProps) {
           <StocksList>
             {interests.map((stock, index) => (
               <StockEach
-                index = {index}
                 stock = {stock}
                 clickedStar = {clickedStar}
                 toggleStar = {toggleStar}
                 onStockClick = {onStockClick}
+                toggleState = {toggleState}
               />
             ))}
           </StocksList>

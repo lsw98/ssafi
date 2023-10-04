@@ -10,11 +10,11 @@ interface Stock {
 }
 
 interface StockEachProps {
-  index: number;
   stock: Stock;
   clickedStar: Record<string, boolean>;
-  toggleStar: (stock: Stock, index: number) => void;
+  toggleStar: (stock: Stock) => void;
   onStockClick: (stockCode: string) => void;
+  toggleState: number;
 }
 
 const Container = styled.div`
@@ -47,7 +47,7 @@ const Price = styled.div<{ color: string }>`
   margin-left: 5px;
 `;
 
-const StockEach = ({ index, stock, clickedStar, toggleStar, onStockClick }: StockEachProps) => {
+const StockEach = ({ stock, clickedStar, toggleStar, onStockClick, toggleState }: StockEachProps) => {
   const nameRef = useRef<HTMLDivElement | null>(null);
   const priceRef = useRef<HTMLDivElement | null>(null);
   const [namewidth, setNameWidth] = useState(0);
@@ -59,14 +59,14 @@ const StockEach = ({ index, stock, clickedStar, toggleStar, onStockClick }: Stoc
       setPriceWidth(price);
       setNameWidth(150 - price);
     }
-  }, [stock.stck_prpr]);
+  }, [stock.stck_prpr, toggleState]);
 
   return (
     <Container>
       <LeftContainer>
         <svg
-          className={`star ${clickedStar[index] ? 'filled' : ''}`}
-          onClick={() => toggleStar(stock, index)}
+          className={`star ${clickedStar[stock.code] ? 'filled' : ''}`}
+          onClick={() => toggleStar(stock)}
           xmlns="http://www.w3.org/2000/svg"
           width="20"
           height="19"
@@ -93,7 +93,7 @@ const StockEach = ({ index, stock, clickedStar, toggleStar, onStockClick }: Stoc
         }
       >
         {Number.isNaN(Number(stock.stck_prpr))
-          ? 'Loading...'
+          ? <div style={{ fontSize: '12px' }}>Loading...</div>
           : Number(stock.stck_prpr).toLocaleString()}
       </Price>
     </Container>
