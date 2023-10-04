@@ -72,6 +72,8 @@ public class SecurityConfiguration {
             "/docs",
             "/api/login",
             "/api/user/**",
+            "/api/news",
+            "/api/news/**",
     };
 
     // 경로 접근 설정
@@ -94,9 +96,12 @@ public class SecurityConfiguration {
                                     .toArray(AntPathRequestMatcher[]::new)
                     )
                     .permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/stock/list", "GET")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "POST")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/ai", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
+                    .requestMatchers(new AntPathRequestMatcher("/api/member/**", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PATCH")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "PUT")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/**", "DELETE")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())

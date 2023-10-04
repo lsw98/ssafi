@@ -76,7 +76,7 @@ export default function Header() {
   // 기능 코드 파트
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isLoggedIn, setIsLoggedIn } = useAuth();
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
   const navigate = useNavigate();
   const location = useLocation();
   const toMain = () => {
@@ -94,14 +94,13 @@ export default function Header() {
   useEffect(() => {
     // 페이지 로딩 시 localStorage에서 토큰 유무를 확인하여 로그인 상태 설정
     const token = localStorage.getItem('accessToken');
-    console.log(token);
-    if (token != null) {
+    // console.log(token);
+    if (token !== null) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
-    console.log(isLoggedIn);
-  }, []);
+  }, [setIsLoggedIn]);
 
   // isLoggedIn 상태가 변경될 때마다 로그를 출력
   // useEffect(() => {

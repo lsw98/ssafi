@@ -15,5 +15,6 @@ public class AiStatusResponseDto {
     Double riskRatio;
     Double neutralRatio;
     Double safetyRatio;
+    Character tradingStartYn;
     String message;
 }

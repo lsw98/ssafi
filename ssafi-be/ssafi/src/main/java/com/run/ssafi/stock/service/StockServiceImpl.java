@@ -12,19 +12,33 @@ import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
 import com.run.ssafi.message.custom_message.AuthResponseMessage;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.BalanceHistoryResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestHeaderDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestParameterDto;
+import com.run.ssafi.stock.dto.InquireBalanceResponseBodyDto;
+import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
+import com.run.ssafi.stock.dto.InquireBalanceResponseHeaderDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KISAccessTokenRequestDto;
 import com.run.ssafi.stock.dto.KISAuthResponse;
+import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.feign.KISAuthApi;
+import com.run.ssafi.stock.feign.KISTradingAPI;
 import com.run.ssafi.stock.properties.KISAuthProperties;
+import com.run.ssafi.stock.repository.BalanceHistoryRepository;
 import com.run.ssafi.stock.repository.HoldStockRepository;
 import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
+import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
+import com.run.ssafi.stock.vo.KospiVo;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +49,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class StockServiceImpl implements StockService {
 
     private final KISAuthApi kisAuthApi;
+    private final KISTradingAPI kisTradingAPI;
     private final KospiRepository kospiRepository;
     private final InterestStockRepository interestStockRepository;
     private final HoldStockRepository holdStockRepository;
+    private final BalanceHistoryRepository balanceHistoryRepository;
 
     @Override
     public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
@@ -54,6 +70,67 @@ public class StockServiceImpl implements StockService {
         extracted(member, authResponseDto);
 
         return authResponseDto;
+    }
+
+    @Override
+    public InquireBalanceResponseDto getInquireBalance(InquireBalanceRequestDto inquireBalanceRequestDto) {
+
+        HttpHeaders httpHeaders = getHttpHeaders(inquireBalanceRequestDto);
+        InquireBalanceRequestParameterDto inquireBalanceRequestParameterDto = inquireBalanceRequestDto.getInquireBalanceRequestParameterDto();
+
+        String CANO = inquireBalanceRequestParameterDto.getCANO();
+        String ACNT_PRDT_CD = inquireBalanceRequestParameterDto.getACNT_PRDT_CD();
+        String AFHR_FLPR_YN = inquireBalanceRequestParameterDto.getAFHR_FLPR_YN();
+        String OFL_YN = inquireBalanceRequestParameterDto.getOFL_YN();
+        String INQR_DVSN = inquireBalanceRequestParameterDto.getINQR_DVSN();
+        String UNPR_DVSN = inquireBalanceRequestParameterDto.getUNPR_DVSN();
+        String FUND_STTL_ICLD_YN = inquireBalanceRequestParameterDto.getFUND_STTL_ICLD_YN();
+        String FNCG_AMT_AUTO_RDPT_YN = inquireBalanceRequestParameterDto.getFNCG_AMT_AUTO_RDPT_YN();
+        String PRCS_DVSN = inquireBalanceRequestParameterDto.getPRCS_DVSN();
+        String CTX_AREA_FK100 = inquireBalanceRequestParameterDto.getCTX_AREA_FK100();
+        String CTX_AREA_NK100 = inquireBalanceRequestParameterDto.getCTX_AREA_NK100();
+
+        ResponseEntity<String> response = kisTradingAPI.getInquireBalance(httpHeaders,
+                CANO,
+                ACNT_PRDT_CD,
+                AFHR_FLPR_YN,
+                OFL_YN,
+                INQR_DVSN,
+                UNPR_DVSN,
+                FUND_STTL_ICLD_YN,
+                FNCG_AMT_AUTO_RDPT_YN,
+                PRCS_DVSN,
+                CTX_AREA_FK100,
+                CTX_AREA_NK100);
+
+
+        HttpHeaders responseHeaders = response.getHeaders();
+        InquireBalanceResponseHeaderDto inquireBalanceResponseHeaderDto = InquireBalanceResponseHeaderDto.builder()
+                .contentType(responseHeaders.getFirst("content-type"))
+                .trId(responseHeaders.getFirst("tr_id"))
+                .trCont(responseHeaders.getFirst("tr_cont"))
+                .gtUid(responseHeaders.getFirst("gt_uid"))
+                .build();
+
+        InquireBalanceResponseBodyDto inquireBalanceResponseBodyDto = new Gson()
+                .fromJson(
+                        String.valueOf(response.getBody())
+                        , InquireBalanceResponseBodyDto.class
+                );
+
+        return new InquireBalanceResponseDto(inquireBalanceResponseHeaderDto, inquireBalanceResponseBodyDto);
+    }
+
+    private HttpHeaders getHttpHeaders(InquireBalanceRequestDto inquireBalanceRequestDto) {
+        InquireBalanceRequestHeaderDto inquireBalanceRequestHeaderDto = inquireBalanceRequestDto.getInquireBalanceRequestHeaderDto();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        httpHeaders.add("authorization", inquireBalanceRequestHeaderDto.getAuthorization());
+        httpHeaders.add("appkey", inquireBalanceRequestHeaderDto.getAppKey());
+        httpHeaders.add("appsecret", inquireBalanceRequestHeaderDto.getAppSecret());
+        httpHeaders.add("tr_id", inquireBalanceRequestHeaderDto.getTrId());
+        return httpHeaders;
     }
 
     @Transactional
@@ -126,6 +203,35 @@ public class StockServiceImpl implements StockService {
         HoldStock holdStock = holdStockRepository.findByKospiAndMember(kospi, member);
         if (holdStock != null)
             holdStockRepository.delete(holdStock);
+    }
+
+    @Override
+    public BalanceHistoryResponseDto getBalanceHistoryList(MemberDetail memberDetail) {
+        Member member = memberDetail.getMember();
+        List<BalanceHistoryVo> balanceHistoryVoList = balanceHistoryRepository.findByMember(member);
+        BalanceHistoryResponseDto balanceHistoryResponseDto = BalanceHistoryResponseDto.builder()
+                .balanceHistoryVoList(balanceHistoryVoList)
+                .message(StockResponseMessage.BALANCE_HISTORY_LOADING_SUCCESS.getMessage())
+                .build();
+
+        return balanceHistoryResponseDto;
+    }
+
+    @Override
+    public KospiListResponseDto getKospiList() {
+
+        List<Kospi> kospiList = kospiRepository.findAll();
+        List<KospiVo> kospiVoList = new ArrayList<>();
+        for (Kospi kospi : kospiList) {
+            KospiVo kospiVo = new KospiVo(kospi.getKospiCode(), kospi.getKospiName());
+            kospiVoList.add(kospiVo);
+        }
+
+        KospiListResponseDto kospiListResponseDto = KospiListResponseDto.builder()
+                .kospiVoList(kospiVoList)
+                .message(StockResponseMessage.KOSPI_LIST_LOADING_SUCCESS.getMessage())
+                .build();
+        return kospiListResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {

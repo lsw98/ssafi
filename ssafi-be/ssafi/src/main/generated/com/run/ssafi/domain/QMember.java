@@ -32,7 +32,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final BooleanPath exit = createBoolean("exit");
+    public final BooleanPath exited = createBoolean("exited");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

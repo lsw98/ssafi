@@ -177,7 +177,7 @@ export default function Main() {
 
   const handleButtonClick = (page: string) => {
     if (page === 'mbti') {
-      navigate('/survey');
+      navigate('/mbti');
     } else if (page === 'ai') {
       navigate('/trade');
     } else if (page === 'news') {

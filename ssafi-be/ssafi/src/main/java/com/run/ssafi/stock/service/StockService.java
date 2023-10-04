@@ -3,14 +3,20 @@ package com.run.ssafi.stock.service;
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.BalanceHistoryResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
+import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
+import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
+import com.run.ssafi.stock.dto.KospiListResponseDto;
 
 public interface StockService {
 
     AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto);
 
     AuthResponseDto getAuth(MemberDetail memberDetail);
+
+    InquireBalanceResponseDto getInquireBalance(InquireBalanceRequestDto inquireBalanceRequestDto);
 
     void registerInterestStock(MemberDetail memberDetail, String kospiCode);
     InterestStockListResponseDto getInterestStockList(MemberDetail memberDetail);
@@ -20,4 +26,8 @@ public interface StockService {
     HoldStockListResponseDto getHoldStockList(MemberDetail memberDetail);
 
     void deleteHoldStock(MemberDetail memberDetail, String kospiCode);
+
+    BalanceHistoryResponseDto getBalanceHistoryList(MemberDetail memberDetail);
+
+    KospiListResponseDto getKospiList();
 }

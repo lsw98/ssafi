@@ -6,8 +6,10 @@ import com.run.ssafi.exception.message.MemberExceptionMessage;
 import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
+import com.run.ssafi.stock.dto.BalanceHistoryResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
+import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,6 +87,16 @@ public class StockController {
         stockService.deleteHoldStock(memberDetail, kospiCode);
 
         return new ResponseEntity<>(Response.of(StockResponseMessage.HOLD_STOCK_DELETE_SUCCESS), HttpStatus.OK);
+    }
+
+    @GetMapping("/balance-history")
+    public ResponseEntity<BalanceHistoryResponseDto> getBalanceHistory(@AuthenticationPrincipal MemberDetail memberDetail){
+        return new ResponseEntity<>(stockService.getBalanceHistoryList(memberDetail), HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<KospiListResponseDto> getKospiList(){
+        return new ResponseEntity<>(stockService.getKospiList(), HttpStatus.OK);
     }
 }
 
