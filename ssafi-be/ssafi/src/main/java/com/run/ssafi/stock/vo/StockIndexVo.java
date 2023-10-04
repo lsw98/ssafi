@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class StockIndexVo {
     private String indexCategory;
     private Double indexNumber;
-    private LocalDateTime indexDate;
+    private String indexDate;
 }
