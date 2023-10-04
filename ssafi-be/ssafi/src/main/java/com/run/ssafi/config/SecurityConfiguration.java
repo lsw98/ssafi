@@ -97,6 +97,7 @@ public class SecurityConfiguration {
                     )
                     .permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/stock/list", "GET")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/stock/index", "GET")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
                     .requestMatchers(new AntPathRequestMatcher("/api/member/id-check", "POST")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "POST")).permitAll()
