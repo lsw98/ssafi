@@ -228,7 +228,7 @@ public class StockServiceImpl implements StockService {
         List<Kospi> kospiList = kospiRepository.findAll();
         List<KospiVo> kospiVoList = new ArrayList<>();
         for (Kospi kospi : kospiList) {
-            KospiVo kospiVo = new KospiVo(kospi.getKospiCode(), kospi.getKospiName());
+            KospiVo kospiVo = new KospiVo(kospi.getKospiCode(), kospi.getKospiName(), kospi.getKospiType(), kospi.getKospiRank());
             kospiVoList.add(kospiVo);
         }
 

@@ -70,6 +70,7 @@ class Aitrade(Base):
 class TradeRecord(Base):
     __tablename__ = "trade_record"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
+    trade_type = Column(CHAR(1))
     trade_price = Column(BigInteger)
     trade_date = Column(DateTime)
     trade_quantity = Column(BigInteger)

@@ -36,7 +36,7 @@ session.commit()
 
 # TradeRecord
 record_id = session.scalars(select(Kospi).filter(Kospi.kospi_code == '999999')).first().kospi_id
-new_record = TradeRecord(trade_price=5000, trade_date = datetime.now(), trade_quantity = 1, user_id = 1,  kospi_id = record_id)
+new_record = TradeRecord(trade_type = 'P', trade_price=5000, trade_date = datetime.now(), trade_quantity = 1, user_id = 1,  kospi_id = record_id)
 session.add(new_record)
 session.commit()
 
