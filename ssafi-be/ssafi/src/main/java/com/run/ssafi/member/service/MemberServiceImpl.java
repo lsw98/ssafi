@@ -302,7 +302,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null)
-            member.modifyExit(true);
+            member.modifyExited(true);
 //            memberRepository.delete(member);
     }
 }
