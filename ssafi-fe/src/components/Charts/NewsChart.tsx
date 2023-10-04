@@ -12,11 +12,13 @@ import stockDownArrow from '../../assets/images/stock-down.svg';
 ChartJS.register(CategoryScale, ...registerables);
 ChartJS.defaults.font.size = 10;
 
+// news.tsx에서 prop 받은 정보
 interface GraphProps {
   title: string;
   status: string;
 }
 
+// 그래프가 상승인지 하락인지 전달하는 prop
 interface GraphStatusProps {
   status: string
 }

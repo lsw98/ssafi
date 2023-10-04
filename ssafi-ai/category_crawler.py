@@ -1,3 +1,4 @@
+# 매일경제 분류 별 기사 크롤링
 # 크롬 드라이버 기본 모듈
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service

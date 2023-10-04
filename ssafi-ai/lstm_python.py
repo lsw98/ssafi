@@ -1,3 +1,4 @@
+# LSTM 모델 생성 및 학습 후 h5 파일로 저장
 import FinanceDataReader as fdr
 import pandas as pd
 import mplfinance as mpf
@@ -94,7 +95,6 @@ x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=test_r
 # LSTM 모델 생성
 lstm_model = Sequential()
 lstm_model.add(LSTM(32, input_shape=(None, 1)))
-# model.add(TimeDistributed(Dense(5)))  # 출력 레이어 (5일 출력)
 lstm_model.add(Dense(1))
 
 # 모델 컴파일

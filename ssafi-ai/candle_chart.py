@@ -1,3 +1,4 @@
+# CNN 학습을 위한 캔들 차트 생성
 import FinanceDataReader as fdr
 import pandas as pd
 import mplfinance as mpf

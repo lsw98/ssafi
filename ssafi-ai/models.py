@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
+# DB 테이블
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Double
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -41,3 +42,15 @@ class Hold(Base):
     hold_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("member.id"))
     kospi_id = Column(Integer, ForeignKey("kospi.kospi_id"))
+    
+
+class Aitrade(Base):
+    __tablename__ = "ai_trade"
+    
+    id = Column(Integer, ForeignKey("member.id"), primary_key=True, autoincrement=True)
+    ai_budget = Column(Integer)
+    ai_goal = Column(Integer)
+    risk_ratio = Column(Double)
+    neutral_ratio = Column(Double)
+    safety_ratio = Column(Double)
+    trading_start_yn = Column(Boolean)

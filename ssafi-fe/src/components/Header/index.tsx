@@ -110,7 +110,9 @@ export default function Header() {
   const handleLogin = () => {
     window.location.href = kakaoURL;
   };
+  // const handleTest = () => {
 
+  // }
   const handleLogout = async () => {
     const token = localStorage.getItem('accessToken');
     console.log(token);
@@ -129,6 +131,7 @@ export default function Header() {
           },
         },
       );
+      console.log(token);
       localStorage.removeItem('accessToken');
       setIsLoggedIn(false);
       window.alert('로그아웃되었습니다.');
@@ -163,6 +166,7 @@ export default function Header() {
           </SiteMenu>
         </NavbarLeft>
         <NavbarRight>
+          {/* <button onClick={}>테스트</button> */}
           {/* 로그인 상태에 따라 버튼을 동적으로 렌더링 */}
           {!isLoggedIn && (
             <LoginButton onClick={handleLogin}>로그인</LoginButton>

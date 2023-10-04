@@ -21,6 +21,10 @@ public class QMember extends EntityPathBase<Member> {
 
     public final com.run.ssafi.QBaseTimeEntity _super = new com.run.ssafi.QBaseTimeEntity(this);
 
+    public final StringPath accountPrefix = createString("accountPrefix");
+
+    public final StringPath accountSuffix = createString("accountSuffix");
+
     public final StringPath appKey = createString("appKey");
 
     //inherited
@@ -28,7 +32,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final BooleanPath exit = createBoolean("exit");
+    public final BooleanPath exited = createBoolean("exited");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
