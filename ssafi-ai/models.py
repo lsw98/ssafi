@@ -27,6 +27,7 @@ class Kospi(Base):
     kospi_name = Column(String(255))
     kospi_code = Column(String(255))
     kospi_type = Column(String(255))
+    kospi_rank = Column(BigInteger)
 
 # 회원 정보
 class Member(Base):

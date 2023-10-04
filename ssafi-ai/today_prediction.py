@@ -6,10 +6,13 @@ import cv2
 from modules.kospi_dict import kospi_dict
 import matplotlib.pyplot as plt
 from mplfinance.original_flavor import candlestick2_ohlc
+import pandas as pd
 import numpy as np
 import os
 import datetime
 from modules.stock_variance import danger, neutral, safe
+from db import Session
+from sqlalchemy import text
 
 cnn_model = load_model('cnn_model.h5')
 lstm_model = load_model('lstm_model.h5')
@@ -108,10 +111,11 @@ def lstm_prediction(model, day):
 
 today = datetime.date.today()
 yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+today_str = today.strftime("%Y-%m-%d")
 
 # 거래일 기준 10일전~1일전 까지의 데이터로 예측한 오늘의 주가 상승/하락, 예상 등락 비율
-cnn = cnn_prediction(cnn_model, yesterday)
-lstm = lstm_prediction(lstm_model, yesterday)
+cnn = cnn_prediction(cnn_model, today)
+lstm = lstm_prediction(lstm_model, today)
 
 def category_prediction(category, cnn, lstm):
     rise = []
@@ -171,3 +175,45 @@ print(len(neutral_fall))
 
 print(safe_fall)
 print(len(safe_fall))
+
+# kospiRank 부여
+
+session = Session()
+
+# 위험
+for i in range (0, len(danger_rise)):
+    update_sql = text("""
+    UPDATE kospi SET kospi_rank = :kospi_rank
+    WHERE kospi_code = :kospi_code
+    """)
+    # SQL 문 실행
+    session.execute(update_sql, {"kospi_code": danger_rise[i][0], "kospi_rank": i})
+    
+    # 변경 내용을 커밋
+    session.commit()
+
+# 중립
+for i in range (0, len(neutral_rise)):
+    update_sql = text("""
+    UPDATE kospi SET kospi_rank = :kospi_rank
+    WHERE kospi_code = :kospi_code
+    """)
+    # SQL 문 실행
+    session.execute(update_sql, {"kospi_code": neutral_rise[i][0], "kospi_rank": i})
+    
+    # 변경 내용을 커밋
+    session.commit()
+
+# 안전
+for i in range (0, len(safe_rise)):
+    update_sql = text("""
+    UPDATE kospi SET kospi_rank = :kospi_rank
+    WHERE kospi_code = :kospi_code
+    """)
+    # SQL 문 실행
+    session.execute(update_sql, {"kospi_code": safe_rise[i][0], "kospi_rank": i})
+    
+    # 변경 내용을 커밋
+    session.commit()
+
+session.close()
