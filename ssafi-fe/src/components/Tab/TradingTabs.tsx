@@ -167,14 +167,17 @@ interface PriceData {
   bidp_rsqn3: number;
 }
 
-function TradingTabs() {
+interface TradingTabsProps {
+  stockCode: string;
+}
+
+function TradingTabs({ stockCode }: TradingTabsProps) {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index: number) => {
     setToggleState(index);
   };
   const [askingPrices, setAskingPrices] = useState<PriceData | null>(null);
-  const stockCode = '005930';
-  const [division, setDivision] = useState('01');
+  const [division, setDivision] = useState('00');
   const [isSpecifiedChecked, setSpecifiedChecked] = useState(false);
   const [isMarketChecked, setMarketChecked] = useState(false);
   const [amount, setAmount] = useState('');
@@ -193,11 +196,11 @@ function TradingTabs() {
   }, [stockCode]); // stockCode가 변경될 경우에만 useEffect가 다시 실행됩니다.
 
   const handleSpecifiedClick = () => {
-    if (division === '01') {
+    if (division === '00') {
       setDivision(''); // 지정이 이미 선택되어 있다면 선택 해제
       setSpecifiedChecked(false);
     } else {
-      setDivision('01'); // 지정을 선택
+      setDivision('00'); // 지정을 선택
       setSpecifiedChecked(true);
       setMarketChecked(false); // 시장은 선택 해제
       setPrice(''); // 지정가 선택 시, 가격을 초기화
@@ -205,12 +208,12 @@ function TradingTabs() {
   };
 
   const handleMarketClick = () => {
-    if (division === '00') {
+    if (division === '01') {
       setDivision(''); // 시장이 이미 선택되어 있다면 선택 해제
       setMarketChecked(false);
       setPrice(''); // 시장가 선택 해제 시, 가격을 초기화
     } else {
-      setDivision('00'); // 시장을 선택
+      setDivision('01'); // 시장을 선택
       setMarketChecked(true);
       setSpecifiedChecked(false); // 지정은 선택 해제
       // 시장가 선택 시, 매도호가 중 askingPrices.askp1를 가격으로 설정
@@ -253,22 +256,17 @@ function TradingTabs() {
   };
 
   const handleBuyStock = () => {
-    // 매수 로직을 수행하는 fetchBuyStock 함수를 호출
-    const stockCode = '005930'; // 예시 종목코드
     fetchBuyStock(stockCode, division, amount, price)
       .then((response) => {
-        // 성공적으로 매수가 완료되면 이 부분에서 처리할 로직을 작성
         console.log('매수 성공:', response);
         setBuyModalOpen(false);
       })
       .catch((error) => {
-        // 매수 실패시 이 부분에서 처리할 로직을 작성
         console.log('매수 실패:', error);
       });
   };
 
   const handleSellStock = () => {
-    const stockCode = '005930';
     fetchSellStock(stockCode, division, amount, price)
       .then((response) => {
         console.log('매도 성공:', response);
@@ -280,7 +278,6 @@ function TradingTabs() {
   };
 
   const handleModifyStock = () => {
-    const stockCode = '005930';
     fetchModifyStock(stockCode, division, amount, price)
       .then((response) => {
         console.log('정정 성공:', response);
