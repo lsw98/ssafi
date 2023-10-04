@@ -74,10 +74,6 @@ for stock_data in stock_data_list:
         x.append(stock_data[i : i+10])
         y.append(stock_data[i+10])
 
-# print(len(x))
-# print(len(y))
-# print(y[0])
-
 x_shuffled, y_shuffled = shuffle(x, y, random_state = 0)
 
 train_ratio = 0.8
@@ -86,11 +82,6 @@ test_ratio = 0.1
 
 x_train, x_temp, y_train, y_temp = train_test_split(x_shuffled, y_shuffled, test_size=(1 - train_ratio), random_state=0)
 x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=test_ratio / (test_ratio + val_ratio), random_state=0)
-
-# print(len(x_train))
-# print(len(x_test))
-# print(len(x_val))
-
 
 # LSTM 모델 생성
 lstm_model = Sequential()
@@ -105,49 +96,4 @@ lstm_model.fit(x_train, y_train, epochs=1, batch_size=256, validation_data=(x_va
 
 # 모델 저장
 lstm_model.save('lstm_model.h5')
-
-# import matplotlib.pyplot as plt
-# import matplotlib.font_manager as fm
-
-# plt.rc('font', family='Malgun Gothic')
-
-# # 10일 / 1일 예측 결과 확인
-# kospi_10days_data = np.empty((0, 10))
-# kospi_1days_data = np.empty((0, 1))
-# name_list = []
-# for code, name in kospi_dict.items():
-#     df = fdr.DataReader(code, '2023-07-01', '2023-09-19')
-#     name_list.append(name)
-#     data_list = []
-#     for index, today in df.iterrows():
-#         if index == df.index[0]:
-#             data_list.append(1)
-#         else: 
-#             # 전날 대비 주가 변화량 %로
-#             yesterday_index = df.index[df.index.get_loc(index) - 1]
-#             yesterday = df.loc[yesterday_index]
-#             price_per = today['Close'] / yesterday['Close'] 
-#             data_list.append(price_per)
-
-#     kospi_10days_data = np.append(kospi_10days_data, np.array(data_list[-11:-1])[np.newaxis, :], axis=0)
-#     kospi_1days_data = np.append(kospi_1days_data, np.array(data_list[-1:])[np.newaxis, :], axis=0)
-
-# predicted = lstm_model.predict(kospi_10days_data)
-# print(predicted)
-# print(kospi_10days_data)
-# total_acc = 0
-# for i in range(200):
-#     acc = 0
-#     if((kospi_1days_data[i][0] >= 1 and predicted[i][0] >= 1) or (kospi_1days_data[i][0] < 1 and predicted[i][0] < 1)):
-#         acc += 1
-#     print(acc)
-#     # plt.plot(kospi_1days_data[i][0], label = 'Actual', color = 'blue')
-#     # plt.plot(predicted[i][0], label = 'Predicted', color = 'red')
-#     # plt.legend()
-#     # plt.title(name_list[i])
-#     # plt.show()
-#     total_acc += acc
-# print("total_acc")
-# print(total_acc / 200)
-
 
