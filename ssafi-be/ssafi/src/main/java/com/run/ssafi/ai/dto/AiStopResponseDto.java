@@ -9,12 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class AiStatusResponseDto {
-    Long aiBudget;
-    Long aiGoal;
-    Double riskRatio;
-    Double neutralRatio;
-    Double safetyRatio;
+public class AiStopResponseDto {
     Character tradingStartYn;
     String message;
 }
