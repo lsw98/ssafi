@@ -7,8 +7,6 @@ import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
 import TradeAccount from './components/Trade/TradeAccount';
 
-const BASE_URL = 'https://ssafi';
-
 interface TradeMenuProps {
   active?: boolean;
 }
@@ -70,9 +68,9 @@ export default function Trade() {
     // API 호출
     axios.get('/member/key-account').then((res) => {
       if (res.data.apikey.length > 0) {
-        setHasApi(true)
+        setHasApi(true);
       } else {
-        setHasApi(false)
+        setHasApi(false);
       }
     });
   });
