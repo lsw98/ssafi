@@ -28,9 +28,9 @@ public class News {
     @Column(name = "news_midtitle")
     private String newsMidTitle;
     @Column(name = "news_date")
-    private LocalDateTime newsDate;
+    private String newsDate;
     @Column(name = "news_writer")
     private String newsWriter;
-    @Column(name = "news_content")
+    @Column(name = "news_content", columnDefinition = "TEXT")
     private String newsContent;
 }

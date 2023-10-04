@@ -25,7 +25,7 @@ public class QNews extends EntityPathBase<News> {
 
     public final StringPath newsContent = createString("newsContent");
 
-    public final DateTimePath<java.time.LocalDateTime> newsDate = createDateTime("newsDate", java.time.LocalDateTime.class);
+    public final StringPath newsDate = createString("newsDate");
 
     public final StringPath newsMidTitle = createString("newsMidTitle");
 

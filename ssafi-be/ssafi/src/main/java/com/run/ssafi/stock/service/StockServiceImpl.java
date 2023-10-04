@@ -247,7 +247,7 @@ public class StockServiceImpl implements StockService {
             stockIndexVoList.add(new StockIndexVo(
                     stockIndex.getIndexCategory(),
                     stockIndex.getIndexNumber(),
-                    stockIndex.getCreatedDate()
+                    stockIndex.getIndexDate()
             ));
         }
 
