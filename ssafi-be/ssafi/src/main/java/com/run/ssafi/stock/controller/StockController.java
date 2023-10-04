@@ -10,6 +10,7 @@ import com.run.ssafi.stock.dto.BalanceHistoryResponseDto;
 import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
+import com.run.ssafi.stock.dto.StockIndexResponseDto;
 import com.run.ssafi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +98,11 @@ public class StockController {
     @GetMapping("/list")
     public ResponseEntity<KospiListResponseDto> getKospiList(){
         return new ResponseEntity<>(stockService.getKospiList(), HttpStatus.OK);
+    }
+
+    @GetMapping("/index")
+    public ResponseEntity<StockIndexResponseDto> getStockIndex(){
+        return new ResponseEntity<>(stockService.getStockIndex(), HttpStatus.OK);
     }
 }
 

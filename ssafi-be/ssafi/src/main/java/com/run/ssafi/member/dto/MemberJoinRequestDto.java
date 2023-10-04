@@ -34,7 +34,7 @@ public class MemberJoinRequestDto {
                 .password(password)
                 .role(Role.MEMBER)
                 .snsType(SnsType.NORMAL)
-                .exited(false)
+                .exited(Boolean.FALSE)
                 .personalAgreement('T')
                 .build();
     }

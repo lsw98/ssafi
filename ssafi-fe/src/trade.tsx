@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import axios, { BASE_URL } from './api/apiControlller';
 import TradeApi from './components/Trade/TradeApi';
 import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
@@ -61,13 +62,32 @@ export default function Trade() {
   // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasApi, setHasApi] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseData = await axios.get('/member/key-account');
+        if (responseData.status === 200) {
+          console.log(responseData);
+          if (responseData.data.appkey !== null) {
+            setHasApi(true);
+          } else {
+            setHasApi(false);
+            navigate('/trade/api');
+          }
+        } else {
+          console.log(`Request failed with status: ${responseData.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [navigate]);
 
   const toAI = () => {
-    // 임시로 설정
-    const hasAPI = false;
-    // const hasAPI = true;
-
-    if (!hasAPI) {
+    if (!hasApi) {
       navigate('/trade/api');
     } else {
       navigate('/trade');
