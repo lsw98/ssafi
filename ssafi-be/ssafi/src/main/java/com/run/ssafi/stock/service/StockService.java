@@ -9,6 +9,7 @@ import com.run.ssafi.stock.dto.InquireBalanceRequestDto;
 import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
+import com.run.ssafi.stock.dto.StockIndexResponseDto;
 
 public interface StockService {
 
@@ -30,4 +31,5 @@ public interface StockService {
     BalanceHistoryResponseDto getBalanceHistoryList(MemberDetail memberDetail);
 
     KospiListResponseDto getKospiList();
+    StockIndexResponseDto getStockIndex();
 }
