@@ -66,7 +66,7 @@ def news_category_crawler(url, category, news_list):
         if(len(soup.select('.author'))):
             name = soup.select('.author')[0].select('.name')[0].text
             email = soup.select('.author')[0].select('.email')[0].text
-            writer = email + name             
+            writer = email + ' ' + name         
         date = soup.select('.time_area')[0].select('.registration')[0].get_text()
         
         # 작성자 정보 : 이름 + 이메일

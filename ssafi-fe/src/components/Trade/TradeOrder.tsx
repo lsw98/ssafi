@@ -148,14 +148,14 @@ export default function TradeOrder() {
 
   useEffect(() => {
     const loadStockInfo = async () => {
-      console.log(stockCode);
+      // console.log(stockCode);
       if (stockCode) {
         const data = await fetchStockInfo(stockCode);
         setStockInfo(data);
       }
     };
     loadStockInfo();
-    console.log(stockInfo);
+    // console.log(stockInfo);
   }, [stockCode]);
 
   useEffect(() => {
@@ -163,12 +163,10 @@ export default function TradeOrder() {
       if (stockCode) {
         const result = await fetchMinutePrices(stockCode);
         setMinutePricesData(result);
-        console.log('여기여기여기여기여기여기여기여기여기여기', result);
+        console.log('분봉조회', result);
       }
     };
-
     fetchMinutePricesData();
-    console.log(minutePricesData);
   }, [stockCode]);
 
   const transformedData = minutePricesData.map((item) => ({
@@ -185,8 +183,8 @@ export default function TradeOrder() {
     const fetchData = async () => {
       await fetchTradeVolumeRanking((fetchedTime: any) => {
         if (fetchedTime) {
-          // const formattedTime = formatDate(fetchedTime); // formatDate 함수로 형식을 변경합니다.
-          setCurrentTime(fetchedTime); // 형식이 변경된 시간을 상태에 저장
+          const formattedTime = fetchedTime.formatted;
+          setCurrentTime(formattedTime);
         } else {
           console.log('API call failed.');
         }
@@ -236,7 +234,7 @@ export default function TradeOrder() {
         </GraphContainer>
         <TradingAndAccountContainer>
           <Trading>
-            <TradingTabs />
+            <TradingTabs stockCode={stockCode} />
           </Trading>
 
           <Account>
