@@ -102,9 +102,10 @@ export default function TradeAccount() {
                 : 'Loading...'}
             </Text>
           </RowContainerBorder>
-          <RowContainer marginTop="20px" style={{ justifyContent: 'flex-end' }}>
-            탭 들어갈 자리
-          </RowContainer>
+          <RowContainer
+            marginTop="20px"
+            style={{ justifyContent: 'flex-end' }}
+          ></RowContainer>
           <RowContainer>
             <Text className="gray">투자금액</Text>
             <Text>

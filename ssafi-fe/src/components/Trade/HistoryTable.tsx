@@ -27,7 +27,8 @@ const TableHeader = styled.div`
 
 const TableRow = styled.div<StyleProps>`
   display: flex;
-  background-color: ${(props) => (props.index === 0 ? 'transparent' : 'var(--light-gray-color)')};
+  background-color: ${(props) =>
+    props.index === 0 ? 'transparent' : 'var(--light-gray-color)'};
 `;
 
 // 테이블 데이터 셀 요소에 스타일 적용
@@ -41,7 +42,8 @@ const TableCell = styled.div<StyleProps>`
     font-weight: 500;
   }
   &.color {
-    color: ${(props) => (props.color ? 'var(--upper-color)' : 'var(--lower-color)')};
+    color: ${(props) =>
+      props.color ? 'var(--upper-color)' : 'var(--lower-color)'};
   }
 `;
 
@@ -56,126 +58,97 @@ const TableBody = styled.div`
 export default function HistoryTable() {
   const HistioryDate = [
     {
-      tradeTime: '2023/09/13',
-      tradeSubject: 'SK하이닉스아아',
+      tradeTime: '2023/10/05',
+      tradeSubject: 'SK하이닉스',
       tradeQuantity: 6,
-      purchasePrice: 51900,
-      sellingPrice: 52200,
-      tradeProfit: -1163,
-      tradeRate: -0.37,
+      purchasePrice: 117200,
+      sellingPrice: 120200,
+      tradeProfit: 3000,
+      tradeRate: 2.56,
     },
     {
-      tradeTime: '2023/09/12',
-      tradeSubject: '카카오',
-      tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
+      tradeTime: '2023/09/22',
+      tradeSubject: '삼성전자',
+      tradeQuantity: 6,
+      purchasePrice: 68600,
+      sellingPrice: 71200,
+      tradeProfit: 2600,
+      tradeRate: 3.79,
     },
     {
-      tradeTime: '2023/09/12',
+      tradeTime: '2023/09/22',
+      tradeSubject: '삼성전자',
+      tradeQuantity: 6,
+      purchasePrice: 68600,
+      sellingPrice: 71200,
+      tradeProfit: 2600,
+      tradeRate: 3.79,
+    },
+    {
+      tradeTime: '2023/09/22',
       tradeSubject: '카카오',
       tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
+      purchasePrice: 48500,
+      sellingPrice: 42900,
+      tradeProfit: -5600,
+      tradeRate: -11.55,
     },
     {
       tradeTime: '2023/09/13',
       tradeSubject: '삼성전자',
       tradeQuantity: 6,
-      purchasePrice: 51900,
-      sellingPrice: 52200,
-      tradeProfit: -1163,
-      tradeRate: -0.37,
-    },
-    {
-      tradeTime: '2023/09/12',
-      tradeSubject: '카카오',
-      tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
-    },
-    {
-      tradeTime: '2023/09/12',
-      tradeSubject: '카카오',
-      tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
-    },
-    {
-      tradeTime: '2023/09/13',
-      tradeSubject: '삼성전자',
-      tradeQuantity: 6,
-      purchasePrice: 51900,
-      sellingPrice: 52200,
-      tradeProfit: -1163,
-      tradeRate: -0.37,
-    },
-    {
-      tradeTime: '2023/09/12',
-      tradeSubject: '카카오',
-      tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
-    },
-    {
-      tradeTime: '2023/09/13',
-      tradeSubject: '삼성전자',
-      tradeQuantity: 6,
-      purchasePrice: 51900,
-      sellingPrice: 52200,
-      tradeProfit: -1163,
-      tradeRate: -0.37,
-    },
-    {
-      tradeTime: '2023/09/12',
-      tradeSubject: '카카오',
-      tradeQuantity: 3,
-      purchasePrice: 42500,
-      sellingPrice: 43900,
-      tradeProfit: 2971,
-      tradeRate: 2.33,
-    },
-    {
-      tradeTime: '2023/09/13',
-      tradeSubject: '삼성전자',
-      tradeQuantity: 6,
-      purchasePrice: 51900,
-      sellingPrice: 52200,
-      tradeProfit: -1163,
-      tradeRate: -0.37,
+      purchasePrice: 68600,
+      sellingPrice: 71200,
+      tradeProfit: 2600,
+      tradeRate: 3.79,
     },
   ];
   return (
     <TableContainer>
       <Table>
         <TableHeader>
-          <TableCell className='header' width='124px'>거래일자</TableCell>
-          <TableCell className='header' width='112px'>종목명</TableCell>
-          <TableCell className='header' width='48px'>수량</TableCell>
-          <TableCell className='header'>매입가</TableCell>
-          <TableCell className='header'>매도체결가</TableCell>
-          <TableCell className='header' width='180px'>실현손익 (수익률)</TableCell>
+          <TableCell className="header" width="124px">
+            거래일자
+          </TableCell>
+          <TableCell className="header" width="112px">
+            종목명
+          </TableCell>
+          <TableCell className="header" width="48px">
+            수량
+          </TableCell>
+          <TableCell className="header">매입가</TableCell>
+          <TableCell className="header">매도체결가</TableCell>
+          <TableCell className="header" width="180px">
+            실현손익 (수익률)
+          </TableCell>
         </TableHeader>
         <TableBody>
           {HistioryDate.map((item, idx) => (
             <TableRow key={idx} index={idx % 2}>
-              <TableCell width='124px'>{item.tradeTime}</TableCell>
-              <TableCell width='112px'>{item.tradeSubject}</TableCell>
-              <TableCell width='48px'>{item.tradeQuantity}</TableCell>
-              <TableCell>{item.purchasePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</TableCell>
-              <TableCell>{item.sellingPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</TableCell>
-              <TableCell width='180px' className='color' color={item.tradeProfit > 0}>
-                {item.tradeProfit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원 ( {item.tradeRate}% )
+              <TableCell width="124px">{item.tradeTime}</TableCell>
+              <TableCell width="112px">{item.tradeSubject}</TableCell>
+              <TableCell width="48px">{item.tradeQuantity}</TableCell>
+              <TableCell>
+                {item.purchasePrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                원
+              </TableCell>
+              <TableCell>
+                {item.sellingPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                원
+              </TableCell>
+              <TableCell
+                width="180px"
+                className="color"
+                color={item.tradeProfit > 0}
+              >
+                {item.tradeProfit
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+                원 ( {item.tradeRate}% )
               </TableCell>
             </TableRow>
           ))}

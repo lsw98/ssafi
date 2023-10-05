@@ -106,7 +106,7 @@ function AccountTabs() {
 
           setBalance(updatedBalance);
         } else {
-          // Handle the case where the result is an empty array, if necessary.
+          console.log('Array가 없음');
         }
       } catch (error) {
         console.error('Fetching Error:', error);
@@ -116,27 +116,28 @@ function AccountTabs() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await fetchCheckOrder();
-        console.log('Orders Data:', fetchedData); // 데이터 로그 출력
+  // 미체결 내역 받아오는 함수인데 데이터에 미체결내역 없음(total 갯수만 뜸)
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const fetchedData = await fetchCheckOrder();
+  //       console.log('Orders Data:', fetchedData); // 데이터 로그 출력
 
-        const updatedOrders = fetchedData.map((item: any) => ({
-          ord_tmd: item.ord_tmd,
-          prdt_name: item.prdt_name,
-          sll_buy_dvsn_cd: item.sll_buy_dvsn_cd,
-          ord_unpr: item.ord_unpr,
-          tot_ord_qty: item.tot_ord_qty,
-          tot_ccld_qty: item.tot_ccld_qty,
-        }));
-        setOrders(updatedOrders);
-      } catch (error) {
-        console.error('Fetching Error:', error);
-      }
-    };
-    fetchData();
-  }, []);
+  //       const updatedOrders = fetchedData.map((item: any) => ({
+  //         ord_tmd: item.ord_tmd,
+  //         prdt_name: item.prdt_name,
+  //         sll_buy_dvsn_cd: item.sll_buy_dvsn_cd,
+  //         ord_unpr: item.ord_unpr,
+  //         tot_ord_qty: item.tot_ord_qty,
+  //         tot_ccld_qty: item.tot_ccld_qty,
+  //       }));
+  //       setOrders(updatedOrders);
+  //     } catch (error) {
+  //       console.error('Fetching Error:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="account-container">
@@ -162,17 +163,11 @@ function AccountTabs() {
           <TableContainer>
             <Table>
               <TableHeader>
-                <TableCell width="80px">
-                  종목명
-                </TableCell>
-                <TableCell width="60px">
-                  보유수량
-                </TableCell>
+                <TableCell width="80px">종목명</TableCell>
+                <TableCell width="60px">보유수량</TableCell>
                 <TableCell>매입평균가</TableCell>
                 <TableCell>현재가</TableCell>
-                <TableCell width="120px">
-                  손익금액 (수익률)
-                </TableCell>
+                <TableCell width="120px">손익금액 (수익률)</TableCell>
               </TableHeader>
               <TableBody>
                 {balance.map((item: any, idx: number) => (
@@ -213,17 +208,11 @@ function AccountTabs() {
           <TableContainer>
             <Table>
               <TableHeader>
-                <TableCell width="70px">
-                  주문시간
-                </TableCell>
-                <TableCell width="60px">
-                  종목명
-                </TableCell>
+                <TableCell width="70px">주문시간</TableCell>
+                <TableCell width="60px">종목명</TableCell>
                 <TableCell>구분</TableCell>
                 <TableCell>주문가</TableCell>
-                <TableCell width="80px">
-                  미체결/주문량
-                </TableCell>
+                <TableCell width="80px">미체결/주문량</TableCell>
               </TableHeader>
               <TableBody>
                 {/* {orders.map((order) => (
@@ -240,7 +229,15 @@ function AccountTabs() {
                     </TableCell>
                   </TableRow>
                 ))} */}
-                <div style={{ textAlign: 'center', color: 'var(--gray-color)', marginTop: '50px', fontSize: '14px', fontWeight: '300' }}>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    color: 'var(--gray-color)',
+                    marginTop: '50px',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                  }}
+                >
                   미체결 내역이 없습니다.
                 </div>
               </TableBody>

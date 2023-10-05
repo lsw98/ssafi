@@ -102,11 +102,11 @@ export default function TradeAi() {
   // ai 시작버튼 눌렀을 때 확인 모달창
   const [showModal, setShowModal] = useState(false);
   const [inputData, setInputData] = useState<inputDataPorps>({
-    safetyRatio: 0,
-    neutralRatio: 0,
-    riskRatio: 0,
-    aiBudget: '',
-    aiGoal: '',
+    safetyRatio: Number(localStorage.getItem('safetyRatio') || 0),
+    neutralRatio: Number(localStorage.getItem('neutralRatio') || 0),
+    riskRatio: Number(localStorage.getItem('riskRatio') || 0),
+    aiBudget: localStorage.getItem('aiBudget') || '',
+    aiGoal: localStorage.getItem('aiGoal') || '',
   });
   const stockRateInfo = [
     {
@@ -132,13 +132,23 @@ export default function TradeAi() {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:8083/api/ai').then((res) => {
-      if (res.data.aiBudget > 0) {
-        setHasResult(true);
-      } else {
-        setHasResult(false);
-      }
-    });
+    const token = localStorage.getItem('accessToken'); // 토큰을 로컬 스토리지에서 가져옵니다.
+
+    axios
+      .get('http://localhost:8083/api/ai', {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((res) => {
+        if (res.data.aiBudget > 0) {
+          setHasResult(true);
+          setIsTrade(true);
+        } else {
+          setHasResult(false);
+          setIsTrade(false);
+        }
+      });
   });
 
   // const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

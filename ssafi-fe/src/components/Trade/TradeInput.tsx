@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from '../../api/apiControlller';
+import { useNavigate } from 'react-router-dom';
+// import axios from '../../api/apiControlller';
+import axios from 'axios';
 import DoubtsButton from './ToolTip';
 import convertToKoreanNumber from '../../utils/convertToKorean';
 
@@ -21,7 +23,7 @@ interface TradeInputProps {
 }
 
 const Container = styled.div`
-  width: 480px;;
+  width: 480px;
   height: 390px;
   margin: 30px 82px;
   display: flex;
@@ -39,7 +41,7 @@ const SelectBox = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   &::before {
-    content: "⌵";
+    content: '⌵';
     position: absolute;
     top: 0px;
     right: 12px;
@@ -54,7 +56,7 @@ const Label = styled.label`
   color: var(--white-color);
 `;
 
-const SelectOptions = styled.ul<{show: boolean}>`
+const SelectOptions = styled.ul<{ show: boolean }>`
   position: absolute;
   list-style: none;
   top: 32px;
@@ -130,7 +132,7 @@ const Input = styled.input`
   }
 `;
 
-const StopBtn = styled.div<{stop: boolean}>`
+const StopBtn = styled.div<{ stop: boolean }>`
   width: 172px;
   height: 50px;
   display: flex;
@@ -138,18 +140,26 @@ const StopBtn = styled.div<{stop: boolean}>`
   align-items: center;
   border: 2px solid var(--point-color);
   font-size: 20px;
-  color: ${(props) => (props.stop ? 'var(--point-color)' : 'var(--white-color)')};
+  color: ${(props) =>
+    props.stop ? 'var(--point-color)' : 'var(--white-color)'};
   background: ${(props) => (props.stop ? '' : 'var(--point-color)')};
   cursor: pointer;
 `;
 
 export default function TradeInput({
-  isTrade, setIsTrade, setShowModal, inputData, setInputData,
-} : TradeInputProps) {
+  isTrade,
+  setIsTrade,
+  setShowModal,
+  inputData,
+  setInputData,
+}: TradeInputProps) {
   const [currentValue, setCurrentValue] = useState('투자 성향');
   const [showOptions, setShowOptions] = useState(false);
+  const navigate = useNavigate();
 
-  const handleOnChangeSelectValue = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+  const handleOnChangeSelectValue = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+  ) => {
     const { innerText } = event.currentTarget;
     setCurrentValue(innerText);
 
@@ -165,38 +175,66 @@ export default function TradeInput({
   };
 
   // 비율 값 바꿀 때
-  const createRatioHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(event.target.value, 10);
-    setInputData({
-      ...inputData,
-      [field]: newValue,
-    });
-  };
+  const createRatioHandler =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = parseInt(event.target.value, 10);
+      setInputData({
+        ...inputData,
+        [field]: newValue,
+      });
+    };
 
   // 금액 값 바꿀 때
-  const createAmountHandler = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.replace(/[^0-9]/g, '');
-    setInputData({
-      ...inputData,
-      [field]: newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    });
-  };
+  const createAmountHandler =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value.replace(/[^0-9]/g, '');
+      setInputData({
+        ...inputData,
+        [field]: newValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+      });
+    };
 
   const handleAiButton = (stop: boolean) => {
     if (stop) {
-      // 트레이딩 중일 경우 -> ai 중지 axios 요청 성공하면
-      // axios.patch('/ai/stop', {
-      // }).then((res) => {
-        setIsTrade(!stop);
-      // });
-    } else if (inputData.safetyRatio + inputData.neutralRatio + inputData.riskRatio !== 100) {
+      const token = localStorage.getItem('accessToken');
+      axios
+        .patch(
+          'http://localhost:8083/api/ai/stop',
+          {},
+          {
+            headers: {
+              Authorization: token,
+            },
+          },
+        )
+        .then((res) => {
+          setIsTrade(!stop);
+          navigate('/trade');
+          console.log(res);
+        })
+        .catch((error) => {
+          console.error('Error while stopping AI:', error);
+        });
+    } else if (
+      inputData.safetyRatio + inputData.neutralRatio + inputData.riskRatio !==
+      100
+    ) {
       // 에러 처리, 에러 처리 통과하면 모달 띄워서 확인 버튼
       alert('투자 비율의 합이 100이 아닙니다.');
-    } else if (!inputData.aiBudget || parseInt(inputData.aiBudget.replace(/,/g, ''), 10) === 0) {
+    } else if (
+      !inputData.aiBudget ||
+      parseInt(inputData.aiBudget.replace(/,/g, ''), 10) === 0
+    ) {
       alert('투자 금액을 입력해주세요.');
-    } else if (!inputData.aiGoal || parseInt(inputData.aiGoal.replace(/,/g, ''), 10) === 0) {
+    } else if (
+      !inputData.aiGoal ||
+      parseInt(inputData.aiGoal.replace(/,/g, ''), 10) === 0
+    ) {
       alert('목표 금액을 입력해주세요.');
-    } else if (parseInt(inputData.aiBudget.replace(/,/g, ''), 10) >= parseInt(inputData.aiGoal.replace(/,/g, ''), 10)) {
+    } else if (
+      parseInt(inputData.aiBudget.replace(/,/g, ''), 10) >=
+      parseInt(inputData.aiGoal.replace(/,/g, ''), 10)
+    ) {
       alert('목표 금액이 투자 금액보다 작습니다.');
     } else {
       // 확인 모달 창 띄우기
@@ -270,7 +308,7 @@ export default function TradeInput({
       type: '잠재력있는 새싹 투자자(IBWC)',
       rates: [33, 33, 34],
     },
-];
+  ];
 
   return (
     <Container>
@@ -285,8 +323,16 @@ export default function TradeInput({
             ))}
           </SelectOptions>
         </SelectBox>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Notice>금융 MBTI 결과를 바탕으로 종목별 주식 투자 비율을 추천해드려요.</Notice>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Notice>
+            금융 MBTI 결과를 바탕으로 종목별 주식 투자 비율을 추천해드려요.
+          </Notice>
           <DoubtsButton />
         </div>
       </div>
@@ -295,21 +341,30 @@ export default function TradeInput({
           <RateOfType>
             <Label>안전</Label>
             <Input
-              type='number' min='0' max='100'value={inputData.safetyRatio}
+              type="number"
+              min="0"
+              max="100"
+              value={inputData.safetyRatio}
               onChange={createRatioHandler('safetyRatio')}
             />
           </RateOfType>
           <RateOfType>
             <Label>중립</Label>
             <Input
-              type='number' min='0' max='100' value={inputData.neutralRatio}
+              type="number"
+              min="0"
+              max="100"
+              value={inputData.neutralRatio}
               onChange={createRatioHandler('neutralRatio')}
             />
           </RateOfType>
           <RateOfType>
             <Label>위험</Label>
             <Input
-              type='number' min='0' max='100' value={inputData.riskRatio}
+              type="number"
+              min="0"
+              max="100"
+              value={inputData.riskRatio}
               onChange={createRatioHandler('riskRatio')}
             />
           </RateOfType>
@@ -320,32 +375,39 @@ export default function TradeInput({
         <RateContainer>
           <Label>투자 금액</Label>
           <Input
-            type='text' maxLength={16} className='ammount' value={inputData.aiBudget}
+            type="text"
+            maxLength={16}
+            className="ammount"
+            value={inputData.aiBudget}
             onChange={createAmountHandler('aiBudget')}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(inputData.aiBudget, '투자')}</Notice>
+          <Notice className="small">
+            {convertToKoreanNumber(inputData.aiBudget, '투자')}
+          </Notice>
         </RightBox>
       </div>
       <div>
         <RateContainer>
           <Label>목표 금액</Label>
           <Input
-            type='text' maxLength={16} className='ammount' value={inputData.aiGoal}
+            type="text"
+            maxLength={16}
+            className="ammount"
+            value={inputData.aiGoal}
             onChange={createAmountHandler('aiGoal')}
           />
         </RateContainer>
         <RightBox>
-          <Notice className='small'>{convertToKoreanNumber(inputData.aiGoal, '목표')}</Notice>
+          <Notice className="small">
+            {convertToKoreanNumber(inputData.aiGoal, '목표')}
+          </Notice>
         </RightBox>
       </div>
       <RightBox>
-        <StopBtn
-          stop={isTrade}
-          onClick={() => handleAiButton(isTrade)}
-        >
-        {isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}
+        <StopBtn stop={isTrade} onClick={() => handleAiButton(isTrade)}>
+          {isTrade ? 'AI 투자 중지하기' : 'AI 투자 시작하기'}
         </StopBtn>
       </RightBox>
     </Container>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from '../../api/apiControlller';
 import convertToKoreannum from '../../utils/convertToKorean';
@@ -110,7 +110,6 @@ const ConfirmModal = ({
   setIsTrade,
 }: ConfirmModalProps) => {
   const { safetyRatio, neutralRatio, riskRatio, aiBudget, aiGoal } = inputData;
-
   const [isCheck, setIsCheck] = useState(false);
 
   const handleStartBtn = (start: boolean) => {
@@ -137,7 +136,13 @@ const ConfirmModal = ({
         )
         .then((res) => {
           if (res.status === 200) {
-            // 요청이 성공적으로 이루어졌을 때
+            // 응답받은 데이터를 localStorage에 저장
+            localStorage.setItem('safetyRatio', res.data.safetyRatio);
+            localStorage.setItem('neutralRatio', res.data.neutralRatio);
+            localStorage.setItem('riskRatio', res.data.riskRatio);
+            localStorage.setItem('aiBudget', res.data.aiBudget);
+            localStorage.setItem('aiGoal', res.data.aiGoal);
+
             closeModal(false);
             setIsTrade(true);
           } else {
