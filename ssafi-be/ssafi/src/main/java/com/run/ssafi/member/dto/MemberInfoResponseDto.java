@@ -1,5 +1,6 @@
 package com.run.ssafi.member.dto;
 
+import com.run.ssafi.domain.Type;
 import com.run.ssafi.social.type.SnsType;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ public class MemberInfoResponseDto {
 
     private String email;
     private SnsType snsType;
-    private String type;
+    private Type type;
     private Character personalAgreement;
     private String appKey;
     private String secretKey;
@@ -23,7 +24,7 @@ public class MemberInfoResponseDto {
     private Double lcScore;
 
     @Builder
-    public MemberInfoResponseDto(String email, SnsType snsType, String type, String appKey, String secretKey, Character personalAgreement, String accountPrefix, String accountSuffix, Double aiScore, Double pbScore, Double mwScore, Double lcScore) {
+    public MemberInfoResponseDto(String email, SnsType snsType, Type type, String appKey, String secretKey, Character personalAgreement, String accountPrefix, String accountSuffix, Double aiScore, Double pbScore, Double mwScore, Double lcScore) {
         this.email = email;
         this.snsType = snsType;
         this.type = type;

@@ -1,5 +1,6 @@
 package com.run.ssafi.member.dto;
 
+import com.run.ssafi.domain.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class MemberTypeResponseDto {
-    private String type;
+    private Type type;
     private String message;
 }

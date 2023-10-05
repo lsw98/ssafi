@@ -14,6 +14,7 @@ type CandleChartProps = {
 const CandleChart: React.FC<CandleChartProps> = ({ data }) => {
   const options: ApexOptions = {
     chart: {
+      type: 'candlestick',
       height: 500,
       width: 500,
       toolbar: {
@@ -29,16 +30,27 @@ const CandleChart: React.FC<CandleChartProps> = ({ data }) => {
         wick: {
           useFillColor: true,
         },
+        colors: {
+          upward: 'var(--upper-color)',
+          downward: 'var(--lower-color)',
+        },
       },
     },
     xaxis: {
-      type: 'datetime',
-      categories: data.map((price) => price.x), // 시간 정보가 이미 포함되어 있으므로 이렇게 사용
+      type: 'category',
       axisBorder: {
         show: false,
       },
       axisTicks: {
         show: false,
+      },
+      labels: {
+        formatter: (value) => {
+          const date = new Date(value);
+          return `${String(date.getHours()).padStart(2, '0')}:${String(
+            date.getMinutes(),
+          ).padStart(2, '0')}`;
+        },
       },
     },
   };
@@ -53,7 +65,13 @@ const CandleChart: React.FC<CandleChartProps> = ({ data }) => {
   ];
 
   return (
-    <ApexCharts options={options} series={series} width={800} height={400} />
+    <ApexCharts
+      options={options}
+      series={series}
+      type="candlestick"
+      width={800}
+      height={400}
+    />
   );
 };
 

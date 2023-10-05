@@ -96,6 +96,7 @@ public class SecurityConfiguration {
                                     .toArray(AntPathRequestMatcher[]::new)
                     )
                     .permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/**", "OPTIONS")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/stock/list", "GET")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/stock/index", "GET")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/api/member", "GET")).hasAnyAuthority(RolePrefix + Role.MEMBER.name())
