@@ -216,17 +216,17 @@ export default function TradeApi() {
         <div style={{ width: '540px' }}>
           <InnerContainer>
             <Text>
-              APP Key가 없으신가요? <DoubtsButton onClick={handleOpenModal} />
+              API Key가 없으신가요? <DoubtsButton onClick={handleOpenModal} />
             </Text>
             <Text className="small">
-              SSAFI에서는 한국투자증권 APP Key를 통해 계좌 인증을 진행하며,
+              SSAFI에서는 한국투자증권 API Key를 통해 계좌 인증을 진행하며,
               <br />
               인증에 성공한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
               <br />
               APP Key, SECRET Key와 모의 계좌 번호를 입력해주세요.
             </Text>
             <Text className="button" onClick={openApiPage}>
-              APP Key 발급/확인하기 &gt;
+              API Key 발급/확인하기 &gt;
             </Text>
           </InnerContainer>
         </div>

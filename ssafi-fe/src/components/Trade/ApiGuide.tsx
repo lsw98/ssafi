@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
-import tmpImg from '../../assets/images/temp-image.png';
+import apiGuide1 from '../../assets/images/apiGuide_1.png';
+import apiGuide2 from '../../assets/images/apiGuide_2.png';
+import apiGuide3 from '../../assets/images/apiGuide_3.png';
+import apiGuide4 from '../../assets/images/apiGuide_4.png';
+import apiGuide5 from '../../assets/images/apiGuide_5.png';
+import apiGuide6 from '../../assets/images/apiGuide_6.png';
 
 interface GuideProps {
   closeModal: () => void;
@@ -22,46 +26,56 @@ const ModalBackground = styled.div`
 
 const ModalContainer = styled.div`
   background-color: var(--white-color);
-  padding: 20px 20px 40px;
+  padding: 20px 40px 40px;
   border-radius: 20px;
   transition: height 0.3s;
 `;
 
+const Title = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  margin: 10px 0 20px 10px;
+`;
+
 const ButtonBox = styled.div`
-display: flex;
-justify-content: end;
-align-items: center;
-margin-top: 20px
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-top: 20px;
 `;
 
 const GuideBtn = styled.button`
-font-size: 20px;
-font-weight: 400;
-color: var(--white-color);
-background-color: var(--dark-color);
-width: 80px;
-height: 40px;
-border: none;
-border-radius: 10px;
-margin-right: 10px;
-cursor: pointer;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--white-color);
+  background-color: var(--dark-color);
+  width: 80px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  margin-right: 10px;
+  cursor: pointer;
 
-&:hover {
-  color: var(--dark-color);
-  background-color: var(--white-color);
-  border: 2px solid var(--dark-color);
-}
+  &:hover {
+    color: var(--dark-color);
+    background-color: var(--white-color);
+    border: 2px solid var(--dark-color);
+  }
 `;
 
-const GuideImg = styled.img`
-width: 900px;
-`;
-
-const guideList: Array<string> = ['1. 임시 설명 1', '2. 임시 설명 2', '3. 임시 설명 3', '4. 임시 설명 4', '5. 임시 설명 5', '6. 임시 설명 6', '7. 임시 설명 7', '8. 임시 설명 8'];
+const guideList: Array<string> = ['1. 모의 계좌 개설(앱)', '2. 한국투자증권 웹 접속', '3. PC 인증', '4. KIS Developers 신청', '5. 모의 계좌 연결', '6. KEY 발급'];
 const allGuides = guideList.length - 1;
+const imageList = [
+  apiGuide1,
+  apiGuide2,
+  apiGuide3,
+  apiGuide4,
+  apiGuide5,
+  apiGuide6,
+];
 
 const ApiGuide = ({ closeModal }: GuideProps) => {
-  const [guideNum, setGuideNum] = React.useState(0);
+  const [guideNum, setGuideNum] = useState(0);
 
   const nextGuideNum = () => {
     if (guideNum < allGuides) {
@@ -83,22 +97,22 @@ const ApiGuide = ({ closeModal }: GuideProps) => {
     <ModalBackground onClick={closeModal}>
       <ModalContainer onClick={stopPropagation}>
         <div>
-          <h3>{guideList[guideNum]}</h3>
-          <GuideImg src={tmpImg} />
+          <Title>{guideList[guideNum]}</Title>
+          <img src={imageList[guideNum]} width={760}/>
           {guideNum !== allGuides
             ? <div>
-                { guideNum === 0
-                  ? <ButtonBox><GuideBtn onClick={nextGuideNum}>다음</GuideBtn></ButtonBox>
-                  : <ButtonBox>
-                    <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
-                    <GuideBtn onClick={nextGuideNum}>다음</GuideBtn>
-                  </ButtonBox>
-                }
-              </div>
+              {guideNum === 0
+                ? <ButtonBox><GuideBtn onClick={nextGuideNum}>다음</GuideBtn></ButtonBox>
+                : <ButtonBox>
+                  <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
+                  <GuideBtn onClick={nextGuideNum}>다음</GuideBtn>
+                </ButtonBox>
+              }
+            </div>
             : <ButtonBox>
-                <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
-                <GuideBtn onClick={closeModal}>창 닫기</GuideBtn>
-              </ButtonBox>
+              <GuideBtn onClick={previousGuideNum}>이전</GuideBtn>
+              <GuideBtn onClick={closeModal}>창 닫기</GuideBtn>
+            </ButtonBox>
           }
         </div>
       </ModalContainer>
