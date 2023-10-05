@@ -9,108 +9,8 @@ import {
   fetchMinutePrices,
 } from '../../utility/api';
 import CandleChart from '../Charts/CandleChart';
-
-const Container = styled.div`
-  display: flex;
-  height: 100vh;
-  width: 100%;
-`;
-
-const LeftColumn = styled.div`
-  flex: 20; /* 왼쪽 열을 20%로 설정 */
-  background-color: #f0f0f0;
-  padding: 20px;
-`;
-
-const CenterColumn = styled.div`
-  flex: 60; /* 가운데 열을 60%로 설정 */
-  display: flex;
-  flex-direction: column;
-`;
-
-const GraphContainer = styled.div`
-  flex: 1;
-  padding: 25px 24.523px 0px 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 25px;
-  height: 60%;
-`;
-
-const StockInfo = styled.div`
-display-flex;
-height: 20%;
-`;
-
-const TradingAndAccountContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background-color: #f0f0f0;
-  padding: 20px 0 0 0;
-  height: 40%;
-`;
-
-const Trading = styled.div`
-  flex: 2;
-  background-color: #ffffff;
-  padding: 10px;
-`;
-
-const Account = styled.div`
-  flex: 3;
-  background-color: #ffffff;
-  padding: 10px;
-`;
-
-const Price = styled.div``;
-
-const RightColumn = styled.div`
-  flex: 20; /* 오른쪽 열을 20%로 설정 */
-  background-color: #f0f0f0;
-  padding: 20px;
-`;
-const AmountRanking = styled.div`
-  width: 100%;
-  height: 60%;
-  flex-shrink: 0;
-  border-radius: 25px;
-  background: var(--White, #fdfdfd);
-  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
-
-  h2 {
-    color: var(--Dark, #0d1545);
-    font-family: Pretendard;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  }
-`;
-
-const Tooltip = styled.div<{ show: boolean; color: string }>`
-  width: 200px;
-  top: 30px;
-  right: 12px;
-  background: var(--Sub, #e7faf7);
-  color: var(--black-color);
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  display: ${(props) => (props.show ? 'block' : 'none')};
-  color: ${(props) => props.color};
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    right: 0px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: transparent var(--light-gray-color) transparent transparent;
-  }
-`;
+import stockUp from '../../assets/images/stock-up.svg';
+import stockDown from '../../assets/images/stock-down.svg';
 
 interface StockInfoType {
   hts_kor_isnm: string;
@@ -208,25 +108,56 @@ export default function TradeOrder() {
           <StockInfo>
             {stockInfo ? (
               <>
-                <div>
-                  {stockInfo.hts_kor_isnm} {stockCode}
-                </div>
-                <div>
-                  {stockInfo.stck_prpr}
-                  <br />
-                  전일대비: {stockInfo.prdy_vrss} {stockInfo.prdy_vrss_sign}{' '}
-                  {stockInfo.prdy_ctrt}%
-                </div>
-                <div>
-                  전일: {stockInfo.stck_prdy_clpr} / 고가(상한가):{' '}
-                  {stockInfo.stck_hgpr}({stockInfo.stck_mxpr}) / 거래량:{' '}
-                  {stockInfo.acml_vol}
-                </div>
-                <div>
-                  시가: {stockInfo.stck_oprc} / 저가(하한가):{' '}
-                  {stockInfo.stck_lwpr}({stockInfo.stck_llam}) / 거래대금:{' '}
-                  {stockInfo.acml_tr_pbmn}
-                </div>
+                <InfoLeft>
+                  <NameBox>
+                    <StockName>{stockInfo.hts_kor_isnm}</StockName>
+                    <StockCode>{stockCode}</StockCode>
+                  </NameBox>
+                  <StockPrice updown={stockInfo.prdy_ctrt}>{stockInfo.stck_prpr}</StockPrice>
+                  <CompareInfo>
+                  <TextSimple>전일대비</TextSimple>
+                  <UpdownBox>
+                    {stockInfo.prdy_ctrt.slice(0, 1) === '-'
+                      ? <UpdownIcon src={stockDown} />
+                      : <UpdownIcon src={stockUp} />
+                    }
+                    <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_vrss.slice(1, 5)} {stockInfo.prdy_vrss_sign}{' '}</PriceCompare>
+                  </UpdownBox>
+                  <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_ctrt}%</PriceCompare>
+                </CompareInfo>
+                </InfoLeft>
+                <InfoRight>
+                  <PriceInfoLeft>
+                    <PriceInfos>
+                      <TextSimpleGray>전일</TextSimpleGray>
+                      <TextSimple>{stockInfo.stck_prdy_clpr}</TextSimple>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>시가</TextSimpleGray>
+                      <TextSimple>{stockInfo.stck_oprc}</TextSimple>
+                    </PriceInfos>
+                  </PriceInfoLeft>
+                  <PriceInfoMid>
+                    <PriceInfos>
+                      <TextSimpleGray>고가</TextSimpleGray>
+                      <NumUp>{stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})</NumUp>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>저가</TextSimpleGray>
+                      <NumDown>{stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})</NumDown>
+                    </PriceInfos>
+                  </PriceInfoMid>
+                  <PriceInfoRight>
+                    <PriceInfos>
+                      <TextSimpleGray>거래량(주)</TextSimpleGray>
+                      <TextSimple>{stockInfo.acml_vol}</TextSimple>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>거래대금(백만)</TextSimpleGray>
+                      <TextSimple>{Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}</TextSimple>
+                    </PriceInfos>
+                  </PriceInfoRight>
+                </InfoRight>
               </>
             ) : (
               <div>Loading...</div>
@@ -278,3 +209,210 @@ export default function TradeOrder() {
     </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100%;
+`;
+
+const LeftColumn = styled.div`
+  flex: 20; /* 왼쪽 열을 20%로 설정 */
+  background-color: #f0f0f0;
+  padding: 20px;
+`;
+
+const CenterColumn = styled.div`
+  flex: 60; /* 가운데 열을 60%로 설정 */
+  display: flex;
+  flex-direction: column;
+`;
+
+const GraphContainer = styled.div`
+  flex: 1;
+  padding: 25px 24.523px 0px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 25px;
+  height: 60%;
+`;
+
+const StockInfo = styled.div`
+display: flex;
+height: 20%;
+align-items: end;
+`;
+
+const InfoLeft = styled.div`
+width: 280px;
+`;
+
+const NameBox = styled.div`
+display: flex;
+align-items: end;
+`;
+
+const StockName = styled.p`
+font-size: 20px;
+font-weight: 600;
+color: var(--black-color);
+margin-bottom: 0px;
+`;
+
+const StockCode = styled.p`
+font-size: 16px;
+font-weight: 300;
+color: var(--gray-color);
+margin-left: 10px;
+margin-bottom: 0px;
+`;
+
+const StockPrice = styled.p<{updown: string}>`
+font-size: 26px;
+font-weight: 600;
+color: ${(props) => (props.updown.slice(0, 1) === '-') ? 'var(--lower-color)' : 'var(--upper-color)'};
+margin-top: 10px;
+margin-bottom: 0px;
+`;
+
+const CompareInfo = styled.div`
+display: flex;
+align-items: center;
+font-size: 14px;
+font-weight: 300;
+gap: 10px
+`;
+
+const UpdownBox = styled.div`
+display: flex;
+align-items: center;
+`;
+
+const UpdownIcon = styled.img`
+width: 10px;
+margin-top: 6px;
+margin-right: 2px;
+`;
+
+const TextSimple = styled.p`
+color: var(--black-color);
+margin-top: 6px;
+margin-bottom: 0px;
+`;
+
+const PriceCompare = styled.p<{updown: string}>`
+color: ${(props) => (props.updown.slice(0, 1) === '-') ? 'var(--lower-color)' : 'var(--upper-color)'};
+margin-bottom: 0px;
+margin-top: 6px;
+`;
+
+const InfoRight = styled.div`
+display: flex;
+width: 460px;
+font-size: 12px;
+font-weight: 300;
+justify-content: space-between;
+`;
+
+const PriceInfos = styled.div`
+display: flex;
+justify-content: space-between;
+align-items: end;
+`;
+
+const PriceInfoLeft = styled.div`
+width: 70px;
+`;
+
+const PriceInfoMid = styled.div`
+width: 160px;
+`;
+
+const PriceInfoRight = styled.div`
+width: 140px;
+`;
+
+const TextSimpleGray = styled.p`
+color: var(--gray-color);
+margin-bottom: 0px;
+`;
+
+const NumDown = styled.p`
+color: var(--lower-color);
+margin-bottom: 0px;
+`;
+
+const NumUp = styled.p`
+color: var(--upper-color);
+margin-bottom: 0px;
+`;
+
+const TradingAndAccountContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  padding: 20px 0 0 0;
+  height: 40%;
+`;
+
+const Trading = styled.div`
+  flex: 2;
+  background-color: #ffffff;
+  padding: 10px;
+`;
+
+const Account = styled.div`
+  flex: 3;
+  background-color: #ffffff;
+  padding: 10px;
+`;
+
+const Price = styled.div``;
+
+const RightColumn = styled.div`
+  flex: 20; /* 오른쪽 열을 20%로 설정 */
+  background-color: #f0f0f0;
+  padding: 20px;
+`;
+const AmountRanking = styled.div`
+  width: 100%;
+  height: 60%;
+  flex-shrink: 0;
+  border-radius: 25px;
+  background: var(--White, #fdfdfd);
+  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    color: var(--Dark, #0d1545);
+    font-family: Pretendard;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+`;
+
+const Tooltip = styled.div<{ show: boolean; color: string }>`
+  width: 200px;
+  top: 30px;
+  right: 12px;
+  background: var(--Sub, #e7faf7);
+  color: var(--black-color);
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: ${(props) => (props.show ? 'block' : 'none')};
+  color: ${(props) => props.color};
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 0px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent var(--light-gray-color) transparent transparent;
+  }
+`;
