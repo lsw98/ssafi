@@ -64,8 +64,6 @@ const Account = styled.div`
   padding: 10px;
 `;
 
-const Price = styled.div``;
-
 const RightColumn = styled.div`
   flex: 20; /* 오른쪽 열을 20%로 설정 */
   background-color: #f0f0f0;
@@ -128,6 +126,11 @@ interface StockInfoType {
   acml_tr_pbmn: string;
 }
 
+export type CandleData = {
+  x: string; // 시간이나 날짜
+  y: [number, number, number, number]; // [시가, 최고가, 최저가, 종가] 순서
+};
+
 export default function TradeOrder() {
   const [stockCode, setStockCode] = useState<string>('005930');
   const [stockInfo, setStockInfo] = useState<StockInfoType | null>(null);
@@ -169,15 +172,40 @@ export default function TradeOrder() {
     fetchMinutePricesData();
   }, [stockCode]);
 
-  const transformedData = minutePricesData.map((item) => ({
-    x: `${item.stck_bsop_date}T${item.stck_cntg_hour}`,
-    y: [
-      parseInt(item.stck_oprc),
-      parseInt(item.stck_hgpr),
-      parseInt(item.stck_lwpr),
-      parseInt(item.stck_prpr),
-    ] as [number, number, number, number], // 이렇게 명확하게 지정해주면 됩니다.
-  }));
+  const toISODateTimeWithOffset = (dateStr: string, timeStr: string) => {
+    const year = dateStr.substring(0, 4);
+    const month = dateStr.substring(4, 6);
+    const day = dateStr.substring(6, 8);
+
+    const hour = timeStr.substring(0, 2);
+    const minute = timeStr.substring(2, 4);
+    const second = timeStr.substring(4, 6);
+
+    const date = new Date(
+      Date.UTC(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1, // month is 0-indexed
+        parseInt(day, 10),
+        parseInt(hour, 10) - 9,
+        parseInt(minute, 10),
+        parseInt(second, 10),
+      ),
+    );
+
+    return date.toISOString();
+  };
+
+  const transformedData: CandleData[] = minutePricesData
+    .map((item) => ({
+      x: toISODateTimeWithOffset(item.stck_bsop_date, item.stck_cntg_hour),
+      y: [
+        parseInt(item.stck_oprc),
+        parseInt(item.stck_hgpr),
+        parseInt(item.stck_lwpr),
+        parseInt(item.stck_prpr),
+      ] as [number, number, number, number],
+    }))
+    .reverse();
 
   useEffect(() => {
     const fetchData = async () => {
