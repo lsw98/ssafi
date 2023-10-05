@@ -296,18 +296,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public TradeRecordResponseDto getTradeRecord(MemberDetail memberDetail) {
         Member member = memberDetail.getMember();
-        List<TradeRecord> tradeRecordList = tradeRecordRepository.findAllByMember(member);
-        List<TradeRecordVo> tradeRecordVoList = new ArrayList<>();
-
-        for (TradeRecord tradeRecord : tradeRecordList) {
-            tradeRecordVoList.add(TradeRecordVo.builder()
-                    .tradeType(tradeRecord.getTradeType())
-                    .tradeSubject(tradeRecord.getKospi().getKospiName())
-                    .tradePrice(tradeRecord.getTradePrice())
-                    .tradeDate(tradeRecord.getTradeDate())
-                    .tradeQuantity(tradeRecord.getTradeQuantity())
-                    .build());
-        }
+        List<TradeRecordVo> tradeRecordVoList = tradeRecordRepository.findAllByMember(member);
 
         TradeRecordResponseDto tradeRecordResponseDto = TradeRecordResponseDto.builder()
                 .tradeRecordVoList(tradeRecordVoList)
