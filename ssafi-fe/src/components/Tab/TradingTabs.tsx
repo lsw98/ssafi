@@ -13,99 +13,89 @@ import {
 const PriceList = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
   width: 30%;
   height: 90%;
 `;
 
-const PriceItem = styled.div<{ color: string }>`
-  color: ${(props) => props.color};
-
+const PriceItem = styled.div<{ lower?: boolean, border?: boolean }>`
+  color: ${(props) => (props.lower ? 'var(--lower-color)' : 'var(--upper-color)')};
+  background-color: ${(props) => (props.lower ? 'var(--light-lower-color)' : 'var(--light-upper-color)')};
+  border: ${(props) => (props.border ? '2px solid var(--black-color)' : '')};
+  font-size: 0.9em;;
+  text-align: end;
+  padding: 3px 6px;
+  margin: 2px 0;
   .volume {
-    font-size: 0.8em;
-    color: black;
+    font-size: 0.7em;
+    color: var(--gray-color);
   }
 `;
 
 const TradingBox = styled.div`
   display: flex;
-  width: 70%;
-  height: 90%;
-  padding: 11px 10px 9px 11px;
+  width: 62%;
+  margin: 0 1%;
+  height: 195px;
   flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  margin-left: 5%;
-  gap: 10px;
+  justify-content: space-between;
 `;
 
 const PriceDivision = styled.div`
   display: flex;
-  width: 200px;
+  margin-top: 6px;
 `;
 
 const Specified = styled.div`
   display: flex;
-  margin-right: 30%;
-  cursor: pointer;
-`;
-
-const Market = styled.div`
-  display: flex;
+  margin-right: 20%;
+  gap: 10px;
   cursor: pointer;
 `;
 
 const PriceAble = styled.div`
   display: flex;
-  width: 190px;
-`;
-// 남은잔액 받아오기 import from 내계좌
-const Budget = styled.div`
-  display: flex;
-  margin-left: auto;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  .big {
+    font-size: 16px;
+    font-weight: 500;
+  }
 `;
 
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
 `;
+
 const InputLabel = styled.label`
   position: absolute;
-  left: 10px; // 위치를 조절하여 input 내부에 텍스트를 정렬합니다.
+  left: 8px; // 위치를 조절하여 input 내부에 텍스트를 정렬합니다.
+  top: 48%;
+  font-size: 14px;
+  transform: translateY(-50%);
+  pointer-events: none;
+`;
+
+const InputSpan = styled.span<{ right?: string}>`
+  position: absolute;
+  right: ${(props) => props.right || '84px'};
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
 `;
 
-interface InputSpanProps {
-  right?: string;
-}
-const InputSpan = styled.span<InputSpanProps>`
-  position: absolute;
-  right: ${(props) => props.right || '75px'};
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-`;
 const InputAmount = styled.input`
-  width: 40px;
-  padding-left: 20%;
-  padding-right: 15%;
-  text-align: right; // 텍스트를 오른쪽 정렬합니다.
+  width: 46px;
+  padding: 1% 12% 1% 20%;
+  text-align: right;
 `;
 
 const InputPrice = styled.input`
-  width: 120px;
-  padding-left: 20%;
-  padding-right: 15%;
-  text-align: right; // 텍스트를 오른쪽 정렬합니다.
-`;
-
-const InputTotal = styled.input`
-  width: 120px;
-  padding-left: 20%;
-  padding-right: 15%;
-  text-align: right; // 텍스트를 오른쪽 정렬합니다.
+  width: 126px;
+  padding: 1% 12% 1% 20%;
+  text-align: right;
 `;
 
 const ButtonContainer = styled.div`
@@ -114,13 +104,21 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const ButtonReset = styled.button``;
-
-const ButtonBuy = styled.button``;
-
-const ButtonSell = styled.button``;
-
-const ButtonModify = styled.button``;
+const ButtonReset = styled.button`
+  border: none;
+  padding: 4px 24px;
+  background-color: var(--light-gray-color);
+  font-size: 14px;
+  letter-spacing: 1px;
+  &.sell{
+    color: var(--white-color);
+    background-color: var(--lower-color);
+  }
+  &.buy{
+    color: var(--white-color);
+    background-color: var(--upper-color);
+  }
+`;
 
 const Modal = styled.div`
   position: fixed;
@@ -153,6 +151,18 @@ const ModalContent = styled.div`
     }
   }
 `;
+
+const Text = styled.div`
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--gray-color);
+  text-align: center;
+  line-height: 24px;
+  width: 100%;
+  height: 147.2px;
+  margin-top: 50px;
+`;
+
 interface PriceData {
   askp1: number;
   askp2: number;
@@ -183,7 +193,7 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   const [isMarketChecked, setMarketChecked] = useState(false);
   const [amount, setAmount] = useState('');
   const [price, setPrice] = useState('');
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState('');
   const [buyModalOpen, setBuyModalOpen] = useState(false);
   const [sellModalOpen, setSellModalOpen] = useState(false);
   const [modifyModalOpen, setModifyModalOpen] = useState(false);
@@ -208,7 +218,7 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
     }
   };
 
-  const handleMarketClick = () => {
+  const handleMarketClick = (type : number) => {
     if (division === '01') {
       setDivision(''); // 시장이 이미 선택되어 있다면 선택 해제
       setMarketChecked(false);
@@ -218,22 +228,35 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
       setMarketChecked(true);
       setSpecifiedChecked(false); // 지정은 선택 해제
       // 시장가 선택 시, 매도호가 중 askingPrices.askp1를 가격으로 설정
-      if (askingPrices) {
-        setPrice(askingPrices.askp1.toString()); // 숫자를 문자열로 변환
+      if (askingPrices && type === 1) {
+        setPrice(askingPrices.askp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+      } else if (askingPrices && type === 2) {
+        setPrice(askingPrices.bidp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
       }
     }
+  };
+
+  const handleReset = () => {
+    setDivision('');
+    setMarketChecked(false);
+    setSpecifiedChecked(false);
+    setAmount('');
+    setPrice('');
+    setTotal('');
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
   };
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(e.target.value);
+    const priceNumber = e.target.value.replace(/,/g, '');
+    setPrice(priceNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
   };
 
   useEffect(() => {
     // amount와 price가 숫자형태이면 아래와 같이 곱셈을 바로 할 수 있습니다.
-    setTotal(Number(amount) * Number(price));
+    const totalPriceNum = Number(amount) * parseInt(price.replace(/,/g, ''), 10);
+    setTotal(totalPriceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
   }, [amount, price]); // amount나 price 상태가 변경될 때마다 이 훅을 실행
 
   const handleOpenBuyModal = () => {
@@ -242,18 +265,12 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   const handleOpenSellModal = () => {
     setSellModalOpen(true);
   };
-  const handleOpenModifyModal = () => {
-    setModifyModalOpen(true);
-  };
 
   const handleCloseBuyModal = () => {
     setBuyModalOpen(false);
   };
   const handleCloseSellModal = () => {
     setSellModalOpen(false);
-  };
-  const handleCloseModifyModal = () => {
-    setModifyModalOpen(false);
   };
 
   const handleBuyStock = () => {
@@ -317,42 +334,34 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
           className={toggleState === 1 ? 'content active-content' : 'content'}
         >
           <PriceList>
-            {askingPrices ? (
+            {askingPrices && (
               <>
-                <PriceItem color="blue">
+                <PriceItem lower={true}>
                   {askingPrices.askp3}
                   <div className="volume">{askingPrices.askp_rsqn3}</div>
                 </PriceItem>
-                <PriceItem color="blue">
+                <PriceItem lower={true}>
                   {askingPrices.askp2}
                   <div className="volume">{askingPrices.askp_rsqn2}</div>
                 </PriceItem>
-                <PriceItem color="blue">
+                <PriceItem lower={true} border={true}>
                   {askingPrices.askp1}
                   <div className="volume">{askingPrices.askp_rsqn1}</div>
                 </PriceItem>
               </>
-            ) : (
-              <div>Loading...</div>
             )}
 
-            {askingPrices ? (
+            {askingPrices && (
               <>
-                <PriceItem color="red">
+                <PriceItem>
                   {askingPrices.bidp1}
                   <div className="volume">{askingPrices.bidp_rsqn1}</div>
                 </PriceItem>
-                <PriceItem color="red">
+                <PriceItem>
                   {askingPrices.bidp2}
                   <div className="volume">{askingPrices.bidp_rsqn2}</div>
                 </PriceItem>
-                <PriceItem color="red">
-                  {askingPrices.bidp3}
-                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
-                </PriceItem>
               </>
-            ) : (
-              <div>Loading...</div>
             )}
           </PriceList>
           <TradingBox>
@@ -366,22 +375,18 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
+                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
                   />
                   {isSpecifiedChecked && (
                     <path
                       d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
+                      fill="var(--point-color)"
                     />
                   )}
                 </svg>
                 지정
               </Specified>
-              <Market onClick={handleMarketClick}>
+              <Specified onClick={() => handleMarketClick(1)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -390,28 +395,21 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
+                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
                   />
                   {isMarketChecked && (
                     <path
                       d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
+                      fill="var(--point-color)"
                     />
                   )}
                 </svg>
                 시장
-              </Market>
+              </Specified>
             </PriceDivision>
             <PriceAble>
-              주문가능
-              <Budget>
-                1000
-                {/* {계좌잔고} */}
-              </Budget>
+              <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
+              <div className='big'>1000원</div>
             </PriceAble>
             <InputWrapper>
               <InputLabel>수량</InputLabel>
@@ -429,16 +427,16 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                 value={price}
                 onChange={handlePriceChange}
               />
-              <InputSpan right="1px">원</InputSpan>
+              <InputSpan right="4px">원</InputSpan>
             </InputWrapper>
             <InputWrapper>
               <InputLabel>총액</InputLabel>
-              <InputTotal placeholder="0" value={total} />
-              <InputSpan right="1px">원</InputSpan>
+              <InputPrice placeholder="0" value={total} />
+              <InputSpan right="4px">원</InputSpan>
             </InputWrapper>
             <ButtonContainer>
-              <ButtonReset onClick={handleOpenBuyModal}>초기화</ButtonReset>
-              <ButtonBuy onClick={handleOpenBuyModal}>매수</ButtonBuy>
+              <ButtonReset onClick={handleReset}>초기화</ButtonReset>
+              <ButtonReset className='buy' onClick={handleOpenBuyModal}>매수</ButtonReset>
               {buyModalOpen && (
                 <Modal>
                   <ModalContent>
@@ -461,42 +459,33 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
           className={toggleState === 2 ? 'content active-content' : 'content'}
         >
           <PriceList>
-            {askingPrices ? (
+            {askingPrices && (
               <>
-                <PriceItem color="blue">
-                  {askingPrices.askp3}
-                  <div className="volume">{askingPrices.askp_rsqn3}</div>
-                </PriceItem>
-                <PriceItem color="blue">
+                <PriceItem lower={true}>
                   {askingPrices.askp2}
                   <div className="volume">{askingPrices.askp_rsqn2}</div>
                 </PriceItem>
-                <PriceItem color="blue">
+                <PriceItem lower={true}>
                   {askingPrices.askp1}
                   <div className="volume">{askingPrices.askp_rsqn1}</div>
                 </PriceItem>
               </>
-            ) : (
-              <div>Loading...</div>
             )}
-
-            {askingPrices ? (
+            {askingPrices && (
               <>
-                <PriceItem color="red">
+                <PriceItem border={true}>
                   {askingPrices.bidp1}
                   <div className="volume">{askingPrices.bidp_rsqn1}</div>
                 </PriceItem>
-                <PriceItem color="red">
+                <PriceItem >
                   {askingPrices.bidp2}
                   <div className="volume">{askingPrices.bidp_rsqn2}</div>
                 </PriceItem>
-                <PriceItem color="red">
+                <PriceItem>
                   {askingPrices.bidp3}
                   <div className="volume">{askingPrices.bidp_rsqn3}</div>
                 </PriceItem>
               </>
-            ) : (
-              <div>Loading...</div>
             )}
           </PriceList>
           <TradingBox>
@@ -510,23 +499,18 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
+                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
                   />
                   {isSpecifiedChecked && (
                     <path
                       d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
+                      fill="var(--point-color)"
                     />
                   )}
                 </svg>
                 지정
               </Specified>
-
-              <Market onClick={handleMarketClick}>
+              <Specified onClick={() => handleMarketClick(2)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -535,25 +519,21 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
+                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
                   />
                   {isMarketChecked && (
                     <path
                       d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
+                      fill="var(--point-color)"
                     />
                   )}
                 </svg>
                 시장
-              </Market>
+              </Specified>
             </PriceDivision>
             <PriceAble>
-              주문가능
-              <Budget>1000</Budget>
+              <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
+              <div className='big'>1000원</div>
             </PriceAble>
             <InputWrapper>
               <InputLabel>수량</InputLabel>
@@ -571,16 +551,16 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                 value={price}
                 onChange={handlePriceChange}
               />
-              <InputSpan right="1px">원</InputSpan>
+              <InputSpan right="4px">원</InputSpan>
             </InputWrapper>
             <InputWrapper>
               <InputLabel>총액</InputLabel>
-              <InputTotal placeholder="0" value={total} />
-              <InputSpan right="1px">원</InputSpan>
+              <InputPrice placeholder="0" value={total} />
+              <InputSpan right="4px">원</InputSpan>
             </InputWrapper>
             <ButtonContainer>
-              <ButtonReset onClick={handleOpenSellModal}>초기화</ButtonReset>
-              <ButtonSell onClick={handleOpenSellModal}>매도</ButtonSell>
+              <ButtonReset onClick={handleReset}>초기화</ButtonReset>
+              <ButtonReset className='sell' onClick={handleOpenSellModal}>매도</ButtonReset>
               {sellModalOpen && (
                 <Modal>
                   <ModalContent>
@@ -602,144 +582,10 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
         <div
           className={toggleState === 3 ? 'content active-content' : 'content'}
         >
-          <PriceList>
-            {askingPrices ? (
-              <>
-                <PriceItem color="blue">
-                  {askingPrices.askp3}
-                  <div className="volume">{askingPrices.askp_rsqn3}</div>
-                </PriceItem>
-                <PriceItem color="blue">
-                  {askingPrices.askp2}
-                  <div className="volume">{askingPrices.askp_rsqn2}</div>
-                </PriceItem>
-                <PriceItem color="blue">
-                  {askingPrices.askp1}
-                  <div className="volume">{askingPrices.askp_rsqn1}</div>
-                </PriceItem>
-              </>
-            ) : (
-              <div>Loading...</div>
-            )}
-
-            {askingPrices ? (
-              <>
-                <PriceItem color="red">
-                  {askingPrices.bidp1}
-                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
-                </PriceItem>
-                <PriceItem color="red">
-                  {askingPrices.bidp2}
-                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
-                </PriceItem>
-                <PriceItem color="red">
-                  {askingPrices.bidp3}
-                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
-                </PriceItem>
-              </>
-            ) : (
-              <div>Loading...</div>
-            )}
-          </PriceList>
-          <TradingBox>
-            <PriceDivision>
-              <Specified onClick={handleSpecifiedClick}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                >
-                  <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
-                  />
-                  {isSpecifiedChecked && (
-                    <path
-                      d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
-                    />
-                  )}
-                </svg>
-                지정
-              </Specified>
-
-              <Market onClick={handleMarketClick}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                >
-                  <circle
-                    cx="9"
-                    cy="9"
-                    r="8.5"
-                    fill="#FDFDFD"
-                    stroke="#858585"
-                  />
-                  {isMarketChecked && (
-                    <path
-                      d="M16 9C16 12.866 12.866 16 9 16C5.13401 16 2 12.866 2 9C2 5.13401 5.13401 2 9 2C12.866 2 16 5.13401 16 9Z"
-                      fill="#4AC49E"
-                    />
-                  )}
-                </svg>
-                시장
-              </Market>
-            </PriceDivision>
-            <PriceAble>
-              주문가능
-              <Budget>1000</Budget>
-            </PriceAble>
-            <InputWrapper>
-              <InputLabel>수량</InputLabel>
-              <InputAmount
-                placeholder="0"
-                value={amount}
-                onChange={handleAmountChange}
-              />
-              <InputSpan>주</InputSpan>
-            </InputWrapper>
-            <InputWrapper>
-              <InputLabel>가격</InputLabel>
-              <InputPrice
-                placeholder="0"
-                value={price}
-                onChange={handlePriceChange}
-              />
-              <InputSpan right="1px">원</InputSpan>
-            </InputWrapper>
-            <InputWrapper>
-              <InputLabel>총액</InputLabel>
-              <InputTotal placeholder="0" value={total} />
-              <InputSpan right="1px">원</InputSpan>
-            </InputWrapper>
-            <ButtonContainer>
-              <ButtonReset onClick={handleOpenModifyModal}>초기화</ButtonReset>
-              <ButtonModify onClick={handleOpenModifyModal}>정정</ButtonModify>
-              {modifyModalOpen && (
-                <Modal>
-                  <ModalContent>
-                    <h1>정정하시겠습니까?</h1>
-                    <button onClick={handleCloseModifyModal}>취소</button>
-                    <button
-                      onClick={() => {
-                        handleModifyStock();
-                      }}
-                    >
-                      확인
-                    </button>
-                  </ModalContent>
-                </Modal>
-              )}
-            </ButtonContainer>
-          </TradingBox>
+          <Text>
+            정정할 미체결 내역이 없습니다. <br/>
+            매수, 매도를 먼저 진행해주세요.
+          </Text>
         </div>
       </div>
     </div>

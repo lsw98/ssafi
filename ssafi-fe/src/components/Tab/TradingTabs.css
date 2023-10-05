@@ -36,13 +36,9 @@
 }
 
 .trading-container .content-tabs {
-  background: white;
-  /* padding: 2px; */
+  background: var(--white-color);
   width: 100%;
-  /* height: 100%; */
   display: flex;
-  /* flex-grow: 1;
-    overflow: hidden; */
   flex-direction: column;
 }
 
@@ -50,25 +46,15 @@
   display: none;
   flex-direction: row;
   padding: 10px;
-  /* height: 100%; */
-  /* border-top: 1px solid #ccc; */
 }
 
 .trading-container .content.active-content {
   display: flex;
-  justify-content: start;
-  align-items: start;
-  height: 200px;
-}
-
-.content hr {
+  justify-content: space-between;
+  align-items: center;
 }
 
 .trading-container .content p {
   width: 100%;
   height: 100%;
-}
-
-.trading-container button {
-  border: none;
 }
