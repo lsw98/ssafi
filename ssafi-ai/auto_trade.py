@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import join
 from db import engine, Session
 from KISapi import _getAccessToken, _getStockPrice, _buyStock, _sellStock, _getStockBalance
-from today_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
+from load_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
 import time
 from datetime import datetime
 
