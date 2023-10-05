@@ -23,7 +23,11 @@ PYTHON 3.11.5
 
 ``` lstm_python.py ```
 
-### 자동매매 (LSTM, CNN 저장 후 실행), 매일 아침 실행
+### 종목 위험 분류, 오늘의 주가 예측 결과 저장 (순위) 
+
+``` today_prediction.py ```
+
+### 자동매매 (예측 후 실행), 매일 아침 실행
 
 ``` auto_trade.py ```
 
