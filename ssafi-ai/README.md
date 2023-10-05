@@ -2,7 +2,7 @@ PYTHON 3.11.5
 
 ### 필요한 라이브러리/패키지 설치
  
-``` $ pip install -r requirements.txt ```
+``` $ pip install -r requirements2.txt ```
 
 
 # 스케쥴링으로 실행할 Python 스크립트
