@@ -42,8 +42,9 @@ public class Member extends BaseTimeEntity {
     private String accountPrefix;
     @Column(name="account_suffix")
     private String accountSuffix;
+    @Enumerated(EnumType.STRING)
     @Column(name="type")
-    private String type;
+    private Type type;
 
     @Builder
     public Member(String email, String password, Role role, Boolean exited, SnsType snsType, Character personalAgreement) {
@@ -62,7 +63,7 @@ public class Member extends BaseTimeEntity {
     public void modifyExited(Boolean exited) {
         this.exited=exited;
     }
-    public void modifyType(String type) {
+    public void modifyType(Type type) {
         this.type=type;
     }
     public void modifyAppKey(String appKey) {
