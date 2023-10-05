@@ -195,6 +195,11 @@ interface TradingTabsProps {
   stockCode: string;
 }
 
+interface BalanceProps {
+  stockName: string;
+  amount: string;
+}
+
 function formatNumber(num: string | number) {
   return Intl.NumberFormat().format(Number(num));
 }
@@ -212,9 +217,29 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const [price, setPrice] = useState('');
   const [total, setTotal] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  // const [modalOpen, setModalOpen] = useState(false);
   const [accountData, setAccountData] = useState<any | null>(null);
-  // const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const [balance, setBalance] = useState<BalanceProps[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchCheckAccount();
+        if (!Array.isArray(result)) {
+          const updatedBalance = result.refinedOutput.map((item: any) => ({
+            stockName: item.prdt_name,
+            amount: item.hldg_qty,
+          }));
+
+          setBalance(updatedBalance);
+        }
+      } catch (error) {
+        console.error('Fetching Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log(balance);
 
   useEffect(() => {
     const getAskingPrices = async () => {
@@ -485,7 +510,9 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
           </TradingBox>
         </div>
         <div
-          className={toggleState === 2 ? 'content active-content' : 'content'}
+          className={toggleState === 2 && balance.find((item) => item.stockName === stockName)
+            ? 'content active-content'
+            : 'content'}
         >
           <PriceList>
             {askingPrices && (
@@ -560,10 +587,10 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                 시장
               </Specified>
             </PriceDivision>
-            {/* <PriceAble>
-              <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
-              <div className='big'>{accountData ? formatNumber(accountData.dnca_tot_amt) : 0 }원</div>
-            </PriceAble> */}
+            <PriceAble>
+              <div style={{ color: 'var(--gray-color)' }}>매도 가능 수량</div>
+              <div className='big'>2 주</div>
+            </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
                 <InputLabel>수량</InputLabel>
