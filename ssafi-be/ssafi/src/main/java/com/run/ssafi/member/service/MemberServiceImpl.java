@@ -3,6 +3,7 @@ package com.run.ssafi.member.service;
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Score;
+import com.run.ssafi.domain.Type;
 import com.run.ssafi.exception.customexception.AccountException;
 import com.run.ssafi.exception.customexception.MemberException;
 import com.run.ssafi.exception.customexception.StockException;
@@ -102,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
         Double pbScore = requestDto.getPbScore();
         Double mwScore = requestDto.getMwScore();
         Double lcScore = requestDto.getLcScore();
-        String type = requestDto.getType();
+        Type type = requestDto.getType();
         member.modifyType(type);
 
         Score score;

@@ -4,12 +4,14 @@ import './StockTabs.css';
 import searchIcon from '../../assets/icons/search-icon.svg';
 import { fetchStockCode } from '../../utility/api';
 import { fetchStockPrice } from '../../utility/api';
+import StockEach from './StockEach';
 
 // 뉴스 검색바 영역 (이후 확장성을 위해 만들어둠)
 const StocksSearchBarArea = styled.div`
+  width: 100%;
   display: flex;
-  justify-content: start;
-  align-items: start;
+  justify-content: center;
+  margin-bottom: 4px;
 `;
 
 // 뉴스 검색바 속성
@@ -17,9 +19,9 @@ const StocksSearchBar = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
-  width: 80%;
-  height: 30%;
-  border: 3px solid var(--dark-color);
+  width: 100%;
+  height: 24px;
+  border: 1px solid var(--dark-color);
   border-radius: 20px;
   background-color: var(--white-color);
 `;
@@ -29,45 +31,36 @@ const StocksSearchIcon = styled.img.attrs({
   src: `${searchIcon}`,
 })`
   width: 10%;
+  position: relative;
+  left: 5%;
 `;
 
 // 검색바 텍스트 입력 영역 속성
 const StocksSearchTextbox = styled.input.attrs({
   placeholder: '원하는 종목을 입력하세요.',
 })`
-  width: 80%;
-  height: 60%;
-  margin-left: 1%;
-  font-size: 15%;
+  width: 70%;
+  margin-left: 8%;
+  font-size: 10px;
   color: var(--dark-color);
   background-color: var(--white-color);
   border: 0px;
   outline: none;
 `;
-const StocksAllList = styled.div`
+const StocksList = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: start;
 `;
 
-const StocksInterests = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
-`;
-
-const Tooltip = styled.div<{ color: string }>`
-  display: flex;
-  flex-direction: row;
-  width: 30%;
-  top: 5%;
-  color: var(--black-color);
-  color: ${(props) => props.color};
-`;
 interface StockTabsProps {
   onStockClick: (stockCode: string) => void;
+}
+
+interface Stock {
+  code: string;
+  name: string;
+  prdy_vrss_sign: number;
+  stck_prpr: number;
 }
 
 function StockTabs({ onStockClick }: StockTabsProps) {
@@ -78,7 +71,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태를 관리하는 상태 변수
   const [searchText, setSearchText] = useState('');
   const [filteredStockData, setFilteredStockData] = useState<any[]>([]);
-  const [interests, setInterests] = useState<any[]>([]); // 관심 종목을 담을 상태
+  const [interests, setInterests] = useState<Stock[]>([]); // 관심 종목을 담을 상태
   const [clickedStar, setClickedStar] = useState<Record<string, boolean>>({}); // 별이 클릭되었는지 담을 상태
   const toggleTab = (index: number) => {
     setToggleState(index);
@@ -92,7 +85,6 @@ function StockTabs({ onStockClick }: StockTabsProps) {
   useEffect(() => {
     fetchStockCode().then((info) => {
       setStockInfo(info);
-
       // 모든 주식 이름을 먼저 stockData에 설정
       const initialData = info.map(({ stockCode, stockName }) => ({
         code: stockCode,
@@ -142,21 +134,20 @@ function StockTabs({ onStockClick }: StockTabsProps) {
     }
   }, [searchText, stockData]);
 
-  const toggleStar = (stock: string, index: number) => {
-    const isClicked = clickedStar[index] || false;
-
-    setClickedStar({
-      ...clickedStar,
-      [index]: !isClicked,
-    });
-
-    if (!isClicked) {
-      // 관심 종목에 추가
-      setInterests([...interests, stock]);
-    } else {
-      // 관심 종목에서 제거
+  const toggleStar = (stock: Stock) => {
+    if (interests.includes(stock)) {
       const newInterests = interests.filter((item) => item !== stock);
       setInterests(newInterests);
+      setClickedStar({
+        ...clickedStar,
+        [stock.code]: false,
+      });
+    } else {
+      setInterests([...interests, stock]);
+      setClickedStar({
+        ...clickedStar,
+        [stock.code]: true,
+      });
     }
   };
 
@@ -178,12 +169,10 @@ function StockTabs({ onStockClick }: StockTabsProps) {
       </div>
 
       <div className="content-tabs">
-        {/* {isLoading ? (
-          <div>Loading...</div> // 로딩 중일 때 표시할 컴포넌트
-        ) : ( */}
         <div
           className={toggleState === 1 ? 'content active-content' : 'content'}
         >
+          {/* 서치바 */}
           <StocksSearchBarArea>
             <StocksSearchBar>
               <StocksSearchIcon />
@@ -193,60 +182,27 @@ function StockTabs({ onStockClick }: StockTabsProps) {
               />{' '}
             </StocksSearchBar>
           </StocksSearchBarArea>
-          <StocksAllList>
+          {/* 전체목록 */}
+          <StocksList>
             {/* 종목 데이터를 맵핑하여 표시 */}
             {filteredStockData.map((stock, index) => {
               const start = (currentPage - 1) * itemsPerPage;
               const end = currentPage * itemsPerPage;
-
               if (index >= start && index < end) {
                 return (
-                  <li
-                    key={index}
-                    onClick={() => {
-                      onStockClick(stock.code);
-                    }}
-                  >
-                    <svg
-                      className={`star ${clickedStar[index] ? 'filled' : ''}`}
-                      onClick={() => toggleStar(stock, index)}
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="19"
-                      viewBox="0 0 20 19"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 2.60396L11.7217 6.74345L11.9563 7.30742L12.5651 7.35623L17.0341 7.7145L13.6292 10.6311L13.1653 11.0285L13.307 11.6226L14.3473 15.9835L10.5213 13.6466L10 13.3282L9.47875 13.6466L5.65272 15.9835L6.69296 11.6226L6.83468 11.0285L6.3708 10.6311L2.96595 7.7145L7.43488 7.35623L8.04372 7.30742L8.27829 6.74345L10 2.60396Z"
-                        stroke="#EFDA4C"
-                        stroke-width="2"
-                      />
-                    </svg>
-                    <div style={{ marginRight: '10px' }}>
-                      <span>{stock.name}</span> {/* 종목명 */}
-                    </div>
-                    <div>
-                      <Tooltip
-                        color={
-                          Number(stock.prdy_vrss_sign) === 5
-                            ? 'blue'
-                            : Number(stock.prdy_vrss_sign) === 2
-                            ? 'red'
-                            : 'black'
-                        }
-                      >
-                        {Number.isNaN(Number(stock.stck_prpr))
-                          ? '불러오는 중...'
-                          : Number(stock.stck_prpr).toLocaleString()}
-                      </Tooltip>
-                    </div>
-                  </li>
+                  <StockEach
+                    stock = {stock}
+                    clickedStar = {clickedStar}
+                    toggleStar = {toggleStar}
+                    onStockClick = {onStockClick}
+                    toggleState = {toggleState}
+                  />
                 );
               }
-
               return null; // 현재 페이지에 속하지 않는 주식은 렌더링하지 않음
             })}
-          </StocksAllList>
+          </StocksList>
+          {/* 버튼 */}
           <div className="button-container">
             <button
               disabled={currentPage === 1}
@@ -285,55 +241,25 @@ function StockTabs({ onStockClick }: StockTabsProps) {
                 </button>
               ));
             })()}
-            <button onClick={() => handlePageChange(currentPage + 1)}>
+            <button disabled={currentPage === 10} onClick={() => handlePageChange(currentPage + 1)}>
               다음
             </button>
           </div>
         </div>
-        {/* )} */}
         <div
           className={toggleState === 2 ? 'content active-content' : 'content'}
         >
-          <div>
-            <StocksInterests>
-              {/* 관심 종목 표시 */}
-              {interests.map((stock, index) => (
-                <div key={index} className="stock-interested">
-                  <svg
-                    className={`star ${clickedStar[index] ? 'filled' : ''}`}
-                    onClick={() => toggleStar(stock, index)}
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="19"
-                    viewBox="0 0 20 19"
-                    fill="none"
-                  >
-                    <path
-                      d="M10 2.60396L11.7217 6.74345L11.9563 7.30742L12.5651 7.35623L17.0341 7.7145L13.6292 10.6311L13.1653 11.0285L13.307 11.6226L14.3473 15.9835L10.5213 13.6466L10 13.3282L9.47875 13.6466L5.65272 15.9835L6.69296 11.6226L6.83468 11.0285L6.3708 10.6311L2.96595 7.7145L7.43488 7.35623L8.04372 7.30742L8.27829 6.74345L10 2.60396Z"
-                      stroke="#EFDA4C"
-                      stroke-width="2"
-                    />
-                  </svg>
-                  <div>
-                    <span>{stock.name}</span> {/* 종목명 */}
-                  </div>
-                  <div>
-                    <Tooltip
-                      color={
-                        Number(stock.prdy_vrss_sign) === 5
-                          ? 'blue'
-                          : Number(stock.prdy_vrss_sign) === 2
-                          ? 'red'
-                          : 'black'
-                      }
-                    >
-                      {Number(stock.stck_prpr).toLocaleString()}
-                    </Tooltip>
-                  </div>
-                </div>
-              ))}
-            </StocksInterests>
-          </div>
+          <StocksList>
+            {interests.map((stock, index) => (
+              <StockEach
+                stock = {stock}
+                clickedStar = {clickedStar}
+                toggleStar = {toggleStar}
+                onStockClick = {onStockClick}
+                toggleState = {toggleState}
+              />
+            ))}
+          </StocksList>
         </div>
       </div>
     </div>

@@ -31,5 +31,7 @@ public class Kospi {
     private String kospiName;
     @Column(name = "kospi_type")
     private String kospiType;
+    @Column(name = "kospi_rank")
+    private Long kospiRank;
 
 }

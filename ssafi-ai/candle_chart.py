@@ -17,6 +17,7 @@ import datetime
 today = datetime.date.today()
 yesterday = (today - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
+
 for code in kospi_code_list:
     df = fdr.DataReader(code, '2023-08-01', yesterday)
     

@@ -12,7 +12,7 @@ public class NewsVo {
     private String newsCategory;
     private String newsTitle;
     private String newsMidTitle;
-    private LocalDateTime newsDate;
+    private String newsDate;
     private String newsWriter;
     private String newsContent;
 }
