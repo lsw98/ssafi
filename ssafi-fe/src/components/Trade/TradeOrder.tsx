@@ -175,12 +175,16 @@ const RightColumn = styled.div`
   padding: 20px 0px 20px 10px;
 `;
 const AmountRanking = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 60%;
   flex-shrink: 0;
   border-radius: 25px;
   background: var(--White, #fdfdfd);
   box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
+  padding: 5px;
 
   h2 {
     color: var(--Dark, #0d1545);
@@ -190,6 +194,12 @@ const AmountRanking = styled.div`
     font-weight: 600;
     line-height: normal;
   }
+`;
+
+const RankedTime = styled.div`
+display: flex;
+justify-content: end;
+width: 100%;
 `;
 
 const Tooltip = styled.div<{ show: boolean; color: string }>`
@@ -409,7 +419,7 @@ export default function TradeOrder() {
       <RightColumn>
         <AmountRanking>
           <h2>거래량 TOP 10</h2>
-          <h3>{currentTime}</h3>
+          <RankedTime>{currentTime}</RankedTime>
           <ul>
             {rankingData.slice(0, 10).map((item, index) => (
               <li
