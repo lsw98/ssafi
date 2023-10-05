@@ -10,6 +10,8 @@ import com.run.ssafi.stock.dto.InquireBalanceResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.dto.StockIndexResponseDto;
+import com.run.ssafi.stock.dto.TradeRecordRegisterRequestDto;
+import com.run.ssafi.stock.dto.TradeRecordResponseDto;
 
 public interface StockService {
 
@@ -32,4 +34,6 @@ public interface StockService {
 
     KospiListResponseDto getKospiList();
     StockIndexResponseDto getStockIndex();
+    void registerTradeRecord(MemberDetail memberDetail, TradeRecordRegisterRequestDto requestDto);
+    TradeRecordResponseDto getTradeRecord(MemberDetail memberDetail);
 }
