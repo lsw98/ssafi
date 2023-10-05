@@ -3,7 +3,7 @@
   flex-direction: column;
   width: 100%;
   margin: 0 auto;
-  border: 1px solid #ccc;
+  border: 1px solid var(--light-gray-color);
   border-top: none;
   border-radius: 5px 5px 0 0;
 }
@@ -17,7 +17,7 @@
   padding: 10px 20px;
   text-align: center;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   background: var(--background-color);
   border: 1px solid var(--light-gray-color);
   border-radius: 5px 5px 0 0;
@@ -36,13 +36,9 @@
 }
 
 .account-container .content-tabs {
-  background: white;
-  /* padding: 2px; */
+  background: var(--white-color);
   width: 100%;
-  /* height: 100%; */
   display: flex;
-  /* flex-grow: 1;
-      overflow: hidden; */
   flex-direction: column;
 }
 
@@ -54,11 +50,8 @@
 
 .account-container .content.active-content {
   display: flex;
-  justify-content: start;
-  align-items: start;
-}
-
-.content hr {
+  align-items: center;
+  height: 197.2px;
 }
 
 .account-container .content p {

@@ -80,15 +80,15 @@ const InputLabel = styled.label`
 
 const InputSpan = styled.span<{ right?: string}>`
   position: absolute;
-  right: ${(props) => props.right || '84px'};
+  right: ${(props) => props.right || '8px'};
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
 `;
 
 const InputAmount = styled.input`
-  width: 46px;
-  padding: 1% 12% 1% 20%;
+  width: 60px;
+  padding: 1% 20% 1% 28%;
   text-align: right;
 `;
 
@@ -133,7 +133,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: white;
+  background-color: var(--white-color);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -161,6 +161,16 @@ const Text = styled.div`
   width: 100%;
   height: 147.2px;
   margin-top: 50px;
+`;
+
+const CountBtn = styled.div`
+  padding: 0 8px;
+  height: 22px;
+  background-color: var(--light-gray-color);
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  cursor: pointer;
 `;
 
 interface PriceData {
@@ -256,7 +266,11 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   useEffect(() => {
     // amount와 price가 숫자형태이면 아래와 같이 곱셈을 바로 할 수 있습니다.
     const totalPriceNum = Number(amount) * parseInt(price.replace(/,/g, ''), 10);
-    setTotal(totalPriceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+    if (totalPriceNum > 0) {
+      setTotal(totalPriceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+    } else {
+      setTotal('');
+    }
   }, [amount, price]); // amount나 price 상태가 변경될 때마다 이 훅을 실행
 
   const handleOpenBuyModal = () => {
@@ -295,15 +309,13 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
       });
   };
 
-  const handleModifyStock = () => {
-    fetchModifyStock(stockCode, division, amount, price)
-      .then((response) => {
-        console.log('정정 성공:', response);
-        setModifyModalOpen(false);
-      })
-      .catch((error) => {
-        console.log('정정 실패:', error);
-      });
+  const handleSetAmountChange = (add: boolean) => {
+    const amountCount = Number(amount);
+    if (add) {
+      setAmount((amountCount + 1).toString());
+    } else if (amountCount > 0) {
+      setAmount((amountCount - 1).toString());
+    }
   };
 
   return (
@@ -411,15 +423,19 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
               <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
               <div className='big'>1000원</div>
             </PriceAble>
-            <InputWrapper>
-              <InputLabel>수량</InputLabel>
-              <InputAmount
-                placeholder="0"
-                value={amount}
-                onChange={handleAmountChange}
-              />
-              <InputSpan>주</InputSpan>
-            </InputWrapper>
+            <div style={{ display: 'flex' }}>
+              <InputWrapper>
+                <InputLabel>수량</InputLabel>
+                <InputAmount
+                  placeholder="0"
+                  value={amount}
+                  onChange={handleAmountChange}
+                />
+                <InputSpan>주</InputSpan>
+              </InputWrapper>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
+            </div>
             <InputWrapper>
               <InputLabel>가격</InputLabel>
               <InputPrice
