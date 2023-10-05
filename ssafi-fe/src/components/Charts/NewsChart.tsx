@@ -16,6 +16,8 @@ ChartJS.defaults.font.size = 10;
 interface GraphProps {
   title: string;
   status: string;
+  labelData: string[];
+  stockData: number[];
 }
 
 // 그래프가 상승인지 하락인지 전달하는 prop
@@ -23,12 +25,7 @@ interface GraphStatusProps {
   status: string
 }
 
-export default function NewsChart({ title, status }: GraphProps) {
-  const labelData: number[] = [];
-  for (let i = 0; i < 40; i += 1) {
-    labelData.push(i);
-  }
-  const stockData = [1268, 1277, 1269, 1271, 1270, 1264, 1275, 1266, 1270, 1264, 1275, 1266, 1268, 1277, 1269, 1271, 1270, 1264, 1275, 1266, 1270, 1264, 1275, 1266, 1268, 1277, 1269, 1271, 1270, 1264, 1275, 1266, 1270, 1264, 1275, 1266, 1268, 1277, 1269, 1271, 1270, 1264, 1275, 1266, 1270, 1264, 1275, 1266];
+export default function NewsChart({ title, status, labelData, stockData }: GraphProps) {
   const stockAverage = stockData.reduce((sum, value) => sum + value, 0) / stockData.length;
   const [graphColors, setGraphColors] = React.useState<string[]>(['#DDF1FF', '#434FD9']);
   const [yStep, setYStep] = React.useState<number>(0);
@@ -94,7 +91,7 @@ export default function NewsChart({ title, status }: GraphProps) {
     labels: labelData,
     datasets: [
       {
-        label: 'dataset1',
+        label: '',
         data: stockData,
         borderColor: graphColors[0],
         hoverBackgroundColor: graphColors[1],
@@ -116,13 +113,15 @@ export default function NewsChart({ title, status }: GraphProps) {
       mode: 'index' as const,
       intersect: false,
       enabled: true,
-      position: 'average', // 라벨 색의 원을 맨 앞에 두기 위해 'average' 사용
+      position: 'average',
       callbacks: {
-        title: () => {}, // 제목 비활성화
+        // 툴팁 레이블을 x축 값:y축 값의 형태로 포맷
         label: (context: any) => {
-          const xValue = context.parsed.x; // x값 가져오기
-          const yValue = context.parsed.y; // y값 가져오기
-          return `${xValue} : ${yValue}`; // 'x값: y값' 형식으로 반환
+          const label = context.dataset.label || '';
+          if (context.parsed.y !== null) {
+            return label + ': ' + context.parsed.y;
+          }
+          return '';
         },
       },
     },
@@ -157,20 +156,24 @@ export default function NewsChart({ title, status }: GraphProps) {
     },
   };
 
-  return (
-    <GraphBox>
-      <GraphText>
-        <GraphTitle>{title}</GraphTitle>
-        <GraphInfos>
-          <StockPrice status={status}>{stockData[stockData.length - 1].toLocaleString()}</StockPrice>
-          <GraphArrow src={status === 'up' ? stockUpArrow : stockDownArrow} />
-          <PriceChange status={status}>2.57</PriceChange>
-          <PriceChange status={status}>-0.10%</PriceChange>
-        </GraphInfos>
-      </GraphText>
-      <Line data={chartData} options={chartOptions} width="300px" />
-    </GraphBox>
-  );
+  if (stockData.length !== 0) {
+    return (
+      <GraphBox>
+        <GraphText>
+          <GraphTitle>{title}</GraphTitle>
+          <GraphInfos>
+            <StockPrice status={status}>{stockData[stockData.length - 1].toLocaleString()}</StockPrice>
+            <GraphArrow src={status === 'up' ? stockUpArrow : stockDownArrow} />
+            <PriceChange status={status}>{Math.abs(Math.round((stockData[stockData.length - 1] - stockData[stockData.length - 2]) * 100) / 100)}</PriceChange>
+            <PriceChange status={status}>{Math.round(((Math.round((stockData[stockData.length - 1] - stockData[stockData.length - 2]) * 100) / 100) / stockData[stockData.length - 2]) * 1000) / 100}%</PriceChange>
+          </GraphInfos>
+        </GraphText>
+        <Line data={chartData} options={chartOptions} width="300px" />
+      </GraphBox>
+    );
+  } else {
+    return null;
+  }
 }
 
 const GraphBox = styled.div`

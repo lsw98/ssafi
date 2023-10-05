@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import instance from '../../api/apiControlller';
 import { ReactComponent as btnArrow } from '../../assets/images/button-arrow.svg';
 // API로 대체될 예정인 뉴스 데이터, 이미지
 import tempNews from '../../assets/temp.json';
@@ -12,6 +12,15 @@ interface NewsItem {
   content: string;
   img_src: string;
   created_at: string;
+}
+
+interface NewsData {
+  newsCategory: string;
+  newsContent: string;
+  newsDate: string;
+  newsMidTitle: string;
+  newsTitle: string;
+  newsWriter: string;
 }
 
 // styled-component 파트
@@ -53,6 +62,7 @@ text-overflow: ellipsis;
 white-space: nowrap;
 overflow: hidden;
 margin-top: 0px;
+cursor: pointer;
 `;
 
 // 텍스트 중 내용 부분
@@ -112,11 +122,39 @@ margin: 80px;
 `;
 
 export default function NewsHomeList() {
-  const tempNewsList: Array<NewsItem> = tempNews.data;
   // 뉴스를 가져온 횟수 newsCount
   const [newsCount, setNewsCount] = React.useState<number>(0);
   // 새로 가져온 뉴스의 JSX 코드를 담을 리스트 newsList
   const [newsList, setNewsList] = React.useState<Array<JSX.Element>>([]);
+  const [latestList, setLatestList] = React.useState<NewsItem[]>([]);
+
+  React.useEffect(() => {
+    const fetchlatestNews = async () => {
+      const latestNews = await instance.get('/news/latest');
+      const latestDataset = latestNews.data.newsVoList.slice(0, 60);
+      console.log(latestDataset);
+      let latestDataList: Array<NewsItem> = [];
+      latestDataset.forEach((latestData: NewsData) => {
+        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const match = latestData.newsContent.match(regex);
+        const replacedContent = latestData.newsContent.replace(regex, '');
+        const replacedDate = latestData.newsDate.slice(6);
+        if (match) {
+          latestDataList.push(
+            {
+              title: latestData.newsTitle,
+              content: replacedContent,
+              img_src: match[0],
+              created_at: replacedDate,
+            },
+          );
+        }
+      });
+      console.log(latestDataList);
+      setLatestList(latestDataList);
+    };
+    fetchlatestNews();
+  }, []);
 
   // newsCount의 상태 변화에 따라 newsList에 뉴스를 추가하는 함수
   React.useEffect(() => {
@@ -125,7 +163,7 @@ export default function NewsHomeList() {
       // baseNum은 key 부여를 위해 사용
       const baseNum = (newsCount - 1) * 8 + 4;
       // API로 대체될 예정인 뉴스 데이터
-      const loadedNewsList: Array<NewsItem> = tempNews.data.slice(baseNum, baseNum + 8);
+      const loadedNewsList: Array<NewsItem> = latestList.slice(baseNum, baseNum + 8);
       // 뉴스 JSX 코드
       const loadedNews = [];
       // eslint-disable-next-line no-plusplus
@@ -135,9 +173,9 @@ export default function NewsHomeList() {
             <NewsTextContainer>
               <NewsTextTitle>{loadedNewsList[i - baseNum].title}</NewsTextTitle>
               <NewsTextContent>{loadedNewsList[i - baseNum].content}</NewsTextContent>
-              <NewsTextCreatedAt>{`${i + 1}시간 전`}</NewsTextCreatedAt>
+              <NewsTextCreatedAt>{loadedNewsList[i - baseNum].created_at}</NewsTextCreatedAt>
             </NewsTextContainer>
-            <NewsListImage src={tempImage} />
+            <NewsListImage src={loadedNewsList[i - baseNum].img_src} />
           </NewsListBox>,
         );
       }
@@ -154,50 +192,53 @@ export default function NewsHomeList() {
   const handleNewsCount: React.MouseEventHandler<HTMLButtonElement> = () => {
     setNewsCount(newsCount + 1);
   };
-
-  return (
-    <>
-      <NewsListTopBox key={1}>
-        <NewsTextContainer>
-          <NewsTextTitle>{tempNewsList[0].title}</NewsTextTitle>
-          <NewsTextContent>{tempNewsList[0].content}</NewsTextContent>
-          <NewsTextCreatedAt>{tempNewsList[0].created_at}</NewsTextCreatedAt>
-        </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-      </NewsListTopBox>
-      <NewsListBox key={2}>
-        <NewsTextContainer>
-          <NewsTextTitle>{tempNewsList[1].title}</NewsTextTitle>
-          <NewsTextContent>{tempNewsList[1].content}</NewsTextContent>
-          <NewsTextCreatedAt>{tempNewsList[1].created_at}</NewsTextCreatedAt>
-        </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-      </NewsListBox>
-      <NewsListBox key={3}>
-        <NewsTextContainer>
-          <NewsTextTitle>{tempNewsList[2].title}</NewsTextTitle>
-          <NewsTextContent>{tempNewsList[2].content}</NewsTextContent>
-          <NewsTextCreatedAt>{tempNewsList[2].created_at}</NewsTextCreatedAt>
-        </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-      </NewsListBox>
-      <NewsListBox key={4}>
-        <NewsTextContainer>
-          <NewsTextTitle>{tempNewsList[3].title}</NewsTextTitle>
-          <NewsTextContent>{tempNewsList[3].content}</NewsTextContent>
-          <NewsTextCreatedAt>{tempNewsList[3].created_at}</NewsTextCreatedAt>
-        </NewsTextContainer>
-        <NewsListImage src={tempImage} />
-      </NewsListBox>
-      {newsList}
-      <div>
-        {newsCount === 7
-          ? <EmptyDiv />
-          : <LoadBtn onClick={handleNewsCount}>
-            더보기
-            <BtnArrow />
-          </LoadBtn>}
-      </div>
-    </>
-  );
+  if (latestList.length !== 0) {
+    return (
+      <>
+        <NewsListTopBox key={1}>
+          <NewsTextContainer>
+            <NewsTextTitle>{latestList[0].title}</NewsTextTitle>
+            <NewsTextContent>{latestList[0].content}</NewsTextContent>
+            <NewsTextCreatedAt>{latestList[0].created_at}</NewsTextCreatedAt>
+          </NewsTextContainer>
+          <NewsListImage src={latestList[0].img_src} />
+        </NewsListTopBox>
+        <NewsListBox key={2}>
+          <NewsTextContainer>
+            <NewsTextTitle>{latestList[1].title}</NewsTextTitle>
+            <NewsTextContent>{latestList[1].content}</NewsTextContent>
+            <NewsTextCreatedAt>{latestList[1].created_at}</NewsTextCreatedAt>
+          </NewsTextContainer>
+          <NewsListImage src={latestList[1].img_src} />
+        </NewsListBox>
+        <NewsListBox key={3}>
+          <NewsTextContainer>
+            <NewsTextTitle>{latestList[2].title}</NewsTextTitle>
+            <NewsTextContent>{latestList[2].content}</NewsTextContent>
+            <NewsTextCreatedAt>{latestList[2].created_at}</NewsTextCreatedAt>
+          </NewsTextContainer>
+          <NewsListImage src={latestList[2].img_src} />
+        </NewsListBox>
+        <NewsListBox key={4}>
+          <NewsTextContainer>
+            <NewsTextTitle>{latestList[3].title}</NewsTextTitle>
+            <NewsTextContent>{latestList[3].content}</NewsTextContent>
+            <NewsTextCreatedAt>{latestList[3].created_at}</NewsTextCreatedAt>
+          </NewsTextContainer>
+          <NewsListImage src={latestList[3].img_src} />
+        </NewsListBox>
+        {newsList}
+        <div>
+          {newsCount === 7
+            ? <EmptyDiv />
+            : <LoadBtn onClick={handleNewsCount}>
+              더보기
+              <BtnArrow />
+            </LoadBtn>}
+        </div>
+      </>
+    );
+  } else {
+    return null;
+  }
 }

@@ -1,10 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import instance from '../../api/apiControlller';
 import { ReactComponent as btnArrow } from '../../assets/images/button-arrow.svg';
 // API로 대체될 예정인 뉴스 데이터, 이미지
-import tempNews from '../../assets/temp.json';
-import tempImage from '../../assets/images/temp-image.png';
 
 // NewsItem 타입 정의
 interface NewsItem {
@@ -12,6 +10,15 @@ interface NewsItem {
   content: string;
   img_src: string;
   created_at: string;
+}
+
+interface NewsData {
+  newsCategory: string;
+  newsContent: string;
+  newsDate: string;
+  newsMidTitle: string;
+  newsTitle: string;
+  newsWriter: string;
 }
 
 // styled-component 파트
@@ -75,6 +82,7 @@ text-overflow: ellipsis;
 white-space: nowrap;
 overflow: hidden;
 margin-top: 0px;
+cursor: pointer;
 `;
 
 // 텍스트 중 내용 부분
@@ -138,6 +146,34 @@ export default function NewsNewest() {
   const [newsCount, setNewsCount] = React.useState<number>(0);
   // 새로 가져온 뉴스의 JSX 코드를 담을 리스트 newsList
   const [newsList, setNewsList] = React.useState<Array<JSX.Element>>([]);
+  const [newsDataList, setNewsDataList] = React.useState<NewsItem[]>([]);
+
+  React.useEffect(() => {
+    const fetchlatestNews = async () => {
+      const newsData = await instance.get('/news/latest');
+      const newsDataset = newsData.data.newsVoList.slice(0, 60);
+      let dataList: Array<NewsItem> = [];
+      newsDataset.forEach((data: NewsData) => {
+        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const match = data.newsContent.match(regex);
+        const replacedContent = data.newsContent.replace(regex, '');
+        const replacedDate = data.newsDate.slice(6);
+        if (match) {
+          dataList.push(
+            {
+              title: data.newsTitle,
+              content: replacedContent,
+              img_src: match[0],
+              created_at: replacedDate,
+            },
+          );
+        }
+      });
+      console.log(dataList);
+      setNewsDataList(dataList);
+    };
+    fetchlatestNews();
+  }, []);
 
   // newsCount의 상태 변화에 따라 newsList에 뉴스를 추가하는 함수
   React.useEffect(() => {
@@ -145,19 +181,19 @@ export default function NewsNewest() {
       // baseNum은 key 부여를 위해 사용
       const baseNum = newsCount * 12;
       // API로 대체될 예정인 뉴스 데이터
-      const loadedNewsList: Array<NewsItem> = tempNews.data.slice(baseNum, baseNum + 12);
+      const loadedNewsList: Array<NewsItem> = newsDataList.slice(baseNum, baseNum + 12);
       // 가장 위에 있는 뉴스는 상단 테두리가 존재해야 하므로
       // 가장 처음에 로드하는 뉴스를 설정하는 조건문 추가
-      if (baseNum === 0) {
+      if (baseNum === 0 && newsDataList.length !== 0) {
         // 뉴스 JSX 코드
         const loadedNews = [
           <NewsListTopBox key={1}>
             <NewsTextContainer>
               <NewsTextTitle>{loadedNewsList[0].title}</NewsTextTitle>
               <NewsTextContent>{loadedNewsList[0].content}</NewsTextContent>
-              <NewsTextCreatedAt>{`${1}시간 전`}</NewsTextCreatedAt>
+              <NewsTextCreatedAt>{loadedNewsList[0].created_at}</NewsTextCreatedAt>
             </NewsTextContainer>
-           <NewsListImage src={tempImage} />
+           <NewsListImage src={loadedNewsList[0].img_src} />
           </NewsListTopBox>,
         ];
         // eslint-disable-next-line no-plusplus
@@ -167,9 +203,9 @@ export default function NewsNewest() {
               <NewsTextContainer>
                 <NewsTextTitle>{loadedNewsList[i - baseNum].title}</NewsTextTitle>
                 <NewsTextContent>{loadedNewsList[i - baseNum].content}</NewsTextContent>
-                <NewsTextCreatedAt>{`${i + 1}시간 전`}</NewsTextCreatedAt>
+                <NewsTextCreatedAt>{loadedNewsList[i - baseNum].created_at}</NewsTextCreatedAt>
               </NewsTextContainer>
-              <NewsListImage src={tempImage} />
+              <NewsListImage src={loadedNewsList[i - baseNum].img_src} />
             </NewsListBox>,
           );
         }
@@ -179,45 +215,50 @@ export default function NewsNewest() {
         const loadedNews = [];
         // eslint-disable-next-line no-plusplus
         for (let i = baseNum; i < baseNum + 12; i++) {
-          loadedNews.push(
-            <NewsListBox key={i + 1}>
-              <NewsTextContainer>
-                <NewsTextTitle>{loadedNewsList[i - baseNum].title}</NewsTextTitle>
-                <NewsTextContent>{loadedNewsList[i - baseNum].content}</NewsTextContent>
-                <NewsTextCreatedAt>{`${i + 1}시간 전`}</NewsTextCreatedAt>
-              </NewsTextContainer>
-              <NewsListImage src={tempImage} />
-            </NewsListBox>,
-          );
+          if (i < newsDataList.length - 1) {
+            loadedNews.push(
+              <NewsListBox key={i + 1}>
+                <NewsTextContainer>
+                  <NewsTextTitle>{loadedNewsList[i - baseNum].title}</NewsTextTitle>
+                  <NewsTextContent>{loadedNewsList[i - baseNum].content}</NewsTextContent>
+                  <NewsTextCreatedAt>{loadedNewsList[i - baseNum].created_at}</NewsTextCreatedAt>
+                </NewsTextContainer>
+                <NewsListImage src={loadedNewsList[i - baseNum].img_src} />
+              </NewsListBox>,
+            );
+          }
         }
         setNewsList([...newsList, ...loadedNews]);
       }
     };
     loadMoreNews();
-  }, [newsCount]);
+  }, [newsCount, newsDataList]);
 
   // 더보기 버튼 누른 횟수
   // 4번 로드하면 더보기 버튼이 사라지고 빈 공간으로 대체할 예정
   const handleNewsCount: React.MouseEventHandler<HTMLButtonElement> = () => {
     setNewsCount(newsCount + 1);
   };
-
-  return (
-    <ListedNewsContainer>
-      <ListTitleBox>
-        <ListTitleText>
-          최신 뉴스
-        </ListTitleText>
-      </ListTitleBox>
-      {newsList}
-      <div>
-        {newsCount === 4
-          ? <EmptyDiv />
-          : <LoadBtn onClick={handleNewsCount}>
-            더보기
-            <BtnArrow />
-          </LoadBtn>}
-      </div>
-    </ListedNewsContainer>
-  );
+  if (newsDataList.length !== 0) {
+    return (
+      <ListedNewsContainer>
+        <ListTitleBox>
+          <ListTitleText>
+            최신 뉴스
+          </ListTitleText>
+        </ListTitleBox>
+        {newsList}
+        <div>
+          {newsCount === 4
+            ? <EmptyDiv />
+            : <LoadBtn onClick={handleNewsCount}>
+              더보기
+              <BtnArrow />
+            </LoadBtn>}
+        </div>
+      </ListedNewsContainer>
+    );
+  } else {
+    return null;
+  }
 }
