@@ -330,7 +330,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
 
   const handleBuyStock = () => {
-    fetchBuyStock(stockCode, division, amount, price)
+    fetchBuyStock(stockCode, division, amount, price.replace(/,/g, ''))
       .then((response) => {
         console.log('매수 성공:', response);
         setModalOpen(false);
@@ -341,7 +341,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
 
   const handleSellStock = () => {
-    fetchSellStock(stockCode, division, amount, price)
+    fetchSellStock(stockCode, division, amount, price.replace(/,/g, ''))
       .then((response) => {
         console.log('매도 성공:', response);
         setModalOpen(false);
@@ -629,11 +629,20 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   price = {price}
                   total = {total}
                   closeModal = {setModalOpen}
-                  handleStock = {handleBuyStock}
+                  handleStock = {handleSellStock}
                 />
               )}
             </ButtonContainer>
           </TradingBox>
+        </div>
+        <div
+          className={toggleState === 2 && !(balance.find((item) => item.stockName === stockName))
+            ? 'content active-content'
+            : 'content'}
+        >
+          <Text>
+            보유하고 있는 {stockName} 주가 없습니다.
+          </Text>
         </div>
         <div
           className={toggleState === 3 ? 'content active-content' : 'content'}

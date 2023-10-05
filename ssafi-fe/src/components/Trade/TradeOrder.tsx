@@ -159,20 +159,17 @@ const NumUp = styled.p`
 const TradingAndAccountContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: #f0f0f0;
   padding: 20px 0 0 0;
   height: 40%;
 `;
 
 const Trading = styled.div`
   flex: 2;
-  background-color: #ffffff;
   padding: 10px;
 `;
 
 const Account = styled.div`
   flex: 3;
-  background-color: #ffffff;
   padding: 10px;
 `;
 
