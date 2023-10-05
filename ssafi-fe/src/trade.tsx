@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import axios, { BASE_URL } from './api/apiControlller';
+// import axios from './api/apiControlller';
+import axios from 'axios';
 import TradeApi from './components/Trade/TradeApi';
 import TradeAi from './components/Trade/TradeAi';
 import TradeOrder from './components/Trade/TradeOrder';
@@ -59,7 +60,6 @@ const TradeArea = styled.div`
 `;
 
 export default function Trade() {
-  // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
   const [hasApi, setHasApi] = useState(false);
@@ -67,13 +67,24 @@ export default function Trade() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await axios.get('/member/key-account');
+        const token = localStorage.getItem('accessToken');
+        const responseData = await axios.get(
+          'http://localhost:8083/api/member/key-account',
+          {
+            headers: {
+              Authorization: token, // 'Bearer' 토큰 타입을 추가해주었습니다.
+            },
+          },
+        );
+
         if (responseData.status === 200) {
           console.log(responseData);
-          if (responseData.data.appkey !== null) {
+          if (responseData.data.appKey) {
             setHasApi(true);
+            console.log('앱키 있음');
           } else {
             setHasApi(false);
+            console.log('앱키 없음');
             navigate('/trade/api');
           }
         } else {
@@ -83,8 +94,9 @@ export default function Trade() {
         console.error('Error fetching data:', error);
       }
     };
+
     fetchData();
-  }, [navigate]);
+  }, []);
 
   const toAI = () => {
     if (!hasApi) {

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-export const BASE_URL = 'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api';
+export const BASE_URL = 'http://localhost:8081/api';
 
 const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    accept: 'application/json',
+    'content-type': 'application/json',
+    // 'Authorization': access
   },
-  withCredentials: true,
 });
 
 const getAccessToken = () => {
@@ -43,7 +43,7 @@ instance.interceptors.request.use(
 
 // Response 🧑
 instance.interceptors.response.use(
-  (response) => {
+  async (response) => {
     console.log('응답 =>', response);
     return response;
   },
