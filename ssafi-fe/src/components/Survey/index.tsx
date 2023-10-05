@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import SurveyQnA from './QNA';
+import instance from '../../api/apiControlller';
 
 // 설문 완료 prop
 interface Props {
@@ -82,6 +83,17 @@ export default function Survey({ setSurveyDone }: Props) {
     new Array(questionList.length).fill(-1),
   );
 
+  const handleSurveyData = async (surveyData: number[]) => {
+    const request = {
+      'aiScore': surveyData[0],
+      'pbScore': surveyData[1],
+      'mwScore': surveyData[2],
+      'lcScore': surveyData[3],
+    };
+    const submit = await instance.put('/member/mbti/score', request);
+    console.log(submit);
+  };
+
   const handleSurveyDone = () => {
     console.log(answerList);
     const notAllChecked: boolean = answerList.some((item) => item === -1);
@@ -108,6 +120,7 @@ export default function Survey({ setSurveyDone }: Props) {
         }
       }
       console.log(mbtiPoint);
+      handleSurveyData(mbtiPoint);
       setSurveyDone(true);
       window.scrollTo({
         top: 0,

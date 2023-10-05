@@ -5,8 +5,9 @@ export const BASE_URL = 'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngr
 const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'content-type': 'application/json',
+    accept: 'application/json',
   },
+  withCredentials: true,
 });
 
 const getAccessToken = () => {
@@ -42,7 +43,7 @@ instance.interceptors.request.use(
 
 // Response 🧑
 instance.interceptors.response.use(
-  async (response) => {
+  (response) => {
     console.log('응답 =>', response);
     return response;
   },

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import NewsHomeList from './NewsHomeList';
 import tempNews from '../../assets/temp.json';
 import tempImage from '../../assets/images/temp-image.png';
+import instance from '../../api/apiControlller';
 
 // NewsItem 타입 정의
 interface NewsItem {
@@ -102,6 +103,14 @@ align-items: center;
 export default function NewsHome() {
   const tempNewsList: Array<NewsItem> = tempNews.data;
   const mostViewedList: Array<NewsItem> = tempNewsList.slice(0, 4);
+
+  React.useEffect(() => {
+    const fetchNewsHomeData = async () => {
+      const data = await instance.get('/news/home/');
+      console.log(data);
+    };
+    fetchNewsHomeData();
+  }, []);
 
   return (
     <NewsHomeContainer>
