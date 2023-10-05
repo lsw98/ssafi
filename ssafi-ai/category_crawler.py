@@ -23,10 +23,10 @@ def news_category_crawler(url, category, news_list):
     options.add_argument("disable-gpu")
     
     # 크롬 드라이버 최신 버전 설정
-    # service = Service(executable_path=ChromeDriverManager().install())
+    service = Service(executable_path=ChromeDriverManager().install())
     
-    # driver = webdriver.Chrome(service=service, options = options)
-    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options = options)
+    driver = webdriver.Chrome(service=service, options = options)
+    #driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options = options)
     # wait = WebDriverWait(driver, 10)
     driver.get(url)    
     driver.implicitly_wait(time_to_wait=1000)
