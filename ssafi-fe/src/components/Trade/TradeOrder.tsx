@@ -12,204 +12,6 @@ import CandleChart from '../Charts/CandleChart';
 import stockUp from '../../assets/images/stock-up.svg';
 import stockDown from '../../assets/images/stock-down.svg';
 
-interface StockInfoType {
-  hts_kor_isnm: string;
-  stck_prpr: string;
-  prdy_vrss: string;
-  prdy_vrss_sign: string;
-  prdy_ctrt: string;
-  stck_prdy_clpr: string;
-  stck_hgpr: string;
-  stck_mxpr: string;
-  acml_vol: string;
-  stck_oprc: string;
-  stck_lwpr: string;
-  stck_llam: string;
-  acml_tr_pbmn: string;
-}
-
-export default function TradeOrder() {
-  const [stockCode, setStockCode] = useState<string>('005930');
-  const [stockInfo, setStockInfo] = useState<StockInfoType | null>(null);
-  const [minutePricesData, setMinutePricesData] = useState<any[]>([]);
-  const [rankingData, setRankingData] = useState<any[]>([]);
-  const [currentTime, setCurrentTime] = useState<string | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<null | number>(null);
-  const handleStockClick = (selectedStockCode: string) => {
-    setStockCode(selectedStockCode);
-  };
-  const handleMouseEnter = (index: number) => {
-    setHoveredIndex(index);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredIndex(null);
-  };
-
-  useEffect(() => {
-    const loadStockInfo = async () => {
-      console.log(stockCode);
-      if (stockCode) {
-        const data = await fetchStockInfo(stockCode);
-        setStockInfo(data);
-      }
-    };
-    loadStockInfo();
-    console.log(stockInfo);
-  }, [stockCode]);
-
-  useEffect(() => {
-    const fetchMinutePricesData = async () => {
-      if (stockCode) {
-        const result = await fetchMinutePrices(stockCode);
-        setMinutePricesData(result);
-        console.log('여기여기여기여기여기여기여기여기여기여기', result);
-      }
-    };
-
-    fetchMinutePricesData();
-    console.log(minutePricesData);
-  }, [stockCode]);
-
-  const transformedData = minutePricesData.map((item) => ({
-    x: `${item.stck_bsop_date}T${item.stck_cntg_hour}`,
-    y: [
-      parseInt(item.stck_oprc),
-      parseInt(item.stck_hgpr),
-      parseInt(item.stck_lwpr),
-      parseInt(item.stck_prpr),
-    ] as [number, number, number, number], // 이렇게 명확하게 지정해주면 됩니다.
-  }));
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchTradeVolumeRanking((fetchedTime: any) => {
-        if (fetchedTime) {
-          // const formattedTime = formatDate(fetchedTime); // formatDate 함수로 형식을 변경합니다.
-          setCurrentTime(fetchedTime); // 형식이 변경된 시간을 상태에 저장
-        } else {
-          console.log('API call failed.');
-        }
-      }).then((data) => {
-        setRankingData(data);
-      });
-    };
-
-    fetchData();
-  }, []);
-
-  return (
-    <Container>
-      <LeftColumn>
-        <StockTabs onStockClick={handleStockClick} />{' '}
-      </LeftColumn>
-      <CenterColumn>
-        <GraphContainer>
-          <StockInfo>
-            {stockInfo ? (
-              <>
-                <InfoLeft>
-                  <NameBox>
-                    <StockName>{stockInfo.hts_kor_isnm}</StockName>
-                    <StockCode>{stockCode}</StockCode>
-                  </NameBox>
-                  <StockPrice updown={stockInfo.prdy_ctrt}>{stockInfo.stck_prpr}</StockPrice>
-                  <CompareInfo>
-                  <TextSimple>전일대비</TextSimple>
-                  <UpdownBox>
-                    {stockInfo.prdy_ctrt.slice(0, 1) === '-'
-                      ? <UpdownIcon src={stockDown} />
-                      : <UpdownIcon src={stockUp} />
-                    }
-                    <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_vrss.slice(1, 5)} {stockInfo.prdy_vrss_sign}{' '}</PriceCompare>
-                  </UpdownBox>
-                  <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_ctrt}%</PriceCompare>
-                </CompareInfo>
-                </InfoLeft>
-                <InfoRight>
-                  <PriceInfoLeft>
-                    <PriceInfos>
-                      <TextSimpleGray>전일</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_prdy_clpr}</TextSimple>
-                    </PriceInfos>
-                    <PriceInfos>
-                      <TextSimpleGray>시가</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_oprc}</TextSimple>
-                    </PriceInfos>
-                  </PriceInfoLeft>
-                  <PriceInfoMid>
-                    <PriceInfos>
-                      <TextSimpleGray>고가</TextSimpleGray>
-                      <NumUp>{stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})</NumUp>
-                    </PriceInfos>
-                    <PriceInfos>
-                      <TextSimpleGray>저가</TextSimpleGray>
-                      <NumDown>{stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})</NumDown>
-                    </PriceInfos>
-                  </PriceInfoMid>
-                  <PriceInfoRight>
-                    <PriceInfos>
-                      <TextSimpleGray>거래량(주)</TextSimpleGray>
-                      <TextSimple>{stockInfo.acml_vol}</TextSimple>
-                    </PriceInfos>
-                    <PriceInfos>
-                      <TextSimpleGray>거래대금(백만)</TextSimpleGray>
-                      <TextSimple>{Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}</TextSimple>
-                    </PriceInfos>
-                  </PriceInfoRight>
-                </InfoRight>
-              </>
-            ) : (
-              <div>Loading...</div>
-            )}
-          </StockInfo>
-          <CandleChart data={transformedData} />
-        </GraphContainer>
-        <TradingAndAccountContainer>
-          <Trading>
-            <TradingTabs />
-          </Trading>
-
-          <Account>
-            <AccountTabs />
-          </Account>
-        </TradingAndAccountContainer>
-      </CenterColumn>
-      <RightColumn>
-        <AmountRanking>
-          <h2>거래량 TOP 10</h2>
-          <h3>{currentTime}</h3>
-          <ul>
-            {rankingData.slice(0, 10).map((item, index) => (
-              <li
-                key={index}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                style={{ position: 'relative' }}
-              >
-                {index + 1}. {item.hts_kor_isnm}{' '}
-                {Number(item.acml_vol).toLocaleString()}
-                <Tooltip
-                  show={hoveredIndex === index}
-                  color={
-                    Number(item.prdy_vrss_sign) === 5
-                      ? 'blue'
-                      : Number(item.prdy_vrss_sign) === 2
-                      ? 'red'
-                      : 'black'
-                  }
-                >
-                  {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
-                </Tooltip>
-              </li>
-            ))}
-          </ul>
-        </AmountRanking>
-      </RightColumn>
-    </Container>
-  );
-}
-
 const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -416,3 +218,201 @@ const Tooltip = styled.div<{ show: boolean; color: string }>`
     border-color: transparent var(--light-gray-color) transparent transparent;
   }
 `;
+
+interface StockInfoType {
+  hts_kor_isnm: string;
+  stck_prpr: string;
+  prdy_vrss: string;
+  prdy_vrss_sign: string;
+  prdy_ctrt: string;
+  stck_prdy_clpr: string;
+  stck_hgpr: string;
+  stck_mxpr: string;
+  acml_vol: string;
+  stck_oprc: string;
+  stck_lwpr: string;
+  stck_llam: string;
+  acml_tr_pbmn: string;
+}
+
+export default function TradeOrder() {
+  const [stockCode, setStockCode] = useState<string>('005930');
+  const [stockInfo, setStockInfo] = useState<StockInfoType | null>(null);
+  const [minutePricesData, setMinutePricesData] = useState<any[]>([]);
+  const [rankingData, setRankingData] = useState<any[]>([]);
+  const [currentTime, setCurrentTime] = useState<string | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<null | number>(null);
+  const handleStockClick = (selectedStockCode: string) => {
+    setStockCode(selectedStockCode);
+  };
+  const handleMouseEnter = (index: number) => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
+  useEffect(() => {
+    const loadStockInfo = async () => {
+      console.log(stockCode);
+      if (stockCode) {
+        const data = await fetchStockInfo(stockCode);
+        setStockInfo(data);
+      }
+    };
+    loadStockInfo();
+    console.log(stockInfo);
+  }, [stockCode]);
+
+  useEffect(() => {
+    const fetchMinutePricesData = async () => {
+      if (stockCode) {
+        const result = await fetchMinutePrices(stockCode);
+        setMinutePricesData(result);
+        console.log('여기여기여기여기여기여기여기여기여기여기', result);
+      }
+    };
+
+    fetchMinutePricesData();
+    console.log(minutePricesData);
+  }, [stockCode]);
+
+  const transformedData = minutePricesData.map((item) => ({
+    x: `${item.stck_bsop_date}T${item.stck_cntg_hour}`,
+    y: [
+      parseInt(item.stck_oprc),
+      parseInt(item.stck_hgpr),
+      parseInt(item.stck_lwpr),
+      parseInt(item.stck_prpr),
+    ] as [number, number, number, number], // 이렇게 명확하게 지정해주면 됩니다.
+  }));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTradeVolumeRanking((fetchedTime: any) => {
+        if (fetchedTime) {
+          // const formattedTime = formatDate(fetchedTime); // formatDate 함수로 형식을 변경합니다.
+          setCurrentTime(fetchedTime); // 형식이 변경된 시간을 상태에 저장
+        } else {
+          console.log('API call failed.');
+        }
+      }).then((data) => {
+        setRankingData(data);
+      });
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <Container>
+      <LeftColumn>
+        <StockTabs onStockClick={handleStockClick} />{' '}
+      </LeftColumn>
+      <CenterColumn>
+        <GraphContainer>
+          <StockInfo>
+            {stockInfo ? (
+              <>
+                <InfoLeft>
+                  <NameBox>
+                    <StockName>{stockInfo.hts_kor_isnm}</StockName>
+                    <StockCode>{stockCode}</StockCode>
+                  </NameBox>
+                  <StockPrice updown={stockInfo.prdy_ctrt}>{stockInfo.stck_prpr}</StockPrice>
+                  <CompareInfo>
+                  <TextSimple>전일대비</TextSimple>
+                  <UpdownBox>
+                    {stockInfo.prdy_ctrt.slice(0, 1) === '-'
+                      ? <UpdownIcon src={stockDown} />
+                      : <UpdownIcon src={stockUp} />
+                    }
+                    <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_vrss.slice(1, 5)} {stockInfo.prdy_vrss_sign}{' '}</PriceCompare>
+                  </UpdownBox>
+                  <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_ctrt}%</PriceCompare>
+                </CompareInfo>
+                </InfoLeft>
+                <InfoRight>
+                  <PriceInfoLeft>
+                    <PriceInfos>
+                      <TextSimpleGray>전일</TextSimpleGray>
+                      <TextSimple>{stockInfo.stck_prdy_clpr}</TextSimple>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>시가</TextSimpleGray>
+                      <TextSimple>{stockInfo.stck_oprc}</TextSimple>
+                    </PriceInfos>
+                  </PriceInfoLeft>
+                  <PriceInfoMid>
+                    <PriceInfos>
+                      <TextSimpleGray>고가</TextSimpleGray>
+                      <NumUp>{stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})</NumUp>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>저가</TextSimpleGray>
+                      <NumDown>{stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})</NumDown>
+                    </PriceInfos>
+                  </PriceInfoMid>
+                  <PriceInfoRight>
+                    <PriceInfos>
+                      <TextSimpleGray>거래량(주)</TextSimpleGray>
+                      <TextSimple>{stockInfo.acml_vol}</TextSimple>
+                    </PriceInfos>
+                    <PriceInfos>
+                      <TextSimpleGray>거래대금(백만)</TextSimpleGray>
+                      <TextSimple>{Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}</TextSimple>
+                    </PriceInfos>
+                  </PriceInfoRight>
+                </InfoRight>
+              </>
+            ) : (
+              <div>Loading...</div>
+            )}
+          </StockInfo>
+          <CandleChart data={transformedData} />
+        </GraphContainer>
+        <TradingAndAccountContainer>
+          <Trading>
+            <TradingTabs />
+          </Trading>
+
+          <Account>
+            <AccountTabs />
+          </Account>
+        </TradingAndAccountContainer>
+      </CenterColumn>
+      <RightColumn>
+        <AmountRanking>
+          <h2>거래량 TOP 10</h2>
+          <h3>{currentTime}</h3>
+          <ul>
+            {rankingData.slice(0, 10).map((item, index) => (
+              <li
+                key={index}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+                style={{ position: 'relative' }}
+              >
+                {index + 1}. {item.hts_kor_isnm}{' '}
+                {Number(item.acml_vol).toLocaleString()}
+                <Tooltip
+                  show={hoveredIndex === index}
+                  color={
+                    Number(item.prdy_vrss_sign) === 5
+                      ? 'blue'
+                      : Number(item.prdy_vrss_sign) === 2
+                      ? 'red'
+                      : 'black'
+                  }
+                >
+                  {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
+        </AmountRanking>
+      </RightColumn>
+    </Container>
+  );
+}
