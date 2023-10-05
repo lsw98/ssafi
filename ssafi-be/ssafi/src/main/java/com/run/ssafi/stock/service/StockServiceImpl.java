@@ -7,6 +7,7 @@ import com.run.ssafi.domain.InterestStock;
 import com.run.ssafi.domain.Kospi;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.StockIndex;
+import com.run.ssafi.domain.TradeRecord;
 import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
@@ -26,6 +27,8 @@ import com.run.ssafi.stock.dto.KISAccessTokenRequestDto;
 import com.run.ssafi.stock.dto.KISAuthResponse;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.dto.StockIndexResponseDto;
+import com.run.ssafi.stock.dto.TradeRecordRegisterRequestDto;
+import com.run.ssafi.stock.dto.TradeRecordResponseDto;
 import com.run.ssafi.stock.feign.KISAuthApi;
 import com.run.ssafi.stock.feign.KISTradingAPI;
 import com.run.ssafi.stock.properties.KISAuthProperties;
@@ -34,11 +37,13 @@ import com.run.ssafi.stock.repository.HoldStockRepository;
 import com.run.ssafi.stock.repository.InterestStockRepository;
 import com.run.ssafi.stock.repository.KospiRepository;
 import com.run.ssafi.stock.repository.StockIndexRepository;
+import com.run.ssafi.stock.repository.TradeRecordRepository;
 import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
 import com.run.ssafi.stock.vo.InterestStockVo;
 import com.run.ssafi.stock.vo.KospiVo;
 import com.run.ssafi.stock.vo.StockIndexVo;
+import com.run.ssafi.stock.vo.TradeRecordVo;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +64,7 @@ public class StockServiceImpl implements StockService {
     private final HoldStockRepository holdStockRepository;
     private final BalanceHistoryRepository balanceHistoryRepository;
     private final StockIndexRepository stockIndexRepository;
+    private final TradeRecordRepository tradeRecordRepository;
 
     @Override
     public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
@@ -257,6 +263,47 @@ public class StockServiceImpl implements StockService {
                 .build();
 
         return stockIndexResponseDto;
+    }
+
+    @Transactional
+    @Override
+    public void registerTradeRecord(MemberDetail memberDetail,
+            TradeRecordRegisterRequestDto requestDto) {
+
+        Member member = memberDetail.getMember();
+        String kospiCode = requestDto.getTradeCode();
+
+        System.out.println(kospiCode);
+
+        Kospi kospi = kospiRepository.findByKospiCode(kospiCode);
+
+        System.out.println(kospi);
+        if(kospi == null) throw new StockException(StockExceptionMessage.DATA_NOT_FOUND);
+
+        TradeRecord tradeRecord = TradeRecord.builder()
+                .tradeType(requestDto.getTradeType())
+                .tradePrice(requestDto.getTradePrice())
+                .tradeDate(requestDto.getTradeDate())
+                .tradeQuantity(requestDto.getTradeQuantity())
+                .kospi(kospi)
+                .member(member)
+                .build();
+
+        tradeRecordRepository.save(tradeRecord);
+
+    }
+
+    @Override
+    public TradeRecordResponseDto getTradeRecord(MemberDetail memberDetail) {
+        Member member = memberDetail.getMember();
+        List<TradeRecordVo> tradeRecordVoList = tradeRecordRepository.findAllByMember(member);
+
+        TradeRecordResponseDto tradeRecordResponseDto = TradeRecordResponseDto.builder()
+                .tradeRecordVoList(tradeRecordVoList)
+                .message(StockResponseMessage.TRADE_RECORD_LOADING_SUCCESS.getMessage())
+                .build();
+
+        return tradeRecordResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {

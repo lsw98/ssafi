@@ -13,6 +13,7 @@ import datetime
 from modules.stock_variance import danger, neutral, safe
 from db import Session
 from sqlalchemy import text
+import csv
 
 cnn_model = load_model('cnn_model.h5')
 lstm_model = load_model('lstm_model.h5')
@@ -138,7 +139,7 @@ def category_prediction(category, cnn, lstm):
                     price_change -= 1
                 change_rate = lstm[i][1]
                 
-        if price_change == 2:
+        if price_change >= 0:
             rise.append((code, change_rate))
         elif price_change == -2:
             fall.append((code, change_rate))
@@ -217,3 +218,21 @@ for i in range (0, len(safe_rise)):
     session.commit()
 
 session.close()
+
+df_risk_rise = pd.DataFrame(danger_rise)
+df_risk_rise.to_csv('risk_rise.csv', quoting=csv.QUOTE_NONNUMERIC)
+
+df_risk_fall = pd.DataFrame(danger_fall)
+df_risk_fall.to_csv('risk_fall.csv', quoting=csv.QUOTE_NONNUMERIC)
+
+df_neutral_rise = pd.DataFrame(neutral_rise)
+df_neutral_rise.to_csv('neutral_rise.csv', quoting=csv.QUOTE_NONNUMERIC)
+
+df_neutral_fall = pd.DataFrame(neutral_fall)
+df_neutral_fall.to_csv('neutral_fall.csv', quoting=csv.QUOTE_NONNUMERIC)
+
+df_safe_rise = pd.DataFrame(safe_rise)
+df_safe_rise.to_csv('safe_rise.csv', quoting=csv.QUOTE_NONNUMERIC)
+
+df_safe_fall = pd.DataFrame(safe_fall)
+df_safe_fall.to_csv('safe_fall.csv', quoting=csv.QUOTE_NONNUMERIC)

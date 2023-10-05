@@ -11,7 +11,7 @@ padding: 0px 30px;
 `;
 
 export default function Mbti() {
-  const [surveyDone, setSurveyDone] = React.useState<boolean>(false);
+  const [surveyDone, setSurveyDone] = React.useState<boolean>(true);
   return (
     <MbtiContainer>
       {surveyDone
