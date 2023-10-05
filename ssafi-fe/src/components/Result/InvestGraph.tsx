@@ -16,7 +16,7 @@ export default function InvestGraph({ ratio } : GraphProps) {
     datasets: [
       {
         data: [...ratio, ...[100 - ratio[0] - ratio[1]]],
-        backgroundColor: ['#FD5353', '#EFDA4C', '#3AB67A'],
+        backgroundColor: ['#392727', '#FAC152', '#50867C'],
         cutout: '50%',
       },
     ],

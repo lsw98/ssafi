@@ -32,9 +32,10 @@
   --light-lower-color: #DDF1FF;
   --upper-color: #FF6464;
   --light-upper-color: #FFDEDE;
-  --safe-color: #3AB67A;
-  --middle-color: #EFDA4C;
-  --danger-color: #FD5353;
+  --star-color: #EFDA4C;
+  --safe-color: #50867C;
+  --middle-color: #FAC152;
+  --danger-color: #392727;
   --background-color: #F9F9F9;
 }
 
