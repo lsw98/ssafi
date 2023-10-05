@@ -312,7 +312,7 @@ export const fetchCheckAccount = async (): Promise<
       '/uapi/domestic-stock/v1/trading/inquire-balance',
       config,
     );
-    console.log('balance 요청', response);
+    // console.log('balance 요청', response);
 
     if (response.data.rt_cd === '0') {
       const refinedOutput = response.data.output1.map((item: any) => {

@@ -116,7 +116,7 @@ const DoubtsButton = styled(Doubts)`
 const Notice = styled.div`
   font-size: 14px;
   font-weight: 300;
-  color: var(--danger-color);
+  color: var(--upper-color);
   margin: 2px 0 0 144px;
 `;
 
@@ -146,7 +146,7 @@ export default function TradeApi() {
   const openApiPage = () => {
     // 한국투자증권
     window.open(
-      'https://apiportal.koreainvestment.com/apiservice/oauth2#L_5c87ba63-740a-4166-93ac-803510bb9c02',
+      'https://securities.koreainvestment.com/main/customer/systemdown/install_non_activex_tobe.jsp?P_name=ASTx',
       '_blank',
     );
   };
@@ -216,17 +216,17 @@ export default function TradeApi() {
         <div style={{ width: '540px' }}>
           <InnerContainer>
             <Text>
-              APP Key가 없으신가요? <DoubtsButton onClick={handleOpenModal} />
+              API Key가 없으신가요? <DoubtsButton onClick={handleOpenModal} />
             </Text>
             <Text className="small">
-              SSAFI에서는 한국투자증권 APP Key를 통해 계좌 인증을 진행하고
-              있으며,
+              SSAFI에서는 한국투자증권 API Key를 통해 계좌 인증을 진행하며,
               <br />
-              APP Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고
-              있습니다.
+              인증에 성공한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
+              <br />
+              APP Key, SECRET Key와 모의 계좌 번호를 입력해주세요.
             </Text>
             <Text className="button" onClick={openApiPage}>
-              APP Key 발급/확인하기 &gt;
+              API Key 발급/확인하기 &gt;
             </Text>
           </InnerContainer>
         </div>
@@ -256,12 +256,13 @@ export default function TradeApi() {
             <InputBox>
               <InputName className="name">계좌 번호 :</InputName>
               <Input
+                maxLength={8}
                 placeholder="계좌 번호를 입력하세요"
                 value={accountNumber}
                 onChange={handleAccountChange}
               />
             </InputBox>
-            <Notice>* 앞 8자리만 입력하세요.</Notice>
+            <Notice>* 앞 8자리만 숫자로 입력하세요.</Notice>
           </div>
           <InputName
             visibled={appKey !== '' && secretKey !== '' && accountNumber !== ''}

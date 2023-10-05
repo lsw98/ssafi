@@ -14,35 +14,38 @@ import stockDown from '../../assets/images/stock-down.svg';
 
 const Container = styled.div`
   display: flex;
-  height: 100vh;
+  justify-content: space-between;
   width: 100%;
 `;
 
 const LeftColumn = styled.div`
-  flex: 20; /* 왼쪽 열을 20%로 설정 */
-  padding: 20px 10px 20px 0px;
+  flex: 16;
+  padding: 20px 0px;
 `;
 
 const CenterColumn = styled.div`
-  flex: 60; /* 가운데 열을 60%로 설정 */
+  flex: 50;
   display: flex;
   flex-direction: column;
+  padding: 20px 4px;
 `;
 
 const GraphContainer = styled.div`
   flex: 1;
-  padding: 25px 24.523px 0px 25px;
+  margin: 10px 12px;
+  padding: 20px 16px 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  gap: 25px;
-  height: 60%;
+  background-color: var(--white-color);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
 `;
 
 const StockInfo = styled.div`
   display: flex;
-  height: 20%;
+  height: 18%;
   align-items: end;
 `;
 
@@ -74,7 +77,9 @@ const StockPrice = styled.p<{ updown: string }>`
   font-size: 26px;
   font-weight: 600;
   color: ${(props) =>
-    props.updown.slice(0, 1) === '-'
+    props.updown === '3'
+      ? 'var(--black-color)'
+      : props.updown === '5'
       ? 'var(--lower-color)'
       : 'var(--upper-color)'};
   margin-top: 10px;
@@ -97,7 +102,7 @@ const UpdownBox = styled.div`
 const UpdownIcon = styled.img`
   width: 10px;
   margin-top: 6px;
-  margin-right: 2px;
+  margin-right: 4px;
 `;
 
 const TextSimple = styled.p`
@@ -108,7 +113,9 @@ const TextSimple = styled.p`
 
 const PriceCompare = styled.p<{ updown: string }>`
   color: ${(props) =>
-    props.updown.slice(0, 1) === '-'
+    props.updown === '3'
+      ? 'var(--black-color)'
+      : props.updown === '5'
       ? 'var(--lower-color)'
       : 'var(--upper-color)'};
   margin-bottom: 0px;
@@ -129,18 +136,6 @@ const PriceInfos = styled.div`
   align-items: end;
 `;
 
-const PriceInfoLeft = styled.div`
-  width: 70px;
-`;
-
-const PriceInfoMid = styled.div`
-  width: 160px;
-`;
-
-const PriceInfoRight = styled.div`
-  width: 140px;
-`;
-
 const TextSimpleGray = styled.p`
   color: var(--gray-color);
   margin-bottom: 0px;
@@ -159,85 +154,89 @@ const NumUp = styled.p`
 const TradingAndAccountContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 20px 0 0 0;
-  height: 40%;
+  padding-top: 10px;
 `;
 
 const Trading = styled.div`
   flex: 2;
-  padding: 10px;
+  padding: 10px 12px;
 `;
 
 const Account = styled.div`
   flex: 3;
-  padding: 10px;
+  padding: 10px 12px;
 `;
 
 const RightColumn = styled.div`
-  flex: 20; /* 오른쪽 열을 20%로 설정 */
-  padding: 20px 0px 20px 10px;
+  flex: 16;
+  flex-shrink: 0;
+  padding: 20px 0px;
 `;
+
 const AmountRanking = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 10px;
+  padding: 8px 8px 16px;
   width: 100%;
-  height: 60%;
-  flex-shrink: 0;
-  border-radius: 25px;
-  background: var(--White, #fdfdfd);
-  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
-  padding: 5px;
+  border-radius: 4px;
+  background: var(--white-color);
+  box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.08);
 
   h2 {
-    color: var(--Dark, #0d1545);
-    font-family: Pretendard;
-    font-size: 16px;
+    color: var(--dark-color);
+    font-size: 18px;
     font-weight: 600;
-    line-height: normal;
+    background: linear-gradient(to top, var(--sub-color) 40%, transparent 40%);
   }
 `;
 
 const RankedTime = styled.div`
-display: flex;
-justify-content: end;
-width: 100%;
-color: var(--gray-color);
-font-size: 10px;
-font-weight: 300;
-margin-right: 20px;
-margin-bottom: 10px;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  color: var(--gray-color);
+  font-size: 12px;
+  font-weight: 300;
+  margin-right: 20px;
+  margin-bottom: 10px;
 `;
 
 const RankedStockList = styled.div`
-font-size: 12px;
-font-weight: 300px;
+  font-size: 13px;
+  margin-top: 4px;
 `;
 
 const RankedStock = styled.div`
-width: 180px;
-margin-bottom: 5px;
+  width: 180px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const RankedStockInfo = styled.div`
-display: flex;
-justify-content: space-between;
-align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const RankedStockText = styled.span`
-color: var(--black-color);
+  width: 16px;
+  text-align: center;
+  margin-right: 6px;
 `;
 
 const RankedStockNum = styled.span`
-color: var(--gray-color);
+  color: var(--gray-color);
 `;
 
 const Tooltip = styled.div<{ show: boolean; color: string }>`
   width: 160px;
   top: 30px;
   right: 12px;
-  background: var(--Sub, #e7faf7);
+  background: var(--sub-color);
   color: var(--black-color);
   font-size: 14px;
   padding: 6px 12px;
@@ -304,7 +303,7 @@ export default function TradeOrder() {
       }
     };
     loadStockInfo();
-    // console.log(stockInfo);
+    console.log(stockInfo);
   }, [stockCode]);
 
   useEffect(() => {
@@ -385,64 +384,65 @@ export default function TradeOrder() {
                     <StockName>{stockInfo.hts_kor_isnm}</StockName>
                     <StockCode>{stockCode}</StockCode>
                   </NameBox>
-                  <StockPrice updown={stockInfo.prdy_ctrt}>
-                    {stockInfo.stck_prpr}
+                  <StockPrice updown={stockInfo.prdy_vrss_sign}>
+                    {stockInfo.stck_prpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   </StockPrice>
                   <CompareInfo>
                     <TextSimple>전일대비</TextSimple>
                     <UpdownBox>
-                      {stockInfo.prdy_ctrt.slice(0, 1) === '-' ? (
-                        <UpdownIcon src={stockDown} />
-                      ) : (
-                        <UpdownIcon src={stockUp} />
+                      {stockInfo.prdy_vrss_sign !== '3' && (
+                        stockInfo.prdy_vrss_sign === '5' ? (
+                          <UpdownIcon src={stockDown} />
+                        ) : (
+                          <UpdownIcon src={stockUp} />
+                        )
                       )}
-                      <PriceCompare updown={stockInfo.prdy_ctrt}>
-                        {stockInfo.prdy_vrss.slice(1, 5)}{' '}
-                        {stockInfo.prdy_vrss_sign}{' '}
+                      <PriceCompare updown={stockInfo.prdy_vrss_sign}>
+                        {stockInfo.prdy_vrss.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
                       </PriceCompare>
                     </UpdownBox>
-                    <PriceCompare updown={stockInfo.prdy_ctrt}>
+                    <PriceCompare updown={stockInfo.prdy_vrss_sign}>
                       {stockInfo.prdy_ctrt}%
                     </PriceCompare>
                   </CompareInfo>
                 </InfoLeft>
                 <InfoRight>
-                  <PriceInfoLeft>
+                  <div style={{ width: '70px' }}>
                     <PriceInfos>
                       <TextSimpleGray>전일</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_prdy_clpr}</TextSimple>
+                      <TextSimple>{stockInfo.stck_prdy_clpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>시가</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_oprc}</TextSimple>
+                      <TextSimple>{stockInfo.stck_oprc.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
-                  </PriceInfoLeft>
-                  <PriceInfoMid>
+                  </div>
+                  <div style={{ width: '160px' }}>
                     <PriceInfos>
                       <TextSimpleGray>고가</TextSimpleGray>
                       <NumUp>
-                        {stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})
+                        {stockInfo.stck_hgpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (상한가 {stockInfo.stck_mxpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')})
                       </NumUp>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>저가</TextSimpleGray>
                       <NumDown>
-                        {stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})
+                        {stockInfo.stck_lwpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (하한가 {stockInfo.stck_llam.replace(/\B(?=(\d{3})+(?!\d))/g, ',')})
                       </NumDown>
                     </PriceInfos>
-                  </PriceInfoMid>
-                  <PriceInfoRight>
+                  </div>
+                  <div style={{ width: '140px' }}>
                     <PriceInfos>
                       <TextSimpleGray>거래량(주)</TextSimpleGray>
-                      <TextSimple>{stockInfo.acml_vol}</TextSimple>
+                      <TextSimple>{stockInfo.acml_vol.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>거래대금(백만)</TextSimpleGray>
                       <TextSimple>
-                        {Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}
+                        {Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       </TextSimple>
                     </PriceInfos>
-                  </PriceInfoRight>
+                  </div>
                 </InfoRight>
               </>
             ) : (
@@ -455,7 +455,6 @@ export default function TradeOrder() {
           <Trading>
             <TradingTabs stockName={stockInfo?.hts_kor_isnm} stockCode={stockCode} />
           </Trading>
-
           <Account>
             <AccountTabs />
           </Account>
@@ -469,26 +468,27 @@ export default function TradeOrder() {
             {rankingData.slice(0, 10).map((item, index) => (
               <RankedStock
                 key={index}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                style={{ position: 'relative' }}
+                // onMouseEnter={() => handleMouseEnter(index)}
+                // onMouseLeave={handleMouseLeave}
+                // style={{ position: 'relative' }}
               >
                 <RankedStockInfo>
-                  <RankedStockText>{index + 1}. {item.hts_kor_isnm}</RankedStockText>
-                  <RankedStockNum>{Number(item.acml_vol).toLocaleString()}</RankedStockNum>
+                  <RankedStockText>{index + 1}.</RankedStockText>
+                  <div>{item.hts_kor_isnm}</div>
                 </RankedStockInfo>
-                <Tooltip
+                <RankedStockNum>{Number(item.acml_vol).toLocaleString()}</RankedStockNum>
+                {/* <Tooltip
                   show={hoveredIndex === index}
                   color={
                     Number(item.prdy_vrss_sign) === 5
-                      ? 'blue'
+                      ? 'var(--lower-color)'
                       : Number(item.prdy_vrss_sign) === 2
-                      ? 'red'
-                      : 'black'
+                      ? 'var(--upper-color)'
+                      : 'var(--black-color)'
                   }
                 >
                   {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
-                </Tooltip>
+                </Tooltip> */}
               </RankedStock>
             ))}
           </RankedStockList>
