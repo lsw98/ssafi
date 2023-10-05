@@ -10,8 +10,9 @@ interface StyleProps {
 }
 
 const TableContainer = styled.div`
-  margin-top: 5px;
+  margin: 2% 0%;
   width: 100%;
+  height: 96%;
 `;
 
 const Table = styled.div`
@@ -23,13 +24,15 @@ const Table = styled.div`
 
 const TableHeader = styled.div`
   display: flex;
+  justify-content: space-evenly;
   background: var(--gradation-color);
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 14px;
 `;
 
 const TableRow = styled.div<StyleProps>`
   display: flex;
+  justify-content: space-evenly;
   background-color: ${(props) =>
     props.index === 0 ? 'transparent' : 'var(--light-gray-color)'};
   font-size: 10px;
@@ -37,14 +40,14 @@ const TableRow = styled.div<StyleProps>`
 
 // 테이블 데이터 셀 요소에 스타일 적용
 const TableCell = styled.div<StyleProps>`
-  width: ${({ width }) => width || '70px'};
+  width: ${({ width }) => width || '85px'};
   padding: 5px 0;
   white-space: nowrap;
   text-align: center;
   font-weight: 400;
-  &.header {
-    font-weight: 500;
-  }
+  /* &.header {
+    font-weight: 400;
+  } */
   &.color {
     color: ${(props) =>
       props.color ? 'var(--upper-color)' : 'var(--lower-color)'};
@@ -159,22 +162,22 @@ function AccountTabs() {
           <TableContainer>
             <Table>
               <TableHeader>
-                <TableCell className="header" width="70px">
+                <TableCell width="80px">
                   종목명
                 </TableCell>
-                <TableCell className="header" width="60px">
+                <TableCell width="60px">
                   보유수량
                 </TableCell>
-                <TableCell className="header">매입평균가</TableCell>
-                <TableCell className="header">현재가</TableCell>
-                <TableCell className="header" width="80px">
+                <TableCell>매입평균가</TableCell>
+                <TableCell>현재가</TableCell>
+                <TableCell width="120px">
                   손익금액 (수익률)
                 </TableCell>
               </TableHeader>
               <TableBody>
                 {balance.map((item: any, idx: number) => (
                   <TableRow key={idx} index={idx % 2}>
-                    <TableCell width="70px">{item.stockName}</TableCell>
+                    <TableCell width="80px">{item.stockName}</TableCell>
                     <TableCell width="60px">{item.amount}</TableCell>
                     <TableCell>
                       {Math.round(parseFloat(item.purchasePrice))
@@ -189,7 +192,7 @@ function AccountTabs() {
                       원
                     </TableCell>
                     <TableCell
-                      width="80px"
+                      width="120px"
                       className="color"
                       color={item.totalPrice > 0}
                     >
@@ -210,20 +213,20 @@ function AccountTabs() {
           <TableContainer>
             <Table>
               <TableHeader>
-                <TableCell className="header" width="70px">
+                <TableCell width="70px">
                   주문시간
                 </TableCell>
-                <TableCell className="header" width="60px">
+                <TableCell width="60px">
                   종목명
                 </TableCell>
-                <TableCell className="header">구분</TableCell>
-                <TableCell className="header">주문가</TableCell>
-                <TableCell className="header" width="80px">
+                <TableCell>구분</TableCell>
+                <TableCell>주문가</TableCell>
+                <TableCell width="80px">
                   미체결/주문량
                 </TableCell>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
+                {/* {orders.map((order) => (
                   <TableRow key={order.ord_tmd}>
                     <TableCell>{order.ord_tmd}</TableCell>
                     <TableCell>{order.prdt_name}</TableCell>
@@ -236,7 +239,10 @@ function AccountTabs() {
                       {order.tot_ord_qty}
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
+                <div style={{ textAlign: 'center', color: 'var(--gray-color)', marginTop: '50px', fontSize: '14px', fontWeight: '300' }}>
+                  미체결 내역이 없습니다.
+                </div>
               </TableBody>
             </Table>
           </TableContainer>

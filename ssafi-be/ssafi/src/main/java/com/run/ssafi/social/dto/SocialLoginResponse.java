@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SocialLoginResponse {
 
+    private String accountPrefix;
+    private String accountSuffix;
     private AuthResponseDto authResponseDto;
     private String message;
 }

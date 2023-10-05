@@ -2,7 +2,9 @@ package com.run.ssafi.stock.controller;
 
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.exception.customexception.MemberException;
+import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.MemberExceptionMessage;
+import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.message.Response;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
@@ -11,6 +13,8 @@ import com.run.ssafi.stock.dto.HoldStockListResponseDto;
 import com.run.ssafi.stock.dto.InterestStockListResponseDto;
 import com.run.ssafi.stock.dto.KospiListResponseDto;
 import com.run.ssafi.stock.dto.StockIndexResponseDto;
+import com.run.ssafi.stock.dto.TradeRecordRegisterRequestDto;
+import com.run.ssafi.stock.dto.TradeRecordResponseDto;
 import com.run.ssafi.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,5 +108,23 @@ public class StockController {
     public ResponseEntity<StockIndexResponseDto> getStockIndex(){
         return new ResponseEntity<>(stockService.getStockIndex(), HttpStatus.OK);
     }
+
+    @PostMapping("/record")
+    public ResponseEntity<Response> registerTradeRecord(@AuthenticationPrincipal MemberDetail memberDetail, TradeRecordRegisterRequestDto requestDto){
+
+        System.out.println(requestDto.toString());
+        try {
+            stockService.registerTradeRecord(memberDetail, requestDto);
+        } catch (StockException e){
+            return new ResponseEntity<>(Response.of(StockResponseMessage.STOCK_NOT_FOUND), StockExceptionMessage.DATA_NOT_FOUND.getHttpStatus());
+        }
+        return new ResponseEntity<>(Response.of(StockResponseMessage.TRADE_RECORD_REGISTER_SUCCESS), HttpStatus.OK);
+    }
+
+    @GetMapping("/record")
+    public ResponseEntity<TradeRecordResponseDto> getTradeRecord(@AuthenticationPrincipal MemberDetail memberDetail){
+        return new ResponseEntity<>(stockService.getTradeRecord(memberDetail), HttpStatus.OK);
+    }
+
 }
 

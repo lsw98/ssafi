@@ -49,7 +49,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<com.run.ssafi.social.type.SnsType> snsType = createEnum("snsType", com.run.ssafi.social.type.SnsType.class);
 
-    public final StringPath type = createString("type");
+    public final EnumPath<Type> type = createEnum("type", Type.class);
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

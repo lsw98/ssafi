@@ -78,6 +78,8 @@ public class SocialController {
         stockService.extracted(member, authResponseDto);
 
         SocialLoginResponse socialLoginResponse = SocialLoginResponse.builder()
+                .accountPrefix(member.getAccountPrefix())
+                .accountSuffix(member.getAccountSuffix())
                 .authResponseDto(authResponseDto)
                 .message(AuthResponseMessage.SOCIAL_LOGIN_SUCCESS.getMessage())
                 .build();

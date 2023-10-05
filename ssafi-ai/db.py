@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-user = "ssafy"
+user = "root"
 pwd = "ssafy"
 host = "localhost"
 port = 3306

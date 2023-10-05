@@ -123,7 +123,7 @@ export default function Header() {
     }
     try {
       await axios.post(
-        'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/logout',
+        'http://localhost:8083/api/logout',
         {},
         {
           headers: {
@@ -132,8 +132,7 @@ export default function Header() {
         },
       );
       console.log(token);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.clear();
       setIsLoggedIn(false);
       window.alert('로그아웃되었습니다.');
     } catch (error) {
