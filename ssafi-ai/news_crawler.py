@@ -7,6 +7,8 @@ from db import engine, Session
 news_list = []
 # 랭킹뉴스
 ranking_news_crawler('https://www.mk.co.kr/news/ranking/stock/', news_list)
+# 최신뉴스
+news_category_crawler('https://www.mk.co.kr/news/stock/latest/', "latest", news_list)
 # 증권정책
 news_category_crawler('https://www.mk.co.kr/news/stock/stock-policy/', "stock_policy", news_list)
 # 시황
@@ -15,8 +17,6 @@ news_category_crawler('https://www.mk.co.kr/news/stock/conditions/', "conditions
 news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/', "public_announcement", news_list)
 # 기업정보
 news_category_crawler('https://www.mk.co.kr/news/stock/business-information/', "business_information", news_list)
-# 최신뉴스
-news_category_crawler('https://www.mk.co.kr/news/stock/latest/', "latest", news_list)
 
 Base.metadata.create_all(engine)
 

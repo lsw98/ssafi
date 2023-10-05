@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import NewsHomeList from './NewsHomeList';
 import tempNews from '../../assets/temp.json';
@@ -12,6 +13,15 @@ interface NewsItem {
   content: string;
   img_src: string;
   created_at: string;
+}
+
+interface NewsData {
+  newsCategory: string;
+  newsContent: string;
+  newsDate: string;
+  newsMidTitle: string;
+  newsTitle: string;
+  newsWriter: string;
 }
 
 // styled-component 파트
@@ -59,6 +69,7 @@ const MostViewedNewsContainer = styled.div`
 const MostViewedNewsBox = styled.div`
   width: 380px;
   margin-bottom: 20px;
+  cursor: pointer;
 `;
 
 // 많이 본 뉴스 이미지 속성
@@ -101,56 +112,79 @@ const ListedNewsContainer = styled.p`
 `;
 
 export default function NewsHome() {
-  const tempNewsList: Array<NewsItem> = tempNews.data;
-  const mostViewedList: Array<NewsItem> = tempNewsList.slice(0, 4);
+  const [mostViewedList, setMostViewedList] = React.useState<NewsItem[]>([]);
 
   React.useEffect(() => {
     const fetchNewsHomeData = async () => {
-      const data = await instance.get('/news/home/');
-      console.log(data);
+      const rankedNews = await instance.get('/news/ranking');
+      const rankedDataset = rankedNews.data.newsVoList.slice(0, 4);
+      console.log(rankedDataset);
+      let rankedDataList: Array<NewsItem> = [];
+      rankedDataset.forEach((rankedData: NewsData) => {
+        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const match = rankedData.newsContent.match(regex);
+        const replacedContent = rankedData.newsContent.replace(regex, '');
+        const replacedDate = rankedData.newsDate.slice(6);
+        if (match) {
+          rankedDataList.push(
+            {
+              title: rankedData.newsTitle,
+              content: replacedContent,
+              img_src: match[0],
+              created_at: replacedDate,
+            },
+          );
+        }
+      });
+      console.log(rankedDataList);
+      setMostViewedList(rankedDataList);
     };
     fetchNewsHomeData();
   }, []);
 
-  return (
-    <NewsHomeContainer>
-      <MostViewedContainer>
-        <MostViewedTitle>많이 본 기사</MostViewedTitle>
-        <MostViewedText>최근 2시간 기준</MostViewedText>
-      </MostViewedContainer>
-      <MostViewedNewsContainer>
-        <MostViewedNewsBox>
-          <MostViewedNewsImage src={tempImage} />
-          <MostViewedNewsText>{mostViewedList[0].title}</MostViewedNewsText>
-          <MostViewedNewsTime>
-            {mostViewedList[0].created_at}
-          </MostViewedNewsTime>
-        </MostViewedNewsBox>
-        <MostViewedNewsBox>
-          <MostViewedNewsImage src={tempImage} />
-          <MostViewedNewsText>{mostViewedList[1].title}</MostViewedNewsText>
-          <MostViewedNewsTime>
-            {mostViewedList[1].created_at}
-          </MostViewedNewsTime>
-        </MostViewedNewsBox>
-        <MostViewedNewsBox>
-          <MostViewedNewsImage src={tempImage} />
-          <MostViewedNewsText>{mostViewedList[2].title}</MostViewedNewsText>
-          <MostViewedNewsTime>
-            {mostViewedList[2].created_at}
-          </MostViewedNewsTime>
-        </MostViewedNewsBox>
-        <MostViewedNewsBox>
-          <MostViewedNewsImage src={tempImage} />
-          <MostViewedNewsText>{mostViewedList[3].title}</MostViewedNewsText>
-          <MostViewedNewsTime>
-            {mostViewedList[3].created_at}
-          </MostViewedNewsTime>
-        </MostViewedNewsBox>
-      </MostViewedNewsContainer>
-      <ListedNewsContainer>
-        <NewsHomeList />
-      </ListedNewsContainer>
-    </NewsHomeContainer>
-  );
+  if (mostViewedList.length === 4) {
+    return (
+      <NewsHomeContainer>
+        <MostViewedContainer>
+          <MostViewedTitle>많이 본 기사</MostViewedTitle>
+          <MostViewedText>최근 2시간 기준</MostViewedText>
+        </MostViewedContainer>
+        <MostViewedNewsContainer>
+          <MostViewedNewsBox>
+            <MostViewedNewsImage src={mostViewedList[0].img_src} />
+            <MostViewedNewsText>{mostViewedList[0].title}</MostViewedNewsText>
+            <MostViewedNewsTime>
+              {mostViewedList[0].created_at}
+            </MostViewedNewsTime>
+          </MostViewedNewsBox>
+          <MostViewedNewsBox>
+            <MostViewedNewsImage src={mostViewedList[1].img_src} />
+            <MostViewedNewsText>{mostViewedList[1].title}</MostViewedNewsText>
+            <MostViewedNewsTime>
+              {mostViewedList[1].created_at}
+            </MostViewedNewsTime>
+          </MostViewedNewsBox>
+          <MostViewedNewsBox>
+            <MostViewedNewsImage src={mostViewedList[2].img_src} />
+            <MostViewedNewsText>{mostViewedList[2].title}</MostViewedNewsText>
+            <MostViewedNewsTime>
+              {mostViewedList[2].created_at}
+            </MostViewedNewsTime>
+          </MostViewedNewsBox>
+          <MostViewedNewsBox>
+            <MostViewedNewsImage src={mostViewedList[3].img_src} />
+            <MostViewedNewsText>{mostViewedList[3].title}</MostViewedNewsText>
+            <MostViewedNewsTime>
+              {mostViewedList[3].created_at}
+            </MostViewedNewsTime>
+          </MostViewedNewsBox>
+        </MostViewedNewsContainer>
+        <ListedNewsContainer>
+          <NewsHomeList />
+        </ListedNewsContainer>
+      </NewsHomeContainer>
+    );
+  } else {
+    return null;
+  }
 }

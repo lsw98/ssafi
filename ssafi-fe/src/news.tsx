@@ -3,6 +3,7 @@ import {
   Routes, Route, useNavigate, useLocation,
 } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import NewsHome from './components/NewsLists/NewsHome';
 import NewsNewest from './components/NewsLists/NewsNewest';
@@ -18,11 +19,26 @@ interface NewsMenuProps {
   active?: boolean;
 }
 
+interface StockDataset {
+  indexCategory: string;
+  indexNumber: number;
+  indexDate: string;
+}
+
 export default function News() {
   const dateNow = new Date();
   const localTime = new Date(dateNow.getTime() - dateNow.getTimezoneOffset() * 60000);
   const localIsoString = localTime.toISOString();
   const timeText = `${localIsoString.slice(5, 7)}.${localIsoString.slice(8, 10)} ${localIsoString.slice(11, 16)}`;
+  const [kospiStockData, setKospiStockData] = React.useState<number[]>([]);
+  const [kospiLabelData, setKospiLabelData] = React.useState<string[]>([]);
+  const [kospiStatus, setKospiStatus] = React.useState<string>('');
+  const [kosdaqStockData, setKosdaqStockData] = React.useState<number[]>([]);
+  const [kosdaqLabelData, setKosdaqLabelData] = React.useState<string[]>([]);
+  const [kosdaqStatus, setKosdaqStatus] = React.useState<string>('');
+  const [kospiThStockData, setKospiThStockData] = React.useState<number[]>([]);
+  const [kospiThLabelData, setKospiThLabelData] = React.useState<string[]>([]);
+  const [kospiThStatus, setKospiThStatus] = React.useState<string>('');
 
   // 기능 코드 파트
   const navigate = useNavigate();
@@ -52,6 +68,53 @@ export default function News() {
   const toNewsInfos = () => {
     navigate('/news/infos');
   };
+
+  React.useEffect(() => {
+    const fetchStockIndex = async () => {
+      const stockIndex = await axios.get('http://localhost:8083/api/stock/index');
+      const stockDataset = stockIndex.data.stockIndexVoList;
+      stockDataset.forEach((element: StockDataset) => {
+        if (element.indexCategory === 'kospi') {
+          const combinedStockData = kospiStockData;
+          combinedStockData.push(Math.round(element.indexNumber * 100) / 100);
+          const combinedLabelData = kospiLabelData;
+          combinedLabelData.push(element.indexDate);
+          setKospiStockData(combinedStockData);
+          setKospiLabelData(combinedLabelData);
+        } else if (element.indexCategory === 'kosdaq') {
+          const combinedStockData = kosdaqStockData;
+          combinedStockData.push(Math.round(element.indexNumber * 100) / 100);
+          const combinedLabelData = kosdaqLabelData;
+          combinedLabelData.push(element.indexDate);
+          setKosdaqStockData(combinedStockData);
+          setKosdaqLabelData(combinedLabelData);
+        } else if (element.indexCategory === 'kospi200') {
+          const combinedStockData = kospiThStockData;
+          combinedStockData.push(Math.round(element.indexNumber * 100) / 100);
+          const combinedLabelData = kospiThLabelData;
+          combinedLabelData.push(element.indexDate);
+          setKospiThStockData(combinedStockData);
+          setKospiThLabelData(combinedLabelData);
+        }
+      });
+      if (kospiStockData[kospiStockData.length - 1] >= kospiStockData[kospiStockData.length - 2]) {
+        setKospiStatus('up');
+      } else {
+        setKospiStatus('down');
+      }
+      if (kosdaqStockData[kosdaqStockData.length - 1] >= kosdaqStockData[kosdaqStockData.length - 2]) {
+        setKosdaqStatus('up');
+      } else {
+        setKosdaqStatus('down');
+      }
+      if (kospiThStockData[kospiThStockData.length - 1] >= kospiThStockData[kospiThStockData.length - 2]) {
+        setKospiThStatus('up');
+      } else {
+        setKospiThStatus('down');
+      }
+    };
+    fetchStockIndex();
+  }, []);
 
   return (
     <NewsContainer>
@@ -100,9 +163,9 @@ export default function News() {
             <GraphTime>{timeText}</GraphTime>
           </GraphTextArea>
           <ChartArea>
-            <NewsChart title="코스피" status="down"/>
-            <NewsChart title="코스닥" status="up"/>
-            <NewsChart title="코스피 200" status="down"/>
+            <NewsChart title="코스피" status={kospiStatus} labelData={kospiLabelData.slice(kospiLabelData.length - 10, kospiLabelData.length)} stockData={kospiStockData.slice(kospiStockData.length - 10, kospiStockData.length)}/>
+            <NewsChart title="코스닥" status={kosdaqStatus} labelData={kosdaqLabelData.slice(kosdaqLabelData.length - 10, kosdaqLabelData.length)} stockData={kosdaqStockData.slice(kosdaqStockData.length - 10, kosdaqStockData.length)}/>
+            <NewsChart title="코스피 200" status={kospiThStatus} labelData={kospiThLabelData.slice(kospiThLabelData.length - 10, kospiThLabelData.length)} stockData={kospiThStockData.slice(kospiThStockData.length - 10, kospiThStockData.length)}/>
           </ChartArea>
         </GraphArea>
       </NewsArea>

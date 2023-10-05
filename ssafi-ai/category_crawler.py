@@ -33,7 +33,7 @@ def news_category_crawler(url, category, news_list):
 
 
     # 기사 더보기 5번 클릭
-    for _ in range (0, 5):
+    for _ in range (0, 7):
         driver.find_element(By.XPATH, '//*[@id="container"]/section/div[2]/div/div/div[1]/section/div/div/div/button').click()
         # wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="container"]/section/div[2]/div/div/div[1]/section/div/div/div/button')))
         t.sleep(3)
