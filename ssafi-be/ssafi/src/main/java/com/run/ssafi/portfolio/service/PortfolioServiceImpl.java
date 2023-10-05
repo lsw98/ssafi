@@ -5,6 +5,7 @@ import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.AiTrade;
 import com.run.ssafi.domain.Member;
 import com.run.ssafi.domain.Score;
+import com.run.ssafi.domain.Type;
 import com.run.ssafi.member.repository.ScoreRepository;
 import com.run.ssafi.message.custom_message.PortfolioMessage;
 import com.run.ssafi.portfolio.dto.PortfolioResponseDto;
@@ -32,7 +33,7 @@ public class PortfolioServiceImpl implements PortfolioService{
         Double neutralRatio;
         Double safetyRatio;
 
-        String type = member.getType();
+        Type type = member.getType();
         String investmentType = null;
 
 
@@ -50,23 +51,22 @@ public class PortfolioServiceImpl implements PortfolioService{
             }
         } else if (type != null){
             investmentType = switch (type) {
-                case "APML" -> "Risky";
-                case "APMC" -> "Risky";
-                case "APWL" -> "Neutral";
-                case "APWC" -> "Safety";
-                case "ABML" -> "Risky";
-                case "ABMC" -> "Risky";
-                case "ABWL" -> "Risky";
-                case "ABWC" -> "Neutral";
-                case "IPML" -> "Risky";
-                case "IPMC" -> "Risky";
-                case "IPWL" -> "Neutral";
-                case "IPWC" -> "Safety";
-                case "IBML" -> "Risky";
-                case "IBMC" -> "Risky";
-                case "IBWL" -> "Neutral";
-                case "IBWC" -> "Safety";
-                default -> investmentType;
+                case APML -> "Risky";
+                case APMC -> "Risky";
+                case APWL -> "Neutral";
+                case APWC -> "Safety";
+                case ABML -> "Risky";
+                case ABMC -> "Risky";
+                case ABWL -> "Risky";
+                case ABWC -> "Neutral";
+                case IPML -> "Risky";
+                case IPMC -> "Risky";
+                case IPWL -> "Neutral";
+                case IPWC -> "Safety";
+                case IBML -> "Risky";
+                case IBMC -> "Risky";
+                case IBWL -> "Neutral";
+                case IBWC -> "Safety";
             };
         }
 

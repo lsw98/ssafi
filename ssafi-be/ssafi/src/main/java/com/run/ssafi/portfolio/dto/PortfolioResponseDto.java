@@ -1,5 +1,6 @@
 package com.run.ssafi.portfolio.dto;
 
+import com.run.ssafi.domain.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Getter
 public class PortfolioResponseDto {
-    private String type;
+    private Type type;
     private String recommendedStock;
     private Double aiScore;
     private Double pbScore;
