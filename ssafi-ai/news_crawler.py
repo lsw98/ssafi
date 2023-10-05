@@ -15,8 +15,8 @@ news_category_crawler('https://www.mk.co.kr/news/stock/conditions/', "conditions
 news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/', "public_announcement", news_list)
 # 기업정보
 news_category_crawler('https://www.mk.co.kr/news/stock/business-information/', "business_information", news_list)
-# 증시지표
-news_category_crawler('https://www.mk.co.kr/news/stock/market-index/', "market_index", news_list)
+# 최신뉴스
+news_category_crawler('https://www.mk.co.kr/news/stock/latest/', "latest", news_list)
 
 Base.metadata.create_all(engine)
 
