@@ -51,22 +51,22 @@ public class PortfolioServiceImpl implements PortfolioService{
             }
         } else if (type != null){
             investmentType = switch (type) {
-                case APML -> "Risky";
-                case APMC -> "Risky";
-                case APWL -> "Neutral";
-                case APWC -> "Safety";
-                case ABML -> "Risky";
-                case ABMC -> "Risky";
-                case ABWL -> "Risky";
-                case ABWC -> "Neutral";
-                case IPML -> "Risky";
-                case IPMC -> "Risky";
-                case IPWL -> "Neutral";
-                case IPWC -> "Safety";
-                case IBML -> "Risky";
-                case IBMC -> "Risky";
-                case IBWL -> "Neutral";
-                case IBWC -> "Safety";
+                case APML -> "risk";
+                case APMC -> "risk";
+                case APWL -> "neutral";
+                case APWC -> "safe";
+                case ABML -> "risk";
+                case ABMC -> "risk";
+                case ABWL -> "risk";
+                case ABWC -> "neutral";
+                case IPML -> "risk";
+                case IPMC -> "risk";
+                case IPWL -> "neutral";
+                case IPWC -> "safe";
+                case IBML -> "risk";
+                case IBMC -> "risk";
+                case IBWL -> "neutral";
+                case IBWC -> "safe";
             };
         }
 
