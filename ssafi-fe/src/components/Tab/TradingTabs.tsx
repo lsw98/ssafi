@@ -164,11 +164,6 @@ interface TradingTabsProps {
   stockCode: string;
 }
 
-interface BalanceProps {
-  stockName: string;
-  amount: string;
-}
-
 function formatNumber(num: string | number) {
   return Intl.NumberFormat().format(Number(num));
 }
@@ -187,28 +182,24 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const [total, setTotal] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [accountData, setAccountData] = useState<any | null>(null);
-  const [balance, setBalance] = useState<BalanceProps[]>([]);
+  const [sellAble, setSellAble] = useState('0');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await fetchCheckAccount();
         if (!Array.isArray(result)) {
-          const updatedBalance = result.refinedOutput.map((item: any) => ({
-            stockName: item.prdt_name,
-            amount: item.hldg_qty,
-          }));
-
-          setBalance(updatedBalance);
+          const updatedBalance = result.refinedOutput.filter((item) => item.prdt_name === stockName);
+          if (updatedBalance) {
+            setSellAble(updatedBalance[0].hldg_qty);
+          }
         }
       } catch (error) {
         console.error('Fetching Error:', error);
       }
     };
     fetchData();
-  }, []);
-
-  console.log(balance);
+  }, [stockName]);
 
   useEffect(() => {
     const getAskingPrices = async () => {
@@ -228,7 +219,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
     };
 
     fetchData();
-  }, [accountData]);
+  }, []);
 
   const handleSpecifiedClick = () => {
     if (division === '01') {
@@ -271,7 +262,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   }, [stockName, toggleState]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
+    if (toggleState === 2 && Number(e.target.value) > Number(sellAble)) {
+      setAmount(sellAble);
+    } else {
+      setAmount(e.target.value);
+    }
   };
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const priceNumber = e.target.value.replace(/,/g, '');
@@ -294,13 +289,6 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
   const handleOpenSellModal = () => {
     setModalOpen(true);
-  };
-
-  const handleCloseBuyModal = () => {
-    setModalOpen(false);
-  };
-  const handleCloseSellModal = () => {
-    setModalOpen(false);
   };
 
   const handleBuyStock = () => {
@@ -328,7 +316,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const handleSetAmountChange = (add: boolean) => {
     const amountCount = Number(amount);
     if (add) {
-      setAmount((amountCount + 1).toString());
+      if (toggleState === 1 && Number(accountData.dnca_tot_amt) >= Number(total.replace(/,/g, ''))) {
+        setAmount((amountCount + 1).toString());
+      } else if (toggleState === 2 && Number(sellAble) > Number(amount)) {
+        setAmount((amountCount + 1).toString());
+      }
     } else if (amountCount > 0) {
       setAmount((amountCount - 1).toString());
     }
@@ -499,8 +491,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
         </div>
         <div
           className={
-            toggleState === 2 &&
-            balance.find((item) => item.stockName === stockName)
+            toggleState === 2 && sellAble !== '0'
               ? 'content active-content'
               : 'content'
           }
@@ -588,7 +579,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </PriceDivision>
             <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>매도 가능 수량</div>
-              <div className="big">2 주</div>
+              <div className="big">{sellAble} 주</div>
             </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
@@ -600,9 +591,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                 />
                 <InputSpan>주</InputSpan>
               </InputWrapper>
-              <CountBtn onClick={() => handleSetAmountChange(false)}>
-                -
-              </CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
               <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
             </div>
             <InputWrapper>
@@ -639,7 +628,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
           </TradingBox>
         </div>
         <div
-          className={toggleState === 2 && !(balance.find((item) => item.stockName === stockName))
+          className={toggleState === 2 && sellAble === '0'
             ? 'content active-content'
             : 'content'}
         >

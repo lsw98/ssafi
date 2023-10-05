@@ -33,14 +33,14 @@ const CenterColumn = styled.div`
 const GraphContainer = styled.div`
   flex: 1;
   margin: 10px 12px;
-  padding: 20px 16px 8px;
+  padding: 20px 16px 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  height: 56%;
   background-color: var(--white-color);
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
 `;
 
 const StockInfo = styled.div`
@@ -179,12 +179,12 @@ const AmountRanking = styled.div`
   align-items: center;
   margin-top: 10px;
   width: 100%;
-  border-radius: 8px;
-  background: var(--White, #fdfdfd);
+  border-radius: 4px;
+  background: var(--white-color);
   box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.08);
 
   h2 {
-    color: var(--Dark, #0d1545);
+    color: var(--dark-color);
     font-family: Pretendard;
     font-size: 16px;
     font-weight: 600;
@@ -231,7 +231,7 @@ const Tooltip = styled.div<{ show: boolean; color: string }>`
   width: 160px;
   top: 30px;
   right: 12px;
-  background: var(--Sub, #e7faf7);
+  background: var(--sub-color);
   color: var(--black-color);
   font-size: 14px;
   padding: 6px 12px;
