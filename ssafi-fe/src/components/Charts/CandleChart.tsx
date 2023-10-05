@@ -33,7 +33,7 @@ const CandleChart: React.FC<CandleChartProps> = ({ data }) => {
     },
     xaxis: {
       type: 'datetime',
-      categories: data.map((price) => price.x), // 시간 정보가 이미 포함되어 있으므로 이렇게 사용
+      // categories: data.map((price) => price.x), // 시간 정보가 이미 포함되어 있으므로 이렇게 사용
       axisBorder: {
         show: false,
       },

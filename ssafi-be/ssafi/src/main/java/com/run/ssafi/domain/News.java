@@ -31,6 +31,6 @@ public class News {
     private String newsDate;
     @Column(name = "news_writer")
     private String newsWriter;
-    @Column(name = "news_content", columnDefinition = "TEXT")
+    @Column(name = "news_content", columnDefinition = "text")
     private String newsContent;
 }

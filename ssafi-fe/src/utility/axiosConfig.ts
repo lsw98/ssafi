@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 export const privateApi = axios.create({
-  baseURL: 'https://8264-211-192-210-179.ngrok-free.app/api/',
+  baseURL:
+    'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/',
   headers: {
     Authorization: localStorage.getItem('accessToken'),
   },

@@ -236,7 +236,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
                         }
                       >
                         {Number.isNaN(Number(stock.stck_prpr))
-                          ? '불러오는 중...'
+                          ? 'Loading...'
                           : Number(stock.stck_prpr).toLocaleString()}
                       </Tooltip>
                     </div>
