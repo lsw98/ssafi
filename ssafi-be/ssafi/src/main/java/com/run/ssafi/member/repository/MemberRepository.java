@@ -12,5 +12,4 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberCus
     Optional<Member> findById(Long id);
 
     Member findByEmail(String email) throws SQLException;
-
 }
