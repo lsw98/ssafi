@@ -14,35 +14,38 @@ import stockDown from '../../assets/images/stock-down.svg';
 
 const Container = styled.div`
   display: flex;
-  height: 100vh;
+  justify-content: space-between;
   width: 100%;
 `;
 
 const LeftColumn = styled.div`
-  flex: 20; /* 왼쪽 열을 20%로 설정 */
-  padding: 20px 10px 20px 0px;
+  flex: 16;
+  padding: 20px 0px;
 `;
 
 const CenterColumn = styled.div`
-  flex: 60; /* 가운데 열을 60%로 설정 */
+  flex: 50;
   display: flex;
   flex-direction: column;
+  padding: 20px 4px;
 `;
 
 const GraphContainer = styled.div`
   flex: 1;
-  padding: 25px 24.523px 0px 25px;
+  margin: 10px 12px;
+  padding: 20px 16px 8px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  gap: 25px;
-  height: 60%;
+  gap: 20px;
+  height: 56%;
+  background-color: var(--white-color);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
 `;
 
 const StockInfo = styled.div`
   display: flex;
-  height: 20%;
+  height: 18%;
   align-items: end;
 `;
 
@@ -74,7 +77,9 @@ const StockPrice = styled.p<{ updown: string }>`
   font-size: 26px;
   font-weight: 600;
   color: ${(props) =>
-    props.updown.slice(0, 1) === '-'
+    props.updown === '3'
+      ? 'var(--black-color)'
+      : props.updown === '5'
       ? 'var(--lower-color)'
       : 'var(--upper-color)'};
   margin-top: 10px;
@@ -97,7 +102,7 @@ const UpdownBox = styled.div`
 const UpdownIcon = styled.img`
   width: 10px;
   margin-top: 6px;
-  margin-right: 2px;
+  margin-right: 4px;
 `;
 
 const TextSimple = styled.p`
@@ -108,7 +113,9 @@ const TextSimple = styled.p`
 
 const PriceCompare = styled.p<{ updown: string }>`
   color: ${(props) =>
-    props.updown.slice(0, 1) === '-'
+    props.updown === '3'
+      ? 'var(--black-color)'
+      : props.updown === '5'
       ? 'var(--lower-color)'
       : 'var(--upper-color)'};
   margin-bottom: 0px;
@@ -129,18 +136,6 @@ const PriceInfos = styled.div`
   align-items: end;
 `;
 
-const PriceInfoLeft = styled.div`
-  width: 70px;
-`;
-
-const PriceInfoMid = styled.div`
-  width: 160px;
-`;
-
-const PriceInfoRight = styled.div`
-  width: 140px;
-`;
-
 const TextSimpleGray = styled.p`
   color: var(--gray-color);
   margin-bottom: 0px;
@@ -159,36 +154,34 @@ const NumUp = styled.p`
 const TradingAndAccountContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 20px 0 0 0;
-  height: 40%;
+  padding-top: 10px;
 `;
 
 const Trading = styled.div`
   flex: 2;
-  padding: 10px;
+  padding: 10px 12px;
 `;
 
 const Account = styled.div`
   flex: 3;
-  padding: 10px;
+  padding: 10px 12px;
 `;
 
 const RightColumn = styled.div`
-  flex: 20; /* 오른쪽 열을 20%로 설정 */
-  padding: 20px 0px 20px 10px;
+  flex: 16;
+  flex-shrink: 0;
+  padding: 20px 0px;
 `;
 
 const AmountRanking = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 10px;
   width: 100%;
-  height: 60%;
-  flex-shrink: 0;
-  border-radius: 25px;
+  border-radius: 8px;
   background: var(--White, #fdfdfd);
-  box-shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.08);
-  padding: 5px;
+  box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.08);
 
   h2 {
     color: var(--Dark, #0d1545);
@@ -305,7 +298,7 @@ export default function TradeOrder() {
       }
     };
     loadStockInfo();
-    // console.log(stockInfo);
+    console.log(stockInfo);
   }, [stockCode]);
 
   useEffect(() => {
@@ -386,64 +379,65 @@ export default function TradeOrder() {
                     <StockName>{stockInfo.hts_kor_isnm}</StockName>
                     <StockCode>{stockCode}</StockCode>
                   </NameBox>
-                  <StockPrice updown={stockInfo.prdy_ctrt}>
-                    {stockInfo.stck_prpr}
+                  <StockPrice updown={stockInfo.prdy_vrss_sign}>
+                    {stockInfo.stck_prpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   </StockPrice>
                   <CompareInfo>
                     <TextSimple>전일대비</TextSimple>
                     <UpdownBox>
-                      {stockInfo.prdy_ctrt.slice(0, 1) === '-' ? (
-                        <UpdownIcon src={stockDown} />
-                      ) : (
-                        <UpdownIcon src={stockUp} />
+                      {stockInfo.prdy_vrss_sign !== '3' && (
+                        stockInfo.prdy_vrss_sign === '5' ? (
+                          <UpdownIcon src={stockDown} />
+                        ) : (
+                          <UpdownIcon src={stockUp} />
+                        )
                       )}
-                      <PriceCompare updown={stockInfo.prdy_ctrt}>
-                        {stockInfo.prdy_vrss.slice(1, 5)}{' '}
-                        {stockInfo.prdy_vrss_sign}{' '}
+                      <PriceCompare updown={stockInfo.prdy_vrss_sign}>
+                        {stockInfo.prdy_vrss.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
                       </PriceCompare>
                     </UpdownBox>
-                    <PriceCompare updown={stockInfo.prdy_ctrt}>
+                    <PriceCompare updown={stockInfo.prdy_vrss_sign}>
                       {stockInfo.prdy_ctrt}%
                     </PriceCompare>
                   </CompareInfo>
                 </InfoLeft>
                 <InfoRight>
-                  <PriceInfoLeft>
+                  <div style={{ width: '70px' }}>
                     <PriceInfos>
                       <TextSimpleGray>전일</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_prdy_clpr}</TextSimple>
+                      <TextSimple>{stockInfo.stck_prdy_clpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>시가</TextSimpleGray>
-                      <TextSimple>{stockInfo.stck_oprc}</TextSimple>
+                      <TextSimple>{stockInfo.stck_oprc.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
-                  </PriceInfoLeft>
-                  <PriceInfoMid>
+                  </div>
+                  <div style={{ width: '160px' }}>
                     <PriceInfos>
                       <TextSimpleGray>고가</TextSimpleGray>
                       <NumUp>
-                        {stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})
+                        {stockInfo.stck_hgpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (상한가 {stockInfo.stck_mxpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')})
                       </NumUp>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>저가</TextSimpleGray>
                       <NumDown>
-                        {stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})
+                        {stockInfo.stck_lwpr.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (하한가 {stockInfo.stck_llam.replace(/\B(?=(\d{3})+(?!\d))/g, ',')})
                       </NumDown>
                     </PriceInfos>
-                  </PriceInfoMid>
-                  <PriceInfoRight>
+                  </div>
+                  <div style={{ width: '140px' }}>
                     <PriceInfos>
                       <TextSimpleGray>거래량(주)</TextSimpleGray>
-                      <TextSimple>{stockInfo.acml_vol}</TextSimple>
+                      <TextSimple>{stockInfo.acml_vol.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TextSimple>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>거래대금(백만)</TextSimpleGray>
                       <TextSimple>
-                        {Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}
+                        {Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       </TextSimple>
                     </PriceInfos>
-                  </PriceInfoRight>
+                  </div>
                 </InfoRight>
               </>
             ) : (
@@ -456,7 +450,6 @@ export default function TradeOrder() {
           <Trading>
             <TradingTabs stockName={stockInfo?.hts_kor_isnm} stockCode={stockCode} />
           </Trading>
-
           <Account>
             <AccountTabs />
           </Account>

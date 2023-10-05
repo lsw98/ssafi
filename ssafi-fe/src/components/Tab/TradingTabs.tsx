@@ -16,7 +16,7 @@ const PriceList = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
-  height: 90%;
+  gap: 4px;
 `;
 
 const PriceItem = styled.div<{ lower?: boolean; border?: boolean }>`
@@ -28,7 +28,6 @@ const PriceItem = styled.div<{ lower?: boolean; border?: boolean }>`
   font-size: 0.9em;
   text-align: end;
   padding: 3px 6px;
-  margin: 2px 0;
   .volume {
     font-size: 0.7em;
     color: var(--gray-color);
@@ -121,38 +120,6 @@ const ButtonReset = styled.button`
   &.buy {
     color: var(--white-color);
     background-color: var(--upper-color);
-  }
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContent = styled.div`
-  background-color: var(--white-color);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  h1 {
-    margin-top: 0;
-    font-size: 24px;
-  }
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    &:first-child {
-      margin-right: 10px;
-    }
   }
 `;
 

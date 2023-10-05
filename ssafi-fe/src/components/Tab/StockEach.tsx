@@ -22,7 +22,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 4px 0;
+  margin: 5px 0;
 `;
 
 const LeftContainer = styled.div`

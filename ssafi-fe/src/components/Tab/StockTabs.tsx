@@ -11,7 +11,7 @@ const StocksSearchBarArea = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 4px;
+  margin: 4px 0;
 `;
 
 // 뉴스 검색바 속성
@@ -50,6 +50,21 @@ const StocksSearchTextbox = styled.input.attrs({
 const StocksList = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 4px 0;
+`;
+
+const RenewedButton = styled.button`
+  border: none;
+  background-color: transparent;
+`;
+
+const Text = styled.div`
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--gray-color);
+  margin: 20px 0;
 `;
 
 interface StockTabsProps {
@@ -204,12 +219,12 @@ function StockTabs({ onStockClick }: StockTabsProps) {
           </StocksList>
           {/* 버튼 */}
           <div className="button-container">
-            <button
+            <RenewedButton
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}
             >
               이전
-            </button>
+            </RenewedButton>
             {/* 버튼이 항상 5개만 보이도록 처리 */}
             {(() => {
               let startPage = currentPage - 2;
@@ -232,34 +247,38 @@ function StockTabs({ onStockClick }: StockTabsProps) {
                 { length: endPage - startPage + 1 },
                 (_, index) => startPage + index,
               ).map((pageNum) => (
-                <button
+                <RenewedButton
                   key={pageNum}
                   disabled={currentPage === pageNum}
                   onClick={() => handlePageChange(pageNum)}
                 >
                   {pageNum}
-                </button>
+                </RenewedButton>
               ));
             })()}
-            <button disabled={currentPage === 10} onClick={() => handlePageChange(currentPage + 1)}>
+            <RenewedButton disabled={currentPage === 10} onClick={() => handlePageChange(currentPage + 1)}>
               다음
-            </button>
+            </RenewedButton>
           </div>
         </div>
         <div
           className={toggleState === 2 ? 'content active-content' : 'content'}
         >
-          <StocksList>
-            {interests.map((stock, index) => (
-              <StockEach
-                stock = {stock}
-                clickedStar = {clickedStar}
-                toggleStar = {toggleStar}
-                onStockClick = {onStockClick}
-                toggleState = {toggleState}
-              />
-            ))}
-          </StocksList>
+          {interests.length === 0 ? (
+            <Text>등록된 관심 종목이 없습니다.</Text>
+          ) : (
+            <StocksList>
+              {interests.map((stock, index) => (
+                <StockEach
+                  stock = {stock}
+                  clickedStar = {clickedStar}
+                  toggleStar = {toggleStar}
+                  onStockClick = {onStockClick}
+                  toggleState = {toggleState}
+                />
+              ))}
+            </StocksList>
+          )}
         </div>
       </div>
     </div>
