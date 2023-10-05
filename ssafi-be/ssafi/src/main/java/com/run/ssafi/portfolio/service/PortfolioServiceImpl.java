@@ -43,11 +43,11 @@ public class PortfolioServiceImpl implements PortfolioService{
             safetyRatio = aiTrade.getSafetyRatio();
 
             if(riskRatio>neutralRatio && riskRatio>safetyRatio){
-                investmentType = "Risky";
+                investmentType = "risk";
             } else if (neutralRatio > safetyRatio) {
-                investmentType = "Neutral";
+                investmentType = "neutral";
             } else {
-                investmentType = "Safety";
+                investmentType = "safe";
             }
         } else if (type != null){
             investmentType = switch (type) {
