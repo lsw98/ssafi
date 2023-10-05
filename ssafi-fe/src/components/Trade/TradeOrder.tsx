@@ -260,7 +260,7 @@ export default function TradeOrder() {
         </GraphContainer>
         <TradingAndAccountContainer>
           <Trading>
-            <TradingTabs stockCode={stockCode} />
+            <TradingTabs stockName={stockInfo?.hts_kor_isnm} stockCode={stockCode} />
           </Trading>
 
           <Account>

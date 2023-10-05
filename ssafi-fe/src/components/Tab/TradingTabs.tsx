@@ -7,7 +7,9 @@ import {
   fetchSellStock,
   fetchModifyStock,
   fetchAskingPrice,
+  fetchCheckAccount,
 } from '../../utility/api';
+import TradingModal from './TradingModal';
 // import WebSocketComponent from '../../utility/webSockets';
 
 const PriceList = styled.div`
@@ -189,24 +191,30 @@ interface PriceData {
 }
 
 interface TradingTabsProps {
+  stockName: string | undefined;
   stockCode: string;
 }
 
-function TradingTabs({ stockCode }: TradingTabsProps) {
+function formatNumber(num: string | number) {
+  return Intl.NumberFormat().format(Number(num));
+}
+
+function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const [toggleState, setToggleState] = useState(1);
   const toggleTab = (index: number) => {
     setToggleState(index);
   };
   const [askingPrices, setAskingPrices] = useState<PriceData | null>(null);
   const [division, setDivision] = useState('00');
-  const [isSpecifiedChecked, setSpecifiedChecked] = useState(false);
+  const [isSpecifiedChecked, setSpecifiedChecked] = useState(true);
   const [isMarketChecked, setMarketChecked] = useState(false);
   const [amount, setAmount] = useState('');
   const [price, setPrice] = useState('');
   const [total, setTotal] = useState('');
-  const [buyModalOpen, setBuyModalOpen] = useState(false);
-  const [sellModalOpen, setSellModalOpen] = useState(false);
-  const [modifyModalOpen, setModifyModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
+  const [accountData, setAccountData] = useState<any | null>(null);
+  // const [modifyModalOpen, setModifyModalOpen] = useState(false);
 
   useEffect(() => {
     const getAskingPrices = async () => {
@@ -216,11 +224,20 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
     getAskingPrices();
   }, [stockCode]); // stockCode가 변경될 경우에만 useEffect가 다시 실행됩니다.
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchCheckAccount();
+
+      if (!Array.isArray(result) && result.AccountData) {
+        setAccountData(result.AccountData[0]);
+      }
+    };
+
+    fetchData();
+  }, [accountData]);
+
   const handleSpecifiedClick = () => {
-    if (division === '00') {
-      setDivision(''); // 지정이 이미 선택되어 있다면 선택 해제
-      setSpecifiedChecked(false);
-    } else {
+    if (division === '01') {
       setDivision('00'); // 지정을 선택
       setSpecifiedChecked(true);
       setMarketChecked(false); // 시장은 선택 해제
@@ -229,11 +246,7 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   };
 
   const handleMarketClick = (type : number) => {
-    if (division === '01') {
-      setDivision(''); // 시장이 이미 선택되어 있다면 선택 해제
-      setMarketChecked(false);
-      setPrice(''); // 시장가 선택 해제 시, 가격을 초기화
-    } else {
+    if (division === '00') {
       setDivision('01'); // 시장을 선택
       setMarketChecked(true);
       setSpecifiedChecked(false); // 지정은 선택 해제
@@ -247,13 +260,17 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   };
 
   const handleReset = () => {
-    setDivision('');
+    setDivision('00');
     setMarketChecked(false);
-    setSpecifiedChecked(false);
+    setSpecifiedChecked(true);
     setAmount('');
     setPrice('');
     setTotal('');
   };
+
+  useEffect(() => {
+    handleReset();
+  }, [stockName, toggleState]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
@@ -274,24 +291,24 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
   }, [amount, price]); // amount나 price 상태가 변경될 때마다 이 훅을 실행
 
   const handleOpenBuyModal = () => {
-    setBuyModalOpen(true);
+    setModalOpen(true);
   };
   const handleOpenSellModal = () => {
-    setSellModalOpen(true);
+    setModalOpen(true);
   };
 
   const handleCloseBuyModal = () => {
-    setBuyModalOpen(false);
+    setModalOpen(false);
   };
   const handleCloseSellModal = () => {
-    setSellModalOpen(false);
+    setModalOpen(false);
   };
 
   const handleBuyStock = () => {
     fetchBuyStock(stockCode, division, amount, price)
       .then((response) => {
         console.log('매수 성공:', response);
-        setBuyModalOpen(false);
+        setModalOpen(false);
       })
       .catch((error) => {
         console.log('매수 실패:', error);
@@ -302,7 +319,7 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
     fetchSellStock(stockCode, division, amount, price)
       .then((response) => {
         console.log('매도 성공:', response);
-        setSellModalOpen(false);
+        setModalOpen(false);
       })
       .catch((error) => {
         console.log('매도 실패:', error);
@@ -421,7 +438,7 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
             </PriceDivision>
             <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
-              <div className='big'>1000원</div>
+              <div className='big'>{accountData ? formatNumber(accountData.dnca_tot_amt) : 0 }원</div>
             </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
@@ -453,20 +470,16 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
             <ButtonContainer>
               <ButtonReset onClick={handleReset}>초기화</ButtonReset>
               <ButtonReset className='buy' onClick={handleOpenBuyModal}>매수</ButtonReset>
-              {buyModalOpen && (
-                <Modal>
-                  <ModalContent>
-                    <h1>매수하시겠습니까?</h1>
-                    <button onClick={handleCloseBuyModal}>취소</button>
-                    <button
-                      onClick={() => {
-                        handleBuyStock();
-                      }}
-                    >
-                      확인
-                    </button>
-                  </ModalContent>
-                </Modal>
+              {modalOpen && (
+                <TradingModal
+                  type = '매수'
+                  stockName = {stockName}
+                  amount = {amount}
+                  price = {price}
+                  total = {total}
+                  closeModal = {setModalOpen}
+                  handleStock = {handleBuyStock}
+                />
               )}
             </ButtonContainer>
           </TradingBox>
@@ -547,19 +560,23 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
                 시장
               </Specified>
             </PriceDivision>
-            <PriceAble>
+            {/* <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
-              <div className='big'>1000원</div>
-            </PriceAble>
-            <InputWrapper>
-              <InputLabel>수량</InputLabel>
-              <InputAmount
-                placeholder="0"
-                value={amount}
-                onChange={handleAmountChange}
-              />
-              <InputSpan>주</InputSpan>
-            </InputWrapper>
+              <div className='big'>{accountData ? formatNumber(accountData.dnca_tot_amt) : 0 }원</div>
+            </PriceAble> */}
+            <div style={{ display: 'flex' }}>
+              <InputWrapper>
+                <InputLabel>수량</InputLabel>
+                <InputAmount
+                  placeholder="0"
+                  value={amount}
+                  onChange={handleAmountChange}
+                />
+                <InputSpan>주</InputSpan>
+              </InputWrapper>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
+            </div>
             <InputWrapper>
               <InputLabel>가격</InputLabel>
               <InputPrice
@@ -577,20 +594,16 @@ function TradingTabs({ stockCode }: TradingTabsProps) {
             <ButtonContainer>
               <ButtonReset onClick={handleReset}>초기화</ButtonReset>
               <ButtonReset className='sell' onClick={handleOpenSellModal}>매도</ButtonReset>
-              {sellModalOpen && (
-                <Modal>
-                  <ModalContent>
-                    <h1>매도하시겠습니까?</h1>
-                    <button onClick={handleCloseSellModal}>취소</button>
-                    <button
-                      onClick={() => {
-                        handleSellStock();
-                      }}
-                    >
-                      확인
-                    </button>
-                  </ModalContent>
-                </Modal>
+              {modalOpen && (
+                <TradingModal
+                  type = '매도'
+                  stockName = {stockName}
+                  amount = {amount}
+                  price = {price}
+                  total = {total}
+                  closeModal = {setModalOpen}
+                  handleStock = {handleBuyStock}
+                />
               )}
             </ButtonContainer>
           </TradingBox>
