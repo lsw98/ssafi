@@ -20,7 +20,7 @@ const StocksSearchBar = styled.div`
   justify-content: start;
   align-items: center;
   width: 100%;
-  height: 24px;
+  height: 28px;
   border: 1px solid var(--dark-color);
   border-radius: 20px;
   background-color: var(--white-color);
@@ -40,13 +40,14 @@ const StocksSearchTextbox = styled.input.attrs({
   placeholder: '원하는 종목을 입력하세요.',
 })`
   width: 70%;
-  margin-left: 8%;
-  font-size: 10px;
+  margin-left: 7%;
+  font-size: 12px;
   color: var(--dark-color);
   background-color: var(--white-color);
   border: 0px;
   outline: none;
 `;
+
 const StocksList = styled.div`
   display: flex;
   flex-direction: column;
@@ -142,6 +143,7 @@ function StockTabs({ onStockClick }: StockTabsProps) {
     if (searchText === '') {
       setFilteredStockData(stockData);
     } else {
+      handlePageChange(1);
       const filteredData = stockData.filter((stock) =>
         stock.name.toLowerCase().includes(searchText.toLowerCase()),
       );
@@ -217,6 +219,9 @@ function StockTabs({ onStockClick }: StockTabsProps) {
               return null; // 현재 페이지에 속하지 않는 주식은 렌더링하지 않음
             })}
           </StocksList>
+          {filteredStockData.length === 0 && (
+            <Text>일치하는 결과가 없습니다.</Text>
+          )}
           {/* 버튼 */}
           <div className="button-container">
             <RenewedButton

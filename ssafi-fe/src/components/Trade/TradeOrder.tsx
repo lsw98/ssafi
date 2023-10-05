@@ -178,6 +178,7 @@ const AmountRanking = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 10px;
+  padding: 8px 8px 16px;
   width: 100%;
   border-radius: 4px;
   background: var(--white-color);
@@ -185,10 +186,9 @@ const AmountRanking = styled.div`
 
   h2 {
     color: var(--dark-color);
-    font-family: Pretendard;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    line-height: normal;
+    background: linear-gradient(to top, var(--sub-color) 40%, transparent 40%);
   }
 `;
 
@@ -197,20 +197,23 @@ const RankedTime = styled.div`
   justify-content: end;
   width: 100%;
   color: var(--gray-color);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 300;
   margin-right: 20px;
   margin-bottom: 10px;
 `;
 
 const RankedStockList = styled.div`
-  font-size: 12px;
-  font-weight: 300px;
+  font-size: 13px;
+  margin-top: 4px;
 `;
 
 const RankedStock = styled.div`
   width: 180px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const RankedStockInfo = styled.div`
@@ -220,7 +223,9 @@ const RankedStockInfo = styled.div`
 `;
 
 const RankedStockText = styled.span`
-  color: var(--black-color);
+  width: 16px;
+  text-align: center;
+  margin-right: 6px;
 `;
 
 const RankedStockNum = styled.span`
@@ -463,15 +468,16 @@ export default function TradeOrder() {
             {rankingData.slice(0, 10).map((item, index) => (
               <RankedStock
                 key={index}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                style={{ position: 'relative' }}
+                // onMouseEnter={() => handleMouseEnter(index)}
+                // onMouseLeave={handleMouseLeave}
+                // style={{ position: 'relative' }}
               >
                 <RankedStockInfo>
-                  <RankedStockText>{index + 1}. {item.hts_kor_isnm}</RankedStockText>
-                  <RankedStockNum>{Number(item.acml_vol).toLocaleString()}</RankedStockNum>
+                  <RankedStockText>{index + 1}.</RankedStockText>
+                  <div>{item.hts_kor_isnm}</div>
                 </RankedStockInfo>
-                <Tooltip
+                <RankedStockNum>{Number(item.acml_vol).toLocaleString()}</RankedStockNum>
+                {/* <Tooltip
                   show={hoveredIndex === index}
                   color={
                     Number(item.prdy_vrss_sign) === 5
@@ -482,7 +488,7 @@ export default function TradeOrder() {
                   }
                 >
                   {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
-                </Tooltip>
+                </Tooltip> */}
               </RankedStock>
             ))}
           </RankedStockList>

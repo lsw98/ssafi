@@ -357,15 +357,15 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem lower={true}>
-                  {askingPrices.askp3}
-                  <div className="volume">{askingPrices.askp_rsqn3}</div>
+                  {formatNumber(askingPrices.askp3)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn3)}</div>
                 </PriceItem>
                 <PriceItem lower={true}>
-                  {askingPrices.askp2}
-                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                  {formatNumber(askingPrices.askp2)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem lower={true} border={true}>
-                  {askingPrices.askp1}
+                  {formatNumber(askingPrices.askp1)}
                   <div className="volume">{askingPrices.askp_rsqn1}</div>
                 </PriceItem>
               </>
@@ -374,12 +374,12 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem>
-                  {askingPrices.bidp1}
-                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                  {formatNumber(askingPrices.bidp1)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn1)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp2}
-                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                  {formatNumber(askingPrices.bidp2)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn2)}</div>
                 </PriceItem>
               </>
             )}
@@ -500,28 +500,28 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem lower={true}>
-                  {askingPrices.askp2}
-                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                  {formatNumber(askingPrices.askp2)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem lower={true}>
-                  {askingPrices.askp1}
-                  <div className="volume">{askingPrices.askp_rsqn1}</div>
+                  {formatNumber(askingPrices.askp1)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn1)}</div>
                 </PriceItem>
               </>
             )}
             {askingPrices && (
               <>
                 <PriceItem border={true}>
-                  {askingPrices.bidp1}
-                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                  {formatNumber(askingPrices.bidp1)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn1)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp2}
-                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                  {formatNumber(askingPrices.bidp2)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp3}
-                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
+                  {formatNumber(askingPrices.bidp3)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn3)}</div>
                 </PriceItem>
               </>
             )}
