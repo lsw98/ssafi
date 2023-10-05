@@ -177,6 +177,7 @@ const RightColumn = styled.div`
   flex: 20; /* 오른쪽 열을 20%로 설정 */
   padding: 20px 0px 20px 10px;
 `;
+
 const AmountRanking = styled.div`
   display: flex;
   flex-direction: column;
@@ -199,38 +200,38 @@ const AmountRanking = styled.div`
 `;
 
 const RankedTime = styled.div`
-display: flex;
-justify-content: end;
-width: 100%;
-color: var(--gray-color);
-font-size: 10px;
-font-weight: 300;
-margin-right: 20px;
-margin-bottom: 10px;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  color: var(--gray-color);
+  font-size: 10px;
+  font-weight: 300;
+  margin-right: 20px;
+  margin-bottom: 10px;
 `;
 
 const RankedStockList = styled.div`
-font-size: 12px;
-font-weight: 300px;
+  font-size: 12px;
+  font-weight: 300px;
 `;
 
 const RankedStock = styled.div`
-width: 180px;
-margin-bottom: 5px;
+  width: 180px;
+  margin-bottom: 5px;
 `;
 
 const RankedStockInfo = styled.div`
-display: flex;
-justify-content: space-between;
-align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const RankedStockText = styled.span`
-color: var(--black-color);
+  color: var(--black-color);
 `;
 
 const RankedStockNum = styled.span`
-color: var(--gray-color);
+  color: var(--gray-color);
 `;
 
 const Tooltip = styled.div<{ show: boolean; color: string }>`
@@ -481,10 +482,10 @@ export default function TradeOrder() {
                   show={hoveredIndex === index}
                   color={
                     Number(item.prdy_vrss_sign) === 5
-                      ? 'blue'
+                      ? 'var(--lower-color)'
                       : Number(item.prdy_vrss_sign) === 2
-                      ? 'red'
-                      : 'black'
+                      ? 'var(--upper-color)'
+                      : 'var(--black-color)'
                   }
                 >
                   {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
