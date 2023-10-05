@@ -61,9 +61,17 @@ num_classes = len(np.unique(labels))
 cnn_model = Sequential()
 cnn_model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(100, 100, 3)))
 cnn_model.add(MaxPooling2D((2, 2)))
+# cnn_model.add(Flatten())
+# cnn_model.add(Dense(1, activation='sigmoid'))
+cnn_model.add(Conv2D(64, (3, 3), activation='relu'))
+cnn_model.add(MaxPooling2D((2, 2)))
+cnn_model.add(Conv2D(128, (3, 3), activation='relu'))
+cnn_model.add(MaxPooling2D((2, 2)))
+cnn_model.add(Conv2D(128, (3, 3), activation='relu'))
+cnn_model.add(MaxPooling2D((2, 2)))
 cnn_model.add(Flatten())
+cnn_model.add(Dense(512, activation='relu'))
 cnn_model.add(Dense(1, activation='sigmoid'))
-
 # 모델 컴파일
 cnn_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 

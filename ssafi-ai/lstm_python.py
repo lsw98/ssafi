@@ -85,7 +85,8 @@ x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=test_r
 
 # LSTM 모델 생성
 lstm_model = Sequential()
-lstm_model.add(LSTM(32, input_shape=(None, 1)))
+lstm_model.add(LSTM(64, input_shape=(None, 1), return_sequences=True))
+lstm_model.add(LSTM(32))
 lstm_model.add(Dense(1))
 
 # 모델 컴파일
