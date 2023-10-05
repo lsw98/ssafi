@@ -41,113 +41,119 @@ const GraphContainer = styled.div`
 `;
 
 const StockInfo = styled.div`
-display: flex;
-height: 20%;
-align-items: end;
+  display: flex;
+  height: 20%;
+  align-items: end;
 `;
 
 const InfoLeft = styled.div`
-width: 280px;
+  width: 280px;
 `;
 
 const NameBox = styled.div`
-display: flex;
-align-items: end;
+  display: flex;
+  align-items: end;
 `;
 
 const StockName = styled.p`
-font-size: 20px;
-font-weight: 600;
-color: var(--black-color);
-margin-bottom: 0px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--black-color);
+  margin-bottom: 0px;
 `;
 
 const StockCode = styled.p`
-font-size: 16px;
-font-weight: 300;
-color: var(--gray-color);
-margin-left: 10px;
-margin-bottom: 0px;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--gray-color);
+  margin-left: 10px;
+  margin-bottom: 0px;
 `;
 
-const StockPrice = styled.p<{updown: string}>`
-font-size: 26px;
-font-weight: 600;
-color: ${(props) => (props.updown.slice(0, 1) === '-') ? 'var(--lower-color)' : 'var(--upper-color)'};
-margin-top: 10px;
-margin-bottom: 0px;
+const StockPrice = styled.p<{ updown: string }>`
+  font-size: 26px;
+  font-weight: 600;
+  color: ${(props) =>
+    props.updown.slice(0, 1) === '-'
+      ? 'var(--lower-color)'
+      : 'var(--upper-color)'};
+  margin-top: 10px;
+  margin-bottom: 0px;
 `;
 
 const CompareInfo = styled.div`
-display: flex;
-align-items: center;
-font-size: 14px;
-font-weight: 300;
-gap: 10px
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 300;
+  gap: 10px;
 `;
 
 const UpdownBox = styled.div`
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const UpdownIcon = styled.img`
-width: 10px;
-margin-top: 6px;
-margin-right: 2px;
+  width: 10px;
+  margin-top: 6px;
+  margin-right: 2px;
 `;
 
 const TextSimple = styled.p`
-color: var(--black-color);
-margin-top: 6px;
-margin-bottom: 0px;
+  color: var(--black-color);
+  margin-top: 6px;
+  margin-bottom: 0px;
 `;
 
-const PriceCompare = styled.p<{updown: string}>`
-color: ${(props) => (props.updown.slice(0, 1) === '-') ? 'var(--lower-color)' : 'var(--upper-color)'};
-margin-bottom: 0px;
-margin-top: 6px;
+const PriceCompare = styled.p<{ updown: string }>`
+  color: ${(props) =>
+    props.updown.slice(0, 1) === '-'
+      ? 'var(--lower-color)'
+      : 'var(--upper-color)'};
+  margin-bottom: 0px;
+  margin-top: 6px;
 `;
 
 const InfoRight = styled.div`
-display: flex;
-width: 460px;
-font-size: 12px;
-font-weight: 300;
-justify-content: space-between;
+  display: flex;
+  width: 460px;
+  font-size: 12px;
+  font-weight: 300;
+  justify-content: space-between;
 `;
 
 const PriceInfos = styled.div`
-display: flex;
-justify-content: space-between;
-align-items: end;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 `;
 
 const PriceInfoLeft = styled.div`
-width: 70px;
+  width: 70px;
 `;
 
 const PriceInfoMid = styled.div`
-width: 160px;
+  width: 160px;
 `;
 
 const PriceInfoRight = styled.div`
-width: 140px;
+  width: 140px;
 `;
 
 const TextSimpleGray = styled.p`
-color: var(--gray-color);
-margin-bottom: 0px;
+  color: var(--gray-color);
+  margin-bottom: 0px;
 `;
 
 const NumDown = styled.p`
-color: var(--lower-color);
-margin-bottom: 0px;
+  color: var(--lower-color);
+  margin-bottom: 0px;
 `;
 
 const NumUp = styled.p`
-color: var(--upper-color);
-margin-bottom: 0px;
+  color: var(--upper-color);
+  margin-bottom: 0px;
 `;
 
 const TradingAndAccountContainer = styled.div`
@@ -344,18 +350,26 @@ export default function TradeOrder() {
                     <StockName>{stockInfo.hts_kor_isnm}</StockName>
                     <StockCode>{stockCode}</StockCode>
                   </NameBox>
-                  <StockPrice updown={stockInfo.prdy_ctrt}>{stockInfo.stck_prpr}</StockPrice>
+                  <StockPrice updown={stockInfo.prdy_ctrt}>
+                    {stockInfo.stck_prpr}
+                  </StockPrice>
                   <CompareInfo>
-                  <TextSimple>전일대비</TextSimple>
-                  <UpdownBox>
-                    {stockInfo.prdy_ctrt.slice(0, 1) === '-'
-                      ? <UpdownIcon src={stockDown} />
-                      : <UpdownIcon src={stockUp} />
-                    }
-                    <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_vrss.slice(1, 5)} {stockInfo.prdy_vrss_sign}{' '}</PriceCompare>
-                  </UpdownBox>
-                  <PriceCompare updown={stockInfo.prdy_ctrt}>{stockInfo.prdy_ctrt}%</PriceCompare>
-                </CompareInfo>
+                    <TextSimple>전일대비</TextSimple>
+                    <UpdownBox>
+                      {stockInfo.prdy_ctrt.slice(0, 1) === '-' ? (
+                        <UpdownIcon src={stockDown} />
+                      ) : (
+                        <UpdownIcon src={stockUp} />
+                      )}
+                      <PriceCompare updown={stockInfo.prdy_ctrt}>
+                        {stockInfo.prdy_vrss.slice(1, 5)}{' '}
+                        {stockInfo.prdy_vrss_sign}{' '}
+                      </PriceCompare>
+                    </UpdownBox>
+                    <PriceCompare updown={stockInfo.prdy_ctrt}>
+                      {stockInfo.prdy_ctrt}%
+                    </PriceCompare>
+                  </CompareInfo>
                 </InfoLeft>
                 <InfoRight>
                   <PriceInfoLeft>
@@ -371,11 +385,15 @@ export default function TradeOrder() {
                   <PriceInfoMid>
                     <PriceInfos>
                       <TextSimpleGray>고가</TextSimpleGray>
-                      <NumUp>{stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})</NumUp>
+                      <NumUp>
+                        {stockInfo.stck_hgpr} (상한가 {stockInfo.stck_mxpr})
+                      </NumUp>
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>저가</TextSimpleGray>
-                      <NumDown>{stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})</NumDown>
+                      <NumDown>
+                        {stockInfo.stck_lwpr} (하한가 {stockInfo.stck_llam})
+                      </NumDown>
                     </PriceInfos>
                   </PriceInfoMid>
                   <PriceInfoRight>
@@ -385,7 +403,9 @@ export default function TradeOrder() {
                     </PriceInfos>
                     <PriceInfos>
                       <TextSimpleGray>거래대금(백만)</TextSimpleGray>
-                      <TextSimple>{Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}</TextSimple>
+                      <TextSimple>
+                        {Math.round(parseInt(stockInfo.acml_tr_pbmn) / 1000000)}
+                      </TextSimple>
                     </PriceInfos>
                   </PriceInfoRight>
                 </InfoRight>

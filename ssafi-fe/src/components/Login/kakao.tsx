@@ -20,7 +20,7 @@ const Kakao = () => {
             code,
           };
           const response = await axios.post(
-            'http://localhost:8081/api/user/social-login',
+            'http://localhost:8083/api/user/social-login',
             request,
           );
 

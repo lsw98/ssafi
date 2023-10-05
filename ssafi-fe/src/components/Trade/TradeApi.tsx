@@ -178,7 +178,7 @@ export default function TradeApi() {
       const socialLoginToken = localStorage.getItem('accessToken');
       axios
         .post(
-          'http://localhost:8081/api/member/key-account',
+          'http://localhost:8083/api/member/key-account',
           {
             appKey: appKey, // 'appKey'로 변경
             secretKey: secretKey, // 'secretKey'로 변경

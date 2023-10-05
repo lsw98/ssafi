@@ -123,7 +123,7 @@ export default function Header() {
     }
     try {
       await axios.post(
-        'http://localhost:8081/api/logout',
+        'http://localhost:8083/api/logout',
         {},
         {
           headers: {

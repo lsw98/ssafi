@@ -60,49 +60,43 @@ const TradeArea = styled.div`
 `;
 
 export default function Trade() {
-  // 기능 코드 파트
   const navigate = useNavigate();
   const location = useLocation();
   const [hasApi, setHasApi] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    axios.get('https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/member/key-account',
-      {
-        headers: {
-          Authorization: token,
-        },
-      },
-    ).then((res) => {
-      console.log(res);
-    });
-  });
-  //   const fetchData = async () => {
-  //     try {
-  //       const responseData = await axios.get('/member/key-account');
-  //       if (responseData.status === 200) {
-  //         console.log(responseData);
-  //         if (responseData.data.appkey !== null) {
-  //           setHasApi(true);
-  //         } else {
-  //           setHasApi(false);
-  //           navigate('/trade/api');
-  //         }
-  //       } else {
-  //         console.log(`Request failed with status: ${responseData.status}`);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [navigate]);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const responseData = await axios.get(
+          'http://localhost:8083/api/member/key-account',
+          {
+            headers: {
+              Authorization: token, // 'Bearer' 토큰 타입을 추가해주었습니다.
+            },
+          },
+        );
 
-  // useEffect(() => {
-  //   axios.get('/member/key-account').then((res) => {
-  //     console.log(res);
-  //   });
-  // }, []);
+        if (responseData.status === 200) {
+          console.log(responseData);
+          if (responseData.data.appKey) {
+            setHasApi(true);
+            console.log('앱키 있음');
+          } else {
+            setHasApi(false);
+            console.log('앱키 없음');
+            navigate('/trade/api');
+          }
+        } else {
+          console.log(`Request failed with status: ${responseData.status}`);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toAI = () => {
     if (!hasApi) {
