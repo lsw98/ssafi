@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from '../../api/apiControlller';
+// import axios from '../../api/apiControlller';
+import axios from 'axios';
 import handleScroll from '../../utils/scrollUtils';
 import SemiCircleProgress from './SemiCircleProgress';
 import { ReactComponent as EditBtn } from '../../assets/icons/edit.svg';
@@ -77,7 +78,7 @@ const InputBox = styled.input`
   outline: none;
   font-size: 18px;
   margin-top: 30px;
-  
+
   &::placeholder {
     color: var(--gray-color);
     // padding: 5px;
@@ -130,15 +131,15 @@ export default function TradeAi() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   axios.get('/ai').then((res) => {
-  //     if (res.data.aiBudget > 0) {
-  //       setHasResult(true);
-  //     } else {
-  //       setHasResult(false);
-  //     }
-  //   });
-  // });
+  useEffect(() => {
+    axios.get('http://localhost:8083/api/ai').then((res) => {
+      if (res.data.aiBudget > 0) {
+        setHasResult(true);
+      } else {
+        setHasResult(false);
+      }
+    });
+  });
 
   // const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   setBotName(event.target.value);
@@ -146,24 +147,33 @@ export default function TradeAi() {
 
   return (
     <Container>
-      {hasResult && <SubContainer>
-        {isTrade ? (
-          <Title color='var(--dark-color)'>진행 중인 투자 상황을 분석해드려요</Title>
+      {hasResult && (
+        <SubContainer>
+          {isTrade ? (
+            <Title color="var(--dark-color)">
+              진행 중인 투자 상황을 분석해드려요
+            </Title>
           ) : (
-          <Title color='var(--dark-color)'>최근 진행하신 트레이딩 결과입니다</Title>
-        )}
-        <BoxContainer width='1280px' style={{ alignItems: 'center' }}>
-          <Box>
-            {stockRateInfo.map((item) => (
-              <SemiCircleProgress color={item.category} percent={item.percent}/>
-            ))}
-          </Box>
-          <Box width='860px'>
-            <TradeChart />
-          </Box>
-        </BoxContainer>
-      </SubContainer>}
-      <SubContainer className='small'>
+            <Title color="var(--dark-color)">
+              최근 진행하신 트레이딩 결과입니다
+            </Title>
+          )}
+          <BoxContainer width="1280px" style={{ alignItems: 'center' }}>
+            <Box>
+              {stockRateInfo.map((item) => (
+                <SemiCircleProgress
+                  color={item.category}
+                  percent={item.percent}
+                />
+              ))}
+            </Box>
+            <Box width="860px">
+              <TradeChart />
+            </Box>
+          </BoxContainer>
+        </SubContainer>
+      )}
+      <SubContainer className="small">
         <div style={{ display: 'flex', marginTop: '16px' }}>
           {/* <Title weight={600} color='var(--point-color)'>{botName}</Title> */}
           {isTrade ? (
@@ -173,12 +183,15 @@ export default function TradeAi() {
           )}
         </div>
         <BoxContainer height={'450px'}>
-          <Box color='var(--white-color)'>
+          <Box color="var(--white-color)">
             <div style={{ margin: '120px' }} />
             {/* <Text color='var(--dark-color)'>여러분의 SSAFI AI에 이름을 붙여주세요</Text> */}
-            <Text color='var(--dark-color)'>
-              투자 전략을 알려주세요!<br/>
-              <br/>입력한 값을 바탕으로 <br/>트레이딩이 진행됩니다.
+            <Text color="var(--dark-color)">
+              투자 전략을 알려주세요!
+              <br />
+              <br />
+              입력한 값을 바탕으로 <br />
+              트레이딩이 진행됩니다.
             </Text>
             {/* <Row>
               <InputBox
@@ -190,17 +203,23 @@ export default function TradeAi() {
               <EditBtn />
             </Row> */}
           </Box>
-          <Box width='640px' color='var(--dark-color)'>
+          <Box width="640px" color="var(--dark-color)">
             <TradeInput
-              isTrade={isTrade} setIsTrade={setIsTrade}
+              isTrade={isTrade}
+              setIsTrade={setIsTrade}
               setShowModal={setShowModal}
-              inputData={inputData} setInputData={setInputData}
-              />
+              inputData={inputData}
+              setInputData={setInputData}
+            />
           </Box>
         </BoxContainer>
       </SubContainer>
       {showModal && (
-        <ConfirmModal inputData={inputData} closeModal={setShowModal} setIsTrade={setIsTrade}/>
+        <ConfirmModal
+          inputData={inputData}
+          closeModal={setShowModal}
+          setIsTrade={setIsTrade}
+        />
       )}
     </Container>
   );

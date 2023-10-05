@@ -19,11 +19,13 @@ const PriceList = styled.div`
   height: 90%;
 `;
 
-const PriceItem = styled.div<{ lower?: boolean, border?: boolean }>`
-  color: ${(props) => (props.lower ? 'var(--lower-color)' : 'var(--upper-color)')};
-  background-color: ${(props) => (props.lower ? 'var(--light-lower-color)' : 'var(--light-upper-color)')};
+const PriceItem = styled.div<{ lower?: boolean; border?: boolean }>`
+  color: ${(props) =>
+    props.lower ? 'var(--lower-color)' : 'var(--upper-color)'};
+  background-color: ${(props) =>
+    props.lower ? 'var(--light-lower-color)' : 'var(--light-upper-color)'};
   border: ${(props) => (props.border ? '2px solid var(--black-color)' : '')};
-  font-size: 0.9em;;
+  font-size: 0.9em;
   text-align: end;
   padding: 3px 6px;
   margin: 2px 0;
@@ -80,7 +82,7 @@ const InputLabel = styled.label`
   pointer-events: none;
 `;
 
-const InputSpan = styled.span<{ right?: string}>`
+const InputSpan = styled.span<{ right?: string }>`
   position: absolute;
   right: ${(props) => props.right || '8px'};
   top: 50%;
@@ -112,11 +114,11 @@ const ButtonReset = styled.button`
   background-color: var(--light-gray-color);
   font-size: 14px;
   letter-spacing: 1px;
-  &.sell{
+  &.sell {
     color: var(--white-color);
     background-color: var(--lower-color);
   }
-  &.buy{
+  &.buy {
     color: var(--white-color);
     background-color: var(--upper-color);
   }
@@ -270,16 +272,20 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
     }
   };
 
-  const handleMarketClick = (type : number) => {
+  const handleMarketClick = (type: number) => {
     if (division === '00') {
       setDivision('01'); // 시장을 선택
       setMarketChecked(true);
       setSpecifiedChecked(false); // 지정은 선택 해제
       // 시장가 선택 시, 매도호가 중 askingPrices.askp1를 가격으로 설정
       if (askingPrices && type === 1) {
-        setPrice(askingPrices.askp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        setPrice(
+          askingPrices.askp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+        );
       } else if (askingPrices && type === 2) {
-        setPrice(askingPrices.bidp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+        setPrice(
+          askingPrices.bidp1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+        );
       }
     }
   };
@@ -307,7 +313,8 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
 
   useEffect(() => {
     // amount와 price가 숫자형태이면 아래와 같이 곱셈을 바로 할 수 있습니다.
-    const totalPriceNum = Number(amount) * parseInt(price.replace(/,/g, ''), 10);
+    const totalPriceNum =
+      Number(amount) * parseInt(price.replace(/,/g, ''), 10);
     if (totalPriceNum > 0) {
       setTotal(totalPriceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','));
     } else {
@@ -330,7 +337,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
 
   const handleBuyStock = () => {
-    fetchBuyStock(stockCode, division, amount, price)
+    fetchBuyStock(stockCode, division, amount, price.replace(/,/g, ''))
       .then((response) => {
         console.log('매수 성공:', response);
         setModalOpen(false);
@@ -341,7 +348,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
 
   const handleSellStock = () => {
-    fetchSellStock(stockCode, division, amount, price)
+    fetchSellStock(stockCode, division, amount, price.replace(/,/g, ''))
       .then((response) => {
         console.log('매도 성공:', response);
         setModalOpen(false);
@@ -429,7 +436,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
+                    cx="9"
+                    cy="9"
+                    r="8.5"
+                    fill="var(--white-color)"
+                    stroke="var(--gray-color)"
                   />
                   {isSpecifiedChecked && (
                     <path
@@ -449,7 +460,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
+                    cx="9"
+                    cy="9"
+                    r="8.5"
+                    fill="var(--white-color)"
+                    stroke="var(--gray-color)"
                   />
                   {isMarketChecked && (
                     <path
@@ -463,7 +478,9 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </PriceDivision>
             <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>주문가능</div>
-              <div className='big'>{accountData ? formatNumber(accountData.dnca_tot_amt) : 0 }원</div>
+              <div className="big">
+                {accountData ? formatNumber(accountData.dnca_tot_amt) : 0}원
+              </div>
             </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
@@ -475,7 +492,9 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                 />
                 <InputSpan>주</InputSpan>
               </InputWrapper>
-              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>
+                -
+              </CountBtn>
               <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
             </div>
             <InputWrapper>
@@ -494,25 +513,30 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </InputWrapper>
             <ButtonContainer>
               <ButtonReset onClick={handleReset}>초기화</ButtonReset>
-              <ButtonReset className='buy' onClick={handleOpenBuyModal}>매수</ButtonReset>
+              <ButtonReset className="buy" onClick={handleOpenBuyModal}>
+                매수
+              </ButtonReset>
               {modalOpen && (
                 <TradingModal
-                  type = '매수'
-                  stockName = {stockName}
-                  amount = {amount}
-                  price = {price}
-                  total = {total}
-                  closeModal = {setModalOpen}
-                  handleStock = {handleBuyStock}
+                  type="매수"
+                  stockName={stockName}
+                  amount={amount}
+                  price={price}
+                  total={total}
+                  closeModal={setModalOpen}
+                  handleStock={handleBuyStock}
                 />
               )}
             </ButtonContainer>
           </TradingBox>
         </div>
         <div
-          className={toggleState === 2 && balance.find((item) => item.stockName === stockName)
-            ? 'content active-content'
-            : 'content'}
+          className={
+            toggleState === 2 &&
+            balance.find((item) => item.stockName === stockName)
+              ? 'content active-content'
+              : 'content'
+          }
         >
           <PriceList>
             {askingPrices && (
@@ -533,7 +557,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   {askingPrices.bidp1}
                   <div className="volume">{askingPrices.bidp_rsqn1}</div>
                 </PriceItem>
-                <PriceItem >
+                <PriceItem>
                   {askingPrices.bidp2}
                   <div className="volume">{askingPrices.bidp_rsqn2}</div>
                 </PriceItem>
@@ -555,7 +579,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
+                    cx="9"
+                    cy="9"
+                    r="8.5"
+                    fill="var(--white-color)"
+                    stroke="var(--gray-color)"
                   />
                   {isSpecifiedChecked && (
                     <path
@@ -575,7 +603,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                   fill="none"
                 >
                   <circle
-                    cx="9" cy="9" r="8.5" fill="var(--white-color)" stroke="var(--gray-color)"
+                    cx="9"
+                    cy="9"
+                    r="8.5"
+                    fill="var(--white-color)"
+                    stroke="var(--gray-color)"
                   />
                   {isMarketChecked && (
                     <path
@@ -589,7 +621,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </PriceDivision>
             <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>매도 가능 수량</div>
-              <div className='big'>2 주</div>
+              <div className="big">2 주</div>
             </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
@@ -601,7 +633,9 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                 />
                 <InputSpan>주</InputSpan>
               </InputWrapper>
-              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>
+                -
+              </CountBtn>
               <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
             </div>
             <InputWrapper>
@@ -620,16 +654,18 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </InputWrapper>
             <ButtonContainer>
               <ButtonReset onClick={handleReset}>초기화</ButtonReset>
-              <ButtonReset className='sell' onClick={handleOpenSellModal}>매도</ButtonReset>
+              <ButtonReset className="sell" onClick={handleOpenSellModal}>
+                매도
+              </ButtonReset>
               {modalOpen && (
                 <TradingModal
-                  type = '매도'
-                  stockName = {stockName}
-                  amount = {amount}
-                  price = {price}
-                  total = {total}
-                  closeModal = {setModalOpen}
-                  handleStock = {handleBuyStock}
+                  type="매도"
+                  stockName={stockName}
+                  amount={amount}
+                  price={price}
+                  total={total}
+                  closeModal={setModalOpen}
+                  handleStock={handleSellStock}
                 />
               )}
             </ButtonContainer>
@@ -639,7 +675,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
           className={toggleState === 3 ? 'content active-content' : 'content'}
         >
           <Text>
-            정정할 미체결 내역이 없습니다. <br/>
+            정정할 미체결 내역이 없습니다. <br />
             매수, 매도를 먼저 진행해주세요.
           </Text>
         </div>

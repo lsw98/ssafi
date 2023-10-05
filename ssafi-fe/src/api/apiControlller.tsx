@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-export const BASE_URL = 'http://localhost:8081/api';
+export const BASE_URL = 'http://localhost:8083/api';
 
 const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'content-type': 'application/json',
-    // 'Authorization': access
+    accept: 'application/json',
   },
+  withCredentials: true,
 });
 
 const getAccessToken = () => {

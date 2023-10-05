@@ -132,8 +132,7 @@ export default function Header() {
         },
       );
       console.log(token);
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.clear();
       setIsLoggedIn(false);
       window.alert('로그아웃되었습니다.');
     } catch (error) {
