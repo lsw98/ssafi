@@ -659,17 +659,26 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
               </ButtonReset>
               {modalOpen && (
                 <TradingModal
-                  type="매도"
-                  stockName={stockName}
-                  amount={amount}
-                  price={price}
-                  total={total}
-                  closeModal={setModalOpen}
-                  handleStock={handleSellStock}
+                  type = '매도'
+                  stockName = {stockName}
+                  amount = {amount}
+                  price = {price}
+                  total = {total}
+                  closeModal = {setModalOpen}
+                  handleStock = {handleSellStock}
                 />
               )}
             </ButtonContainer>
           </TradingBox>
+        </div>
+        <div
+          className={toggleState === 2 && !(balance.find((item) => item.stockName === stockName))
+            ? 'content active-content'
+            : 'content'}
+        >
+          <Text>
+            보유하고 있는 {stockName} 주가 없습니다.
+          </Text>
         </div>
         <div
           className={toggleState === 3 ? 'content active-content' : 'content'}

@@ -94,18 +94,8 @@ const TradingModal = ({ type, stockName, amount, price, total, closeModal, handl
 
   const handleStartBtn = (start: boolean) => {
     if (start) {
-      // check 눌려있으면 api 요청 보내서 ai 트레이딩 시작
-      // 요청 성공하면 모달 닫고 트레이딩 중으로 상태 변경
-      // axios.post('/ai', {
-      //   aiBudget: parseInt(inputData.aiBudget.replace(/[^0-9]/g, ''), 10),
-      //   aiGoal: parseInt(inputData.aiGoal.replace(/[^0-9]/g, ''), 10),
-      //   riskRatio: inputData.riskRatio,
-      //   neutralRatio: inputData.neutralRatio,
-      //   safetyRatio: inputData.safetyRatio,
-      // }).then((res) => {
         closeModal(false);
         handleStock();
-      // });
     }
   };
 
