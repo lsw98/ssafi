@@ -66,7 +66,7 @@ export const fetchTradeVolumeRanking = async (callback: any) => {
   try {
     const currentTime = getCurrentTime();
     const response = await axios.get(
-      'https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/quotations/volume-rank',
+      '/uapi/domestic-stock/v1/quotations/volume-rank',
       config,
     );
     console.log(response.data);
