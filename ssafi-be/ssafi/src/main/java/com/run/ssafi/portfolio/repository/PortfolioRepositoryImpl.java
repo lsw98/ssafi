@@ -3,7 +3,7 @@ package com.run.ssafi.portfolio.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.run.ssafi.domain.QPortfolio;
+import com.run.ssafi.domain.QKospi;
 import com.run.ssafi.portfolio.vo.PortfolioVo;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -25,20 +25,22 @@ public class PortfolioRepositoryImpl implements PortfolioCustomRepository{
 
             portfolioVo = queryFactory
                     .select(Projections.constructor(PortfolioVo.class,
-                            QPortfolio.portfolio.kospi.kospiName.as("recommendedStock")
+                            QKospi.kospi.kospiName.as("recommendedStock")
                     ))
-                    .from(QPortfolio.portfolio)
-                    .where(portfolioPortTypeEq(type))
+                    .from(QKospi.kospi)
+                    .where(kospiTypeEq(type))
+                    .orderBy(QKospi.kospi.kospiRank.asc())
                     .limit(1)
                     .fetchOne();
+
 
             return portfolioVo;
         }
         portfolioVo = queryFactory
                 .select(Projections.constructor(PortfolioVo.class,
-                        QPortfolio.portfolio.kospi.kospiName.as("recommendedStock")
+                        QKospi.kospi.kospiName.as("recommendedStock")
                 ))
-                .from(QPortfolio.portfolio)
+                .from(QKospi.kospi)
                 .limit(1)
                 .fetchOne();
 
@@ -46,7 +48,7 @@ public class PortfolioRepositoryImpl implements PortfolioCustomRepository{
 
     }
 
-    private BooleanExpression portfolioPortTypeEq(String portType) {
-        return QPortfolio.portfolio.portType.eq(portType);
+    private BooleanExpression kospiTypeEq(String type) {
+        return QKospi.kospi.kospiType.eq(type);
     }
 }

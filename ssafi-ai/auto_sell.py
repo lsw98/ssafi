@@ -4,21 +4,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import join
 from db import engine, Session
 from KISapi import _getAccessToken, _getStockPrice, _buyStock, _sellStock, _getStockBalance
-from today_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
+from load_prediction import danger_fall, danger_rise, neutral_fall, neutral_rise, safe_fall, safe_rise
 
 Base.metadata.create_all(engine)
 
 session = Session()
-new_member = Member(email="lsw@gmail.com", password="1234", role="member", account_prefix = '50090046', account_suffix = '01',
-                    app_key = "PSzvBwVvCqlukNKHciYB1xffeT9jS3590TMx", secret_key = "k6tJ0l9PXUzUejoFOCt/5kLDS5fFh8aQ+/WlHlKiuBd5jETKD0dXf2dZhK7Ca1Rl4klUB7zZZW2oq70VZBIRyLrIEs2s7VQcZIyslb/blJVamaKf5I+sVIFR2zEZCGrQI1Nfl/dFF306fiLhFu4Qcep6iFJGnSd5o66qLsAHWaq6Qfyp30A=")
-session.add(new_member)
-session.commit()
-new_trade = Aitrade(id=1, ai_budget = 0, ai_goal = 60000000, risk_ratio = 0.4, neutral_ratio = 0.3, safety_ratio = 0.3, trading_start_yn = True)
-session.add(new_trade)
-session.commit()
-new_hold = Hold(user_id = 1, kospi_id = 1)
-session.add(new_hold)
-session.commit()
 members = session.query(Member).all()
 
 for member in members:
@@ -27,7 +17,7 @@ for member in members:
     trade_info = session.get(Aitrade, member.id)
     
     # 홀드 (매수/매도 안 할 종목) 정보  
-    hold_statement = select(Kospi).select_from(join(Kospi, Hold)).filter(Hold.member == member.id)
+    hold_statement = select(Kospi).select_from(join(Kospi, Hold)).filter(Hold.hold_id == member.id)
     hold_rows = session.scalars(hold_statement).all()
     hold_info = []
     for hold in hold_rows:

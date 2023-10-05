@@ -2,6 +2,7 @@ package com.run.ssafi.stock.service;
 
 import com.google.gson.Gson;
 import com.run.ssafi.config.auth.MemberDetail;
+import com.run.ssafi.domain.BalanceHistory;
 import com.run.ssafi.domain.HoldStock;
 import com.run.ssafi.domain.InterestStock;
 import com.run.ssafi.domain.Kospi;
@@ -11,6 +12,7 @@ import com.run.ssafi.domain.TradeRecord;
 import com.run.ssafi.exception.customexception.StockException;
 import com.run.ssafi.exception.message.StockExceptionMessage;
 import com.run.ssafi.member.dto.MemberKeyUpdateRequestDto;
+import com.run.ssafi.member.repository.MemberRepository;
 import com.run.ssafi.message.custom_message.AuthResponseMessage;
 import com.run.ssafi.message.custom_message.StockResponseMessage;
 import com.run.ssafi.stock.dto.AuthResponseDto;
@@ -40,6 +42,7 @@ import com.run.ssafi.stock.repository.StockIndexRepository;
 import com.run.ssafi.stock.repository.TradeRecordRepository;
 import com.run.ssafi.stock.vo.BalanceHistoryVo;
 import com.run.ssafi.stock.vo.HoldStockVo;
+import com.run.ssafi.stock.vo.InquireBalanceResponseBodyOutput2Vo;
 import com.run.ssafi.stock.vo.InterestStockVo;
 import com.run.ssafi.stock.vo.KospiVo;
 import com.run.ssafi.stock.vo.StockIndexVo;
@@ -65,6 +68,7 @@ public class StockServiceImpl implements StockService {
     private final BalanceHistoryRepository balanceHistoryRepository;
     private final StockIndexRepository stockIndexRepository;
     private final TradeRecordRepository tradeRecordRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public AuthResponseDto getAuth(MemberKeyUpdateRequestDto requestDto) {
@@ -304,6 +308,73 @@ public class StockServiceImpl implements StockService {
                 .build();
 
         return tradeRecordResponseDto;
+    }
+
+    @Override
+    public void checkAllUsersBalance() {
+        List<Member> memberList = memberRepository.findAllLinkedMembers();
+        System.out.println(memberList.toString());
+        for (Member member : memberList) {
+            AuthResponseDto authResponseDto = this.getAuth(member);
+
+            InquireBalanceRequestHeaderDto inquireBalanceRequestHeaderDto = InquireBalanceRequestHeaderDto.builder()
+                    .authorization(authResponseDto.getTokenType() + " " + authResponseDto.getAccessToken())
+                    .appKey(authResponseDto.getAppKey())
+                    .appSecret(authResponseDto.getSecretKey())
+                    .trId("VTTC8434R")
+                    .build();
+
+            InquireBalanceRequestParameterDto inquireBalanceRequestParameterDto = InquireBalanceRequestParameterDto.builder()
+                    .CANO(member.getAccountPrefix())
+                    .ACNT_PRDT_CD(member.getAccountSuffix())
+                    .AFHR_FLPR_YN("N")
+                    .OFL_YN("")
+                    .INQR_DVSN("02")
+                    .UNPR_DVSN("01")
+                    .FUND_STTL_ICLD_YN("N")
+                    .FNCG_AMT_AUTO_RDPT_YN("N")
+                    .PRCS_DVSN("01")
+                    .CTX_AREA_FK100("")
+                    .CTX_AREA_NK100("")
+                    .build();
+
+            InquireBalanceRequestDto inquireBalanceRequestDto = new InquireBalanceRequestDto(inquireBalanceRequestHeaderDto, inquireBalanceRequestParameterDto);
+
+            InquireBalanceResponseDto inquireBalanceResponseDto = this.getInquireBalance(inquireBalanceRequestDto);
+
+            List<InquireBalanceResponseBodyOutput2Vo> output2VoList = inquireBalanceResponseDto.getInquireBalanceResponseBodyDto().getOutput2();
+
+            BalanceHistory balanceHistory;
+
+            InquireBalanceResponseBodyOutput2Vo output2Vo = output2VoList.get(0);
+
+            Double evluPflsAmt = null;
+            Double evluPflsRt = null;
+
+            if (output2Vo.getEvlu_pfls_smtl_amt() != null){
+                evluPflsAmt = Double.parseDouble(output2Vo.getEvlu_pfls_smtl_amt());
+            }
+
+            if (output2Vo.getEvlu_pfls_rt() != null){
+                evluPflsRt = Double.parseDouble(output2Vo.getEvlu_pfls_rt());
+            }
+
+            balanceHistory = BalanceHistory.builder()
+                    .riskType("None")
+                    .member(member)
+                    .evluPflsAmt(evluPflsAmt)
+                    .evluPflsRt(evluPflsRt)
+                    .build();
+
+            balanceHistoryRepository.save(balanceHistory);
+        }
+    }
+
+    private AuthResponseDto getAuth(Member member) {
+        AuthResponseDto authResponseDto = new AuthResponseDto();
+        extracted(member, authResponseDto);
+
+        return authResponseDto;
     }
 
     public void extracted(Member member, AuthResponseDto authResponseDto) {

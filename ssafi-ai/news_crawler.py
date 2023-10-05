@@ -18,7 +18,6 @@ news_category_crawler('https://www.mk.co.kr/news/stock/public-announcement/', "p
 # 기업정보
 news_category_crawler('https://www.mk.co.kr/news/stock/business-information/', "business_information", news_list)
 
-
 Base.metadata.create_all(engine)
 
 session = Session()

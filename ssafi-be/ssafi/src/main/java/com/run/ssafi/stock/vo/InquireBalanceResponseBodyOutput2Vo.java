@@ -40,6 +40,10 @@ public class InquireBalanceResponseBodyOutput2Vo {
     @SerializedName("evlu_pfls_smtl_amt")
     String evlu_pfls_smtl_amt;
 
+    // 평가 손익율
+    @SerializedName("evlu_pfls_rt")
+    String evlu_pfls_rt;
+
     // 자산 증감액
     @SerializedName("asst_icdc_amt")
     String asst_icdc_amt;

@@ -319,7 +319,7 @@ width: 300px;
 `;
 
 const StockName = styled.div`
-widht: 120px;
+widTh: 120px;
 font-size: 24px;
 font-weight: 600;
 color: var(--black-color);

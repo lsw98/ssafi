@@ -66,13 +66,21 @@ export default function Trade() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        // 토큰이 없을 경우
+        alert('로그인이 필요합니다.');
+        navigate('/'); // 메인 페이지로 이동. (경로는 실제 메인 페이지 경로에 따라 수정해야 합니다.)
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('accessToken');
         const responseData = await axios.get(
           'http://localhost:8083/api/member/key-account',
           {
             headers: {
-              Authorization: token, // 'Bearer' 토큰 타입을 추가해주었습니다.
+              Authorization: token,
             },
           },
         );

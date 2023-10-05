@@ -22,7 +22,7 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 4px 0;
+  margin: 5px 0;
 `;
 
 const LeftContainer = styled.div`
@@ -75,8 +75,8 @@ const StockEach = ({ stock, clickedStar, toggleStar, onStockClick, toggleState }
         >
           <path
             d="M10 2.60396L11.7217 6.74345L11.9563 7.30742L12.5651 7.35623L17.0341 7.7145L13.6292 10.6311L13.1653 11.0285L13.307 11.6226L14.3473 15.9835L10.5213 13.6466L10 13.3282L9.47875 13.6466L5.65272 15.9835L6.69296 11.6226L6.83468 11.0285L6.3708 10.6311L2.96595 7.7145L7.43488 7.35623L8.04372 7.30742L8.27829 6.74345L10 2.60396Z"
-            stroke="var(--middle-color)"
-            stroke-width="2"
+            stroke="var(--star-color)"
+            stroke-width="1.5"
           />
         </svg>
         <Name ref={nameRef} width={namewidth} onClick={() => { onStockClick(stock.code); }}>

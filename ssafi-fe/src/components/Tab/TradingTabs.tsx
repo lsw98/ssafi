@@ -16,7 +16,7 @@ const PriceList = styled.div`
   display: flex;
   flex-direction: column;
   width: 30%;
-  height: 90%;
+  gap: 4px;
 `;
 
 const PriceItem = styled.div<{ lower?: boolean; border?: boolean }>`
@@ -28,7 +28,6 @@ const PriceItem = styled.div<{ lower?: boolean; border?: boolean }>`
   font-size: 0.9em;
   text-align: end;
   padding: 3px 6px;
-  margin: 2px 0;
   .volume {
     font-size: 0.7em;
     color: var(--gray-color);
@@ -124,38 +123,6 @@ const ButtonReset = styled.button`
   }
 `;
 
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ModalContent = styled.div`
-  background-color: var(--white-color);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  h1 {
-    margin-top: 0;
-    font-size: 24px;
-  }
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    &:first-child {
-      margin-right: 10px;
-    }
-  }
-`;
-
 const Text = styled.div`
   font-size: 14px;
   font-weight: 300;
@@ -197,11 +164,6 @@ interface TradingTabsProps {
   stockCode: string;
 }
 
-interface BalanceProps {
-  stockName: string;
-  amount: string;
-}
-
 function formatNumber(num: string | number) {
   return Intl.NumberFormat().format(Number(num));
 }
@@ -220,28 +182,24 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const [total, setTotal] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [accountData, setAccountData] = useState<any | null>(null);
-  const [balance, setBalance] = useState<BalanceProps[]>([]);
+  const [sellAble, setSellAble] = useState('0');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await fetchCheckAccount();
         if (!Array.isArray(result)) {
-          const updatedBalance = result.refinedOutput.map((item: any) => ({
-            stockName: item.prdt_name,
-            amount: item.hldg_qty,
-          }));
-
-          setBalance(updatedBalance);
+          const updatedBalance = result.refinedOutput.filter((item) => item.prdt_name === stockName);
+          if (updatedBalance) {
+            setSellAble(updatedBalance[0].hldg_qty);
+          }
         }
       } catch (error) {
         console.error('Fetching Error:', error);
       }
     };
     fetchData();
-  }, []);
-
-  console.log(balance);
+  }, [stockName]);
 
   useEffect(() => {
     const getAskingPrices = async () => {
@@ -261,7 +219,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
     };
 
     fetchData();
-  }, [accountData]);
+  }, []);
 
   const handleSpecifiedClick = () => {
     if (division === '01') {
@@ -304,7 +262,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   }, [stockName, toggleState]);
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
+    if (toggleState === 2 && Number(e.target.value) > Number(sellAble)) {
+      setAmount(sellAble);
+    } else {
+      setAmount(e.target.value);
+    }
   };
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const priceNumber = e.target.value.replace(/,/g, '');
@@ -327,13 +289,6 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   };
   const handleOpenSellModal = () => {
     setModalOpen(true);
-  };
-
-  const handleCloseBuyModal = () => {
-    setModalOpen(false);
-  };
-  const handleCloseSellModal = () => {
-    setModalOpen(false);
   };
 
   const handleBuyStock = () => {
@@ -361,7 +316,11 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
   const handleSetAmountChange = (add: boolean) => {
     const amountCount = Number(amount);
     if (add) {
-      setAmount((amountCount + 1).toString());
+      if (toggleState === 1 && Number(accountData.dnca_tot_amt) >= Number(total.replace(/,/g, ''))) {
+        setAmount((amountCount + 1).toString());
+      } else if (toggleState === 2 && Number(sellAble) > Number(amount)) {
+        setAmount((amountCount + 1).toString());
+      }
     } else if (amountCount > 0) {
       setAmount((amountCount - 1).toString());
     }
@@ -398,15 +357,15 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem lower={true}>
-                  {askingPrices.askp3}
-                  <div className="volume">{askingPrices.askp_rsqn3}</div>
+                  {formatNumber(askingPrices.askp3)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn3)}</div>
                 </PriceItem>
                 <PriceItem lower={true}>
-                  {askingPrices.askp2}
-                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                  {formatNumber(askingPrices.askp2)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem lower={true} border={true}>
-                  {askingPrices.askp1}
+                  {formatNumber(askingPrices.askp1)}
                   <div className="volume">{askingPrices.askp_rsqn1}</div>
                 </PriceItem>
               </>
@@ -415,12 +374,12 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem>
-                  {askingPrices.bidp1}
-                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                  {formatNumber(askingPrices.bidp1)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn1)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp2}
-                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                  {formatNumber(askingPrices.bidp2)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn2)}</div>
                 </PriceItem>
               </>
             )}
@@ -532,8 +491,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
         </div>
         <div
           className={
-            toggleState === 2 &&
-            balance.find((item) => item.stockName === stockName)
+            toggleState === 2 && sellAble !== '0'
               ? 'content active-content'
               : 'content'
           }
@@ -542,28 +500,28 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             {askingPrices && (
               <>
                 <PriceItem lower={true}>
-                  {askingPrices.askp2}
-                  <div className="volume">{askingPrices.askp_rsqn2}</div>
+                  {formatNumber(askingPrices.askp2)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem lower={true}>
-                  {askingPrices.askp1}
-                  <div className="volume">{askingPrices.askp_rsqn1}</div>
+                  {formatNumber(askingPrices.askp1)}
+                  <div className="volume">{formatNumber(askingPrices.askp_rsqn1)}</div>
                 </PriceItem>
               </>
             )}
             {askingPrices && (
               <>
                 <PriceItem border={true}>
-                  {askingPrices.bidp1}
-                  <div className="volume">{askingPrices.bidp_rsqn1}</div>
+                  {formatNumber(askingPrices.bidp1)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn1)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp2}
-                  <div className="volume">{askingPrices.bidp_rsqn2}</div>
+                  {formatNumber(askingPrices.bidp2)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn2)}</div>
                 </PriceItem>
                 <PriceItem>
-                  {askingPrices.bidp3}
-                  <div className="volume">{askingPrices.bidp_rsqn3}</div>
+                  {formatNumber(askingPrices.bidp3)}
+                  <div className="volume">{formatNumber(askingPrices.bidp_rsqn3)}</div>
                 </PriceItem>
               </>
             )}
@@ -621,7 +579,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
             </PriceDivision>
             <PriceAble>
               <div style={{ color: 'var(--gray-color)' }}>매도 가능 수량</div>
-              <div className="big">2 주</div>
+              <div className="big">{sellAble} 주</div>
             </PriceAble>
             <div style={{ display: 'flex' }}>
               <InputWrapper>
@@ -633,9 +591,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
                 />
                 <InputSpan>주</InputSpan>
               </InputWrapper>
-              <CountBtn onClick={() => handleSetAmountChange(false)}>
-                -
-              </CountBtn>
+              <CountBtn onClick={() => handleSetAmountChange(false)}>-</CountBtn>
               <CountBtn onClick={() => handleSetAmountChange(true)}>+</CountBtn>
             </div>
             <InputWrapper>
@@ -672,7 +628,7 @@ function TradingTabs({ stockName, stockCode }: TradingTabsProps) {
           </TradingBox>
         </div>
         <div
-          className={toggleState === 2 && !(balance.find((item) => item.stockName === stockName))
+          className={toggleState === 2 && sellAble === '0'
             ? 'content active-content'
             : 'content'}
         >
