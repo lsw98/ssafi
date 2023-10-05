@@ -31,7 +31,6 @@
   border: none;
   border-top: 4px solid var(--point-color);
   display: block;
-  font-size: 18px;
   font-weight: 500;
   color: var(--dark-color);
 }

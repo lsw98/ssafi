@@ -24,6 +24,7 @@ const PriceItem = styled.div<{ color: string }>`
   .volume {
     font-size: 0.8em;
     color: black;
+  }
 `;
 
 const TradingBox = styled.div`

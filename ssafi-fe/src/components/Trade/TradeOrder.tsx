@@ -39,7 +39,7 @@ const GraphContainer = styled.div`
 `;
 
 const StockInfo = styled.div`
-  display-flex;
+  display: flex;
   height: 20%;
 `;
 
