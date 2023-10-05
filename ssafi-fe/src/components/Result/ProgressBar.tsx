@@ -18,15 +18,26 @@ export default function ProgressBar({ mbtiPoint }: MbtiProps) {
   const [width, setWidth] = React.useState<number>(0);
   const [isReversed, setIsReversed] = React.useState<boolean>(false);
   const [mbtiPercent, setMbtiPercent] = React.useState<number>(0);
+  const [barRadius, setBarRadius] = React.useState<string>('');
 
   React.useEffect(() => {
     if (mbtiPoint.percentage < 50) {
       setMbtiPercent(100 - mbtiPoint.percentage);
       setWidth((100 - mbtiPoint.percentage) * 5);
       setIsReversed(true);
+      if (mbtiPoint.percentage === 0) {
+        setBarRadius('50px');
+      } else {
+        setBarRadius('0px 50px 50px 0px');
+      }
     } else {
       setMbtiPercent(mbtiPoint.percentage);
       setWidth(mbtiPoint.percentage * 5);
+      if (mbtiPoint.percentage === 100) {
+        setBarRadius('50px');
+      } else {
+        setBarRadius('50px 0px 0px 50px');
+      }
     }
   }, []);
 
@@ -34,7 +45,10 @@ export default function ProgressBar({ mbtiPoint }: MbtiProps) {
     <ProgressBarContainer>
       <ElementA isReversed={isReversed}>{mbtiPoint.element[0]}</ElementA>
       <EmptyBar isReversed={isReversed}>
-        <PercentageBar isReversed={isReversed} style={{ width: `${width}px` }}>
+        <PercentageBar isReversed={isReversed} style={{
+          width: `${width}px`,
+          borderRadius: `${barRadius}`,
+          }}>
         {mbtiPercent}%
         </PercentageBar>
       </EmptyBar>
@@ -81,12 +95,11 @@ justify-content: ${(props) => (props.isReversed ? 'end' : 'start')};
 `;
 
 const PercentageBar = styled.div<BarProps>`
-display :flex;
+display: flex;
 justify-content: center;
 align-items: center;
 height: 30px;
 color: var(--white-color);
 background-color: var(--point-color);
-border-radius: ${(props) => (props.isReversed ? '0px 50px 50px 0px' : '50px 0px 0px 50px')};
 transition: width 1s;
 `;

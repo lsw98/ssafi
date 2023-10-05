@@ -9,6 +9,7 @@ import instance from '../../api/apiControlller';
 
 interface Props {
   setSurveyDone: React.Dispatch<React.SetStateAction<boolean>>;
+  mbtiScore: number[];
 }
 
 interface TypeProp {
@@ -31,17 +32,8 @@ interface MbtiPoint {
   percentage: number;
 }
 
-export default function Result({ setSurveyDone }: Props) {
-  const tempUser = '김싸피';
-  const [mbtiPoint, setMbtiPoint] = React.useState<number[]>([0, 0, 0, 0]);
-
-  React.useEffect(() => {
-    const fetchMbtiPoint = async () => {
-      const data = await instance.get('/member/mbti');
-      console.log(data);
-    };
-    fetchMbtiPoint();
-  }, []);
+export default function Result({ setSurveyDone, mbtiScore }: Props) {
+  const mbtiPoint = mbtiScore;
 
   const mbtiProps: MbtiPoint[] = [
     {
@@ -112,7 +104,7 @@ export default function Result({ setSurveyDone }: Props) {
 
   return (
     <ResultContainer>
-      <ResultTitle>{tempUser}님의 금융 MBTI 성향 결과</ResultTitle>
+      <ResultTitle>당신의 금융 MBTI 성향 결과</ResultTitle>
       <ResultBox>
         <MbtiTypeBox>{mbtiType}</MbtiTypeBox>
         <MbtiSummary></MbtiSummary>

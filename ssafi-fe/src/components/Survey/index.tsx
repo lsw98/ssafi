@@ -83,14 +83,16 @@ export default function Survey({ setSurveyDone }: Props) {
     new Array(questionList.length).fill(-1),
   );
 
-  const handleSurveyData = async (surveyData: number[]) => {
+  const handleSurveyData = async (surveyData: number[], mbtiString: string) => {
     const request = {
       'aiScore': surveyData[0],
       'pbScore': surveyData[1],
       'mwScore': surveyData[2],
       'lcScore': surveyData[3],
+      'type': mbtiString,
     };
-    const submit = await instance.put('/member/mbti/score', request);
+    console.log(request);
+    const submit = await instance.post('/member/mbti', request);
     console.log(submit);
   };
 
@@ -119,12 +121,36 @@ export default function Survey({ setSurveyDone }: Props) {
           mbtiPoint[3] += answerList[i];
         }
       }
+
+      let mbtiString = '';
+      if (mbtiPoint[0] >= 10) {
+        mbtiString += 'A';
+      } else {
+        mbtiString += 'I';
+      }
+
+      if (mbtiPoint[1] >= 10) {
+        mbtiString += 'P';
+      } else {
+        mbtiString += 'B';
+      }
+
+      if (mbtiPoint[2] >= 10) {
+        mbtiString += 'M';
+      } else {
+        mbtiString += 'W';
+      }
+
+      if (mbtiPoint[3] >= 10) {
+        mbtiString += 'L';
+      } else {
+        mbtiString += 'C';
+      }
+
       console.log(mbtiPoint);
-      handleSurveyData(mbtiPoint);
-      setSurveyDone(true);
-      window.scrollTo({
-        top: 0,
-      });
+      console.log(mbtiString);
+      handleSurveyData(mbtiPoint, mbtiString);
+      window.location.href = '/mbti';
     }
   };
 
