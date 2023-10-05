@@ -123,7 +123,7 @@ export default function Header() {
     }
     try {
       await axios.post(
-        'https://4182-2001-2d8-e1a1-4198-8857-ce11-d48a-93db.ngrok-free.app/api/logout',
+        'http://localhost:8081/api/logout',
         {},
         {
           headers: {

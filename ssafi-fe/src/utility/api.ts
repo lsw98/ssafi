@@ -1,17 +1,14 @@
 import axios from 'axios';
 // 실제투자
-const apiDomain = process.env.REACT_APP_PROD;
-const apiCano = process.env.REACT_APP_CANO_REAL;
 const apiToken = process.env.REACT_APP_PROD_TOKEN;
 const apiKey = process.env.REACT_APP_PROD_APPKEY;
 const apiSecret = process.env.REACT_APP_PROD_APPSECRET;
 // 모의투자
-const vtsDomain = process.env.REACT_APP_VTS;
 const vtsCano = process.env.REACT_APP_CANO;
 const vtsToken = process.env.REACT_APP_VTS_TOKEN;
 const vtsKey = process.env.REACT_APP_VTS_APPKEY;
 const vtsSecret = process.env.REACT_APP_VTS_APPSECRET;
-const vtsHash = process.env.REACT_APP_VTS_HASH;
+// const vtsCano = localStorage.getItem('cano') || '';
 // const vtsToken = localStorage.getItem('apiAccessToken') || '';
 // const vtsKey = localStorage.getItem('appKey') || '';
 // const vtsSecret = localStorage.getItem('secretKey') || '';
@@ -249,7 +246,7 @@ export const fetchModifyStock = async (
       appkey: vtsKey,
       appsecret: vtsSecret,
       tr_id: 'VTTC0803U',
-      hashkey: vtsHash,
+      // hashkey: vtsHash,
     },
   };
   const request = {

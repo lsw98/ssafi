@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from '../../api/apiControlller';
+// import axios from '../../api/apiControlller';
+import axios from 'axios';
 import { ReactComponent as Doubts } from '../../assets/images/doubts-button.svg';
 import ApiGuide from './ApiGuide';
 import handleScroll from '../../utils/scrollUtils';
@@ -28,9 +29,12 @@ const Container = styled.div<ContainerProps>`
   position: absolute;
   top: 50%;
   left: ${(props) => (props.dark ? '50%' : '25%')};
-  transform: ${(props) => (props.dark ? 'translate(-50%, -50%)' : 'translate(-40%, -50%)')};
-  background-color: ${(props) => (props.dark ? 'var(--dark-color)' : 'var(--white-color)')};
-  box-shadow: ${(props) => (props.dark ? 'none' : '4px 4px 12px rgba(0, 0, 0, 0.2)')};
+  transform: ${(props) =>
+    props.dark ? 'translate(-50%, -50%)' : 'translate(-40%, -50%)'};
+  background-color: ${(props) =>
+    props.dark ? 'var(--dark-color)' : 'var(--white-color)'};
+  box-shadow: ${(props) =>
+    props.dark ? 'none' : '4px 4px 12px rgba(0, 0, 0, 0.2)'};
 `;
 
 const InnerContainer = styled.div`
@@ -42,7 +46,7 @@ const InnerContainer = styled.div`
 `;
 
 const Text = styled.div`
-  display:flex;
+  display: flex;
   align-items: center;
   font-weight: 400;
   font-size: 20px;
@@ -66,7 +70,7 @@ const InputBox = styled.div`
   margin: 5px 0;
 `;
 
-const InputName = styled.div<{visibled?: boolean}>`
+const InputName = styled.div<{ visibled?: boolean }>`
   font-size: 20px;
   &.name {
     width: 31%;
@@ -80,11 +84,12 @@ const InputName = styled.div<{visibled?: boolean}>`
   }
 
   &.button {
-    background-color: ${(props) => (props.visibled ? 'var(--point-color)' : 'var(--light-gray-color)')};
+    background-color: ${(props) =>
+      props.visibled ? 'var(--point-color)' : 'var(--light-gray-color)'};
     color: var(--white-color);
     align-self: flex-end;
     padding: 6px 20px;
-    cursor:  ${(props) => (props.visibled ? 'pointer' : '')};
+    cursor: ${(props) => (props.visibled ? 'pointer' : '')};
   }
 `;
 
@@ -96,7 +101,7 @@ const Input = styled.input`
   font-size: 16px;
   margin: 20px 10px 0 0;
   padding: 0 0 1% 2%;
-  
+
   &::placeholder {
     color: var(--gray-color);
   }
@@ -140,7 +145,10 @@ export default function TradeApi() {
 
   const openApiPage = () => {
     // 한국투자증권
-    window.open('https://apiportal.koreainvestment.com/apiservice/oauth2#L_5c87ba63-740a-4166-93ac-803510bb9c02', '_blank');
+    window.open(
+      'https://apiportal.koreainvestment.com/apiservice/oauth2#L_5c87ba63-740a-4166-93ac-803510bb9c02',
+      '_blank',
+    );
   };
 
   const handleApiChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,23 +167,46 @@ export default function TradeApi() {
   };
 
   const handleButtonClick = () => {
-    if (appKey === '') {
+    if (!appKey) {
       alert('API Key를 입력해 주세요!');
-    } else if (secretKey === '') {
+    } else if (!secretKey) {
       alert('SECRET Key를 입력해 주세요!');
-    } else if (accountNumber === '') {
-      alert('계좌 번호를 입력해 주세요!');
+    } else if (!accountNumber || accountNumber.length !== 8) {
+      // 앞 8자리만 입력 체크
+      alert('계좌 번호를 8자리로 입력해 주세요!');
     } else {
-      // axios.post('/member/key-account', {
-      //   appkey: appKey,
-      //   secretkey: secretKey,
-      //   accountPrefix: 12345678, // 확인 필요
-      //   accountSuffix: 12, // 확인 필요
-      // }).then((res) => {
-        // if (res.status === 200) {
-          navigate('/trade');
-        // }
-      // });
+      const socialLoginToken = localStorage.getItem('accessToken');
+      axios
+        .post(
+          'http://localhost:8081/api/member/key-account',
+          {
+            appKey: appKey, // 'appKey'로 변경
+            secretKey: secretKey, // 'secretKey'로 변경
+            accountPrefix: accountNumber,
+            accountSuffix: '01',
+          },
+          {
+            headers: {
+              Authorization: socialLoginToken,
+            },
+          },
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            // accessToken을 'apiAcessToken'에 저장
+            console.log(res);
+            const apiAcessToken = res.data.accessToken;
+            localStorage.setItem('apiAcessToken', apiAcessToken);
+            navigate('/trade');
+          } else {
+            // 응답 코드가 200이 아닌 다른 코드를 받을 경우의 처리
+            alert(res.data.message || '알 수 없는 오류가 발생했습니다.');
+          }
+        })
+        .catch((error) => {
+          // 서버 요청 중에 오류가 발생한 경우의 처리
+          alert(error.message || '네트워크 오류가 발생했습니다.');
+        });
     }
   };
 
@@ -184,20 +215,30 @@ export default function TradeApi() {
       <Container dark={true}>
         <div style={{ width: '540px' }}>
           <InnerContainer>
-            <Text>APP Key가 없으신가요? <DoubtsButton onClick={handleOpenModal}/></Text>
-            <Text className='small'>SSAFI에서는 한국투자증권 APP Key를 통해 계좌 인증을 진행하고 있으며,
-              <br />APP Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고 있습니다.
+            <Text>
+              APP Key가 없으신가요? <DoubtsButton onClick={handleOpenModal} />
             </Text>
-            <Text className='button' onClick={openApiPage}>APP Key 발급/확인하기 &gt;</Text>
+            <Text className="small">
+              SSAFI에서는 한국투자증권 APP Key를 통해 계좌 인증을 진행하고
+              있으며,
+              <br />
+              APP Key를 인증한 회원에 한해 AI 트레이딩 서비스를 제공하고
+              있습니다.
+            </Text>
+            <Text className="button" onClick={openApiPage}>
+              APP Key 발급/확인하기 &gt;
+            </Text>
           </InnerContainer>
         </div>
       </Container>
       <Container dark={false}>
         <InnerContainer>
-          <InputName className='header'>자동 투자를 위한 정보를 입력해주세요.</InputName>
+          <InputName className="header">
+            모의투자 정보를 입력해주세요.
+          </InputName>
           <div>
             <InputBox>
-              <InputName className='name'>APP Key :</InputName>
+              <InputName className="name">APP Key :</InputName>
               <Input
                 placeholder="APP Key를 입력하세요"
                 value={appKey}
@@ -205,7 +246,7 @@ export default function TradeApi() {
               />
             </InputBox>
             <InputBox>
-              <InputName className='name'>SECRET Key :</InputName>
+              <InputName className="name">SECRET Key :</InputName>
               <Input
                 placeholder="SECRET Key를 입력하세요"
                 value={secretKey}
@@ -213,25 +254,25 @@ export default function TradeApi() {
               />
             </InputBox>
             <InputBox>
-              <InputName className='name'>계좌 번호 :</InputName>
+              <InputName className="name">계좌 번호 :</InputName>
               <Input
                 placeholder="계좌 번호를 입력하세요"
                 value={accountNumber}
                 onChange={handleAccountChange}
               />
             </InputBox>
-            <Notice>* 숫자만 입력해주세요.</Notice>
+            <Notice>* 앞 8자리만 입력하세요.</Notice>
           </div>
-          <InputName visibled={appKey !== '' && secretKey !== '' && accountNumber !== ''} className='button' onClick={handleButtonClick}>
+          <InputName
+            visibled={appKey !== '' && secretKey !== '' && accountNumber !== ''}
+            className="button"
+            onClick={handleButtonClick}
+          >
             입력하기
           </InputName>
         </InnerContainer>
       </Container>
-      {modalOpen && (
-        <ApiGuide
-          closeModal={handleCloseModal}
-        />
-      )}
+      {modalOpen && <ApiGuide closeModal={handleCloseModal} />}
     </ApiContainer>
   );
 }
