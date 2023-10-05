@@ -189,8 +189,7 @@ const AmountRanking = styled.div`
   h2 {
     color: var(--Dark, #0d1545);
     font-family: Pretendard;
-    font-size: 24px;
-    font-style: normal;
+    font-size: 16px;
     font-weight: 600;
     line-height: normal;
   }
@@ -200,10 +199,39 @@ const RankedTime = styled.div`
 display: flex;
 justify-content: end;
 width: 100%;
+color: var(--gray-color);
+font-size: 10px;
+font-weight: 300;
+margin-right: 20px;
+margin-bottom: 10px;
+`;
+
+const RankedStockList = styled.div`
+font-size: 12px;
+font-weight: 300px;
+`;
+
+const RankedStock = styled.div`
+width: 180px;
+margin-bottom: 5px;
+`;
+
+const RankedStockInfo = styled.div`
+display: flex;
+justify-content: space-between;
+align-items: center;
+`;
+
+const RankedStockText = styled.span`
+color: var(--black-color);
+`;
+
+const RankedStockNum = styled.span`
+color: var(--gray-color);
 `;
 
 const Tooltip = styled.div<{ show: boolean; color: string }>`
-  width: 200px;
+  width: 160px;
   top: 30px;
   right: 12px;
   background: var(--Sub, #e7faf7);
@@ -420,16 +448,18 @@ export default function TradeOrder() {
         <AmountRanking>
           <h2>거래량 TOP 10</h2>
           <RankedTime>{currentTime}</RankedTime>
-          <ul>
+          <RankedStockList>
             {rankingData.slice(0, 10).map((item, index) => (
-              <li
+              <RankedStock
                 key={index}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 style={{ position: 'relative' }}
               >
-                {index + 1}. {item.hts_kor_isnm}{' '}
-                {Number(item.acml_vol).toLocaleString()}
+                <RankedStockInfo>
+                  <RankedStockText>{index + 1}. {item.hts_kor_isnm}</RankedStockText>
+                  <RankedStockNum>{Number(item.acml_vol).toLocaleString()}</RankedStockNum>
+                </RankedStockInfo>
                 <Tooltip
                   show={hoveredIndex === index}
                   color={
@@ -442,9 +472,9 @@ export default function TradeOrder() {
                 >
                   {Number(item.stck_prpr).toLocaleString()} ({item.prdy_ctrt}%)
                 </Tooltip>
-              </li>
+              </RankedStock>
             ))}
-          </ul>
+          </RankedStockList>
         </AmountRanking>
       </RightColumn>
     </Container>
