@@ -116,7 +116,7 @@ const DoubtsButton = styled(Doubts)`
 const Notice = styled.div`
   font-size: 14px;
   font-weight: 300;
-  color: var(--danger-color);
+  color: var(--upper-color);
   margin: 2px 0 0 144px;
 `;
 
@@ -146,7 +146,7 @@ export default function TradeApi() {
   const openApiPage = () => {
     // 한국투자증권
     window.open(
-      'https://apiportal.koreainvestment.com/apiservice/oauth2#L_5c87ba63-740a-4166-93ac-803510bb9c02',
+      'https://securities.koreainvestment.com/main/customer/systemdown/install_non_activex_tobe.jsp?P_name=ASTx',
       '_blank',
     );
   };
