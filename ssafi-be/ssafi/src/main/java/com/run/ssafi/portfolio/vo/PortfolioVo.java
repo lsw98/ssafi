@@ -8,10 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class PortfolioVo {
-    private String type;
     private String recommendedStock;
-    private Double aiScore;
-    private Double pbScore;
-    private Double mwScore;
-    private Double lcScore;
 }

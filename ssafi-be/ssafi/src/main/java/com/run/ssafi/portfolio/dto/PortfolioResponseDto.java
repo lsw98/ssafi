@@ -1,16 +1,20 @@
 package com.run.ssafi.portfolio.dto;
 
-import com.run.ssafi.portfolio.vo.PortfolioVo;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Data
 @Getter
 public class PortfolioResponseDto {
-    private PortfolioVo portfolioVo;
+    private String type;
+    private String recommendedStock;
+    private Double aiScore;
+    private Double pbScore;
+    private Double mwScore;
+    private Double lcScore;
     private String message;
 }
