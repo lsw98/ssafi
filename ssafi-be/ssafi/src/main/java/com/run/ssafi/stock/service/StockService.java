@@ -36,4 +36,6 @@ public interface StockService {
     StockIndexResponseDto getStockIndex();
     void registerTradeRecord(MemberDetail memberDetail, TradeRecordRegisterRequestDto requestDto);
     TradeRecordResponseDto getTradeRecord(MemberDetail memberDetail);
+    void checkAllUsersBalance();
+
 }
