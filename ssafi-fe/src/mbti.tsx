@@ -1,4 +1,5 @@
 import React from 'react';
+
 import styled from 'styled-components';
 import Survey from './components/Survey';
 import Result from './components/Result';
@@ -13,12 +14,17 @@ padding: 0px 30px;
 `;
 
 export default function Mbti() {
-  const [surveyDone, setSurveyDone] = React.useState<boolean>(true);
+  const [surveyDone, setSurveyDone] = React.useState<boolean>(false);
+  const [mbtiScore, setMbtiScore] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     const fetchMbtiPoint = async () => {
-      const data = await instance.get('/member/mbti');
-      console.log(data);
+      const mbtiData = await instance.get('/portfolio');
+      const mbtiScores = mbtiData.data;
+      if (mbtiScores.aiScore !== null) {
+        setMbtiScore([mbtiScores.aiScore, mbtiScores.pbScore, mbtiScores.mwScore, mbtiScores.lcScore]);
+        setSurveyDone(true);
+      }
     };
     fetchMbtiPoint();
   }, []);
@@ -26,7 +32,7 @@ export default function Mbti() {
   return (
     <MbtiContainer>
       {surveyDone
-        ? <Result setSurveyDone={setSurveyDone} />
+        ? <Result setSurveyDone={setSurveyDone} mbtiScore={mbtiScore}/>
         : <Survey setSurveyDone={setSurveyDone} />
       }
     </MbtiContainer>
