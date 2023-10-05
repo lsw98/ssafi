@@ -50,7 +50,7 @@ const RowContainerBorder = styled(RowContainer)`
 
 const Text = styled.div<StyleProps>`
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   &.gray {
     color: var(--gray-color);
     font-weight: 400;
@@ -84,8 +84,8 @@ export default function TradeAccount() {
     };
 
     fetchData();
-    console.log(accountData);
   }, []);
+  console.log(accountData);
 
   return (
     <Container>
@@ -124,11 +124,19 @@ export default function TradeAccount() {
           </RowContainer>
           <RowContainer marginTop="20px">
             <Text>총 손익</Text>
-            <Text className="big" color="var(--upper-color)">
-              {accountData
-                ? `${parseFloat(accountData.asst_icdc_erng_rt).toFixed(2)} %`
-                : 'Loading...'}
-            </Text>
+            {accountData ? (
+              accountData.asst_icdc_erng_rt.slice(0, 1) === '-' ? (
+                <Text className="big" color="var(--lower-color)">
+                  {parseFloat(accountData.asst_icdc_erng_rt).toFixed(2)} %
+                </Text>
+              ) : (
+                <Text className="big" color="var(--upper-color)">
+                  {parseFloat(accountData.asst_icdc_erng_rt).toFixed(2)} %
+                </Text>
+              )
+            ) : (
+              <Text className="big" color="var(--black-color)">Loading...</Text>
+            )}
           </RowContainer>
         </BoxContainer>
         <BoxContainer>
