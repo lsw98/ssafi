@@ -121,7 +121,7 @@ export default function NewsHome() {
       console.log(rankedDataset);
       let rankedDataList: Array<NewsItem> = [];
       rankedDataset.forEach((rankedData: NewsData) => {
-        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const regex = /https:\/\/[^ ]+\.(jpg|png|jpeg)/g;
         const match = rankedData.newsContent.match(regex);
         const replacedContent = rankedData.newsContent.replace(regex, '');
         const replacedDate = rankedData.newsDate.slice(6);
