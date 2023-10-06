@@ -123,32 +123,36 @@ export default function TradeAi() {
     },
   ];
 
-  useEffect(() => {
-    window.addEventListener('wheel', handleScroll);
+  // useEffect(() => {
+  //   window.addEventListener('wheel', handleScroll);
 
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('wheel', handleScroll);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken'); // 토큰을 로컬 스토리지에서 가져옵니다.
-
-    axios
-      .get('http://localhost:8083/api/ai', {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((res) => {
-        if (res.data.aiBudget > 0) {
-          setHasResult(true);
-          setIsTrade(true);
-        } else {
-          setHasResult(false);
-          setIsTrade(false);
-        }
-      });
+    console.log(token);
+    if (token) {
+      axios
+        .get('http://localhost:8083/api/ai', {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((res) => {
+          if (res.data.aiBudget > 0) {
+            setHasResult(true);
+            setIsTrade(true);
+          } else {
+            setHasResult(false);
+            setIsTrade(false);
+          }
+        });
+    } else {
+      window.alert('로그인해주세요');
+    }
   });
 
   // const handleBotNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,9 +164,11 @@ export default function TradeAi() {
       {hasResult && (
         <SubContainer>
           {isTrade ? (
-            <Title color="var(--dark-color)">
-              진행 중인 투자 상황을 분석해드려요
-            </Title>
+            <div style={{ marginTop: '40px' }}>
+              <Title color="var(--dark-color)">
+                진행 중인 투자 상황을 분석해드려요
+              </Title>
+            </div>
           ) : (
             <Title color="var(--dark-color)">
               최근 진행하신 트레이딩 결과입니다
