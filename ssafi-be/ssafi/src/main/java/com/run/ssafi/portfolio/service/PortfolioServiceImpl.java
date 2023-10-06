@@ -3,7 +3,9 @@ package com.run.ssafi.portfolio.service;
 import com.run.ssafi.ai.repository.AiRepository;
 import com.run.ssafi.config.auth.MemberDetail;
 import com.run.ssafi.domain.AiTrade;
+import com.run.ssafi.domain.Kospi;
 import com.run.ssafi.domain.Member;
+import com.run.ssafi.domain.Portfolio;
 import com.run.ssafi.domain.Score;
 import com.run.ssafi.domain.Type;
 import com.run.ssafi.member.repository.ScoreRepository;
@@ -11,6 +13,8 @@ import com.run.ssafi.message.custom_message.PortfolioMessage;
 import com.run.ssafi.portfolio.dto.PortfolioResponseDto;
 import com.run.ssafi.portfolio.repository.PortfolioRepository;
 import com.run.ssafi.portfolio.vo.PortfolioVo;
+import com.run.ssafi.stock.repository.KospiRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ public class PortfolioServiceImpl implements PortfolioService{
     private final AiRepository aiRepository;
     private final ScoreRepository scoreRepository;
     private final PortfolioRepository portfolioRepository;
+    private final KospiRepository kospiRepository;
 
     @Override
     public PortfolioResponseDto getPortfolio(MemberDetail memberDetail) {
@@ -92,5 +97,23 @@ public class PortfolioServiceImpl implements PortfolioService{
         portfolioResponseDto.setMessage(PortfolioMessage.PORTFOLIO_LOADING_SUCCESS.getMessage());
 
         return portfolioResponseDto;
+    }
+
+    @Override
+    public void createPortfolio(){
+
+        List<Kospi> kospiList = kospiRepository.findTop3Kospi();
+        System.out.println(kospiList.toString());
+
+        portfolioRepository.deletePortfolio();
+
+        for (Kospi kospi : kospiList) {
+            portfolioRepository.save(
+                    Portfolio.builder()
+                            .portType(kospi.getKospiType())
+                            .kospi(kospi)
+                            .build()
+            );
+        }
     }
 }
