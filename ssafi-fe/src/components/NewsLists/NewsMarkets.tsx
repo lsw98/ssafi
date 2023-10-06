@@ -154,7 +154,7 @@ export default function NewsNewest() {
       const newsDataset = newsData.data.newsVoList.slice(0, 60);
       let dataList: Array<NewsItem> = [];
       newsDataset.forEach((data: NewsData) => {
-        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const regex = /https:\/\/[^ ]+\.(jpg|png|gif|jpeg)/g;
         const match = data.newsContent.match(regex);
         const replacedContent = data.newsContent.replace(regex, '');
         const replacedDate = data.newsDate.slice(6);

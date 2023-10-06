@@ -123,13 +123,13 @@ export default function TradeAi() {
     },
   ];
 
-  useEffect(() => {
-    window.addEventListener('wheel', handleScroll);
+  // useEffect(() => {
+  //   window.addEventListener('wheel', handleScroll);
 
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('wheel', handleScroll);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken'); // 토큰을 로컬 스토리지에서 가져옵니다.
