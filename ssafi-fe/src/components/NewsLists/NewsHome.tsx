@@ -75,6 +75,7 @@ const MostViewedNewsBox = styled.div`
 // 많이 본 뉴스 이미지 속성
 const MostViewedNewsImage = styled.img`
   width: 380px;
+  height: 240px;
 `;
 
 // 많이 본 뉴스 박스 제목 속성
@@ -121,7 +122,7 @@ export default function NewsHome() {
       console.log(rankedDataset);
       let rankedDataList: Array<NewsItem> = [];
       rankedDataset.forEach((rankedData: NewsData) => {
-        const regex = /https:\/\/[^ ]+\.(jpg|png|jpeg)/g;
+        const regex = /https:\/\/[^ ]+\.(jpg|png|gif|jpeg)/g;
         const match = rankedData.newsContent.match(regex);
         const replacedContent = rankedData.newsContent.replace(regex, '');
         const replacedDate = rankedData.newsDate.slice(6);

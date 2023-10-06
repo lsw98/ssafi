@@ -135,7 +135,7 @@ export default function NewsHomeList() {
       console.log(latestDataset);
       let latestDataList: Array<NewsItem> = [];
       latestDataset.forEach((latestData: NewsData) => {
-        const regex = /https:\/\/[^ ]+\.(jpg|png)/g;
+        const regex = /https:\/\/[^ ]+\.(jpg|png|gif|jpeg)/g;
         const match = latestData.newsContent.match(regex);
         const replacedContent = latestData.newsContent.replace(regex, '');
         const replacedDate = latestData.newsDate.slice(6);

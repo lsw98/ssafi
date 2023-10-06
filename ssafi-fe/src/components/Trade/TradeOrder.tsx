@@ -277,7 +277,7 @@ export type CandleData = {
 };
 
 export default function TradeOrder() {
-  const [stockCode, setStockCode] = useState<string>('005930');
+  const [stockCode, setStockCode] = useState<string>('000660');
   const [stockInfo, setStockInfo] = useState<StockInfoType | null>(null);
   const [minutePricesData, setMinutePricesData] = useState<any[]>([]);
   const [rankingData, setRankingData] = useState<any[]>([]);

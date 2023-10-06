@@ -121,13 +121,13 @@ const Notice = styled.div`
 `;
 
 export default function TradeApi() {
-  React.useEffect(() => {
-    window.addEventListener('wheel', handleScroll);
+  // React.useEffect(() => {
+  //   window.addEventListener('wheel', handleScroll);
 
-    return () => {
-      window.removeEventListener('wheel', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('wheel', handleScroll);
+  //   };
+  // }, []);
 
   const [appKey, setApiKey] = useState('');
   const [secretKey, setSecretKey] = useState('');
