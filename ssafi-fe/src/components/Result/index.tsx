@@ -10,6 +10,8 @@ import instance from '../../api/apiControlller';
 interface Props {
   setSurveyDone: React.Dispatch<React.SetStateAction<boolean>>;
   mbtiScore: number[];
+  ratio: number[];
+  portfolio: string;
 }
 
 interface TypeProp {
@@ -32,7 +34,7 @@ interface MbtiPoint {
   percentage: number;
 }
 
-export default function Result({ setSurveyDone, mbtiScore }: Props) {
+export default function Result({ setSurveyDone, mbtiScore, ratio, portfolio }: Props) {
   const mbtiPoint = mbtiScore;
 
   const mbtiProps: MbtiPoint[] = [
@@ -65,8 +67,6 @@ export default function Result({ setSurveyDone, mbtiScore }: Props) {
       percentage: mbtiPoint[3] * 5,
     },
   ];
-
-  const tempDoughnut: number[] = [33, 33];
 
   const mbtiIndex = [
     'APML', 'APMC', 'APWL', 'APWC', 'ABML', 'ABMC', 'ABWC', 'ABWL',
@@ -131,27 +131,26 @@ export default function Result({ setSurveyDone, mbtiScore }: Props) {
         <TraitTitle><PointMbti>{mbtiType}</PointMbti>을 위한 추천</TraitTitle>
         <RecommendBox>
           <GraphBox>
-            <InvestGraph ratio={tempDoughnut} />
+            <InvestGraph ratio={ratio} />
             <RatioBox>
               <RecomRatio>
                 <RatioColor type='danger' />
-                위험형: {tempDoughnut[0]}%
+                위험형: {ratio[0]}%
               </RecomRatio>
               <RecomRatio>
                 <RatioColor type='middle' />
-                중립형: {tempDoughnut[1]}%
+                중립형: {ratio[1]}%
               </RecomRatio>
               <RecomRatio>
                 <RatioColor type='safe' />
-                안정형: {100 - tempDoughnut[0] - tempDoughnut[1]}%
+                안정형: {ratio[2]}%
               </RecomRatio>
             </RatioBox>
           </GraphBox>
           <RecomStock>
-            <RecomComment>{'어쩌구 저쩌구한 AAAA!\n어쩌구 한 주식에 한 번 더 걸어보세요!'}</RecomComment>
+            <RecomComment>당신을 위한 추천 종목!</RecomComment>
             <StockInfo>
-              <StockName>{'추천종목'}</StockName>
-              <StockLogo src={tempImg} />
+              <StockName>{portfolio}</StockName>
             </StockInfo>
           </RecomStock>
         </RecommendBox>
@@ -313,14 +312,13 @@ text-align: center;
 
 const StockInfo = styled.div`
 display: flex;
-justify-content: space-between;
+justify-content: center;
 align-items: start;
 width: 300px;
 `;
 
 const StockName = styled.div`
-widTh: 120px;
-font-size: 24px;
+font-size: 50px;
 font-weight: 600;
 color: var(--black-color);
 `;
