@@ -164,10 +164,10 @@ export default function TradeAi() {
       {hasResult && (
         <SubContainer>
           {isTrade ? (
-            <div style={{ marginTop: '40px' }}>
-              <Title color="var(--dark-color)">
-                진행 중인 투자 상황을 분석해드려요
-              </Title>
+            <div style={{ marginTop: '30px' }}>
+            <Title color="var(--dark-color)">
+              최근 진행하신 트레이딩 결과입니다
+            </Title>
             </div>
           ) : (
             <div style={{ marginTop: '30px' }}>
