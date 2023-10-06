@@ -44,7 +44,7 @@ const SubContainer = styled.div`
 `;
 
 const Title = styled.div<StyleProps>`
-  font-size: 46px;
+  font-size: 42px;
   font-weight: ${({ weight }) => weight || 500};
   color: ${({ color }) => color || 'var(--black-color)'};
   margin: 20px 0 36px 0;
@@ -111,11 +111,11 @@ export default function TradeAi() {
   const stockRateInfo = [
     {
       category: 'safe',
-      percent: 35,
+      percent: 58,
     },
     {
       category: 'middle',
-      percent: 58,
+      percent: 35,
     },
     {
       category: 'danger',
@@ -164,17 +164,19 @@ export default function TradeAi() {
       {hasResult && (
         <SubContainer>
           {isTrade ? (
-            <div style={{ marginTop: '40px' }}>
+            <div style={{ marginTop: '30px' }}>
+            <Title color="var(--dark-color)">
+              최근 진행하신 트레이딩 결과입니다
+            </Title>
+            </div>
+          ) : (
+            <div style={{ marginTop: '30px' }}>
               <Title color="var(--dark-color)">
                 진행 중인 투자 상황을 분석해드려요
               </Title>
             </div>
-          ) : (
-            <Title color="var(--dark-color)">
-              최근 진행하신 트레이딩 결과입니다
-            </Title>
           )}
-          <BoxContainer width="1280px" style={{ alignItems: 'center' }}>
+          <BoxContainer width="1280px" style={{ alignItems: 'center', marginBottom: '20px' }}>
             <Box>
               {stockRateInfo.map((item) => (
                 <SemiCircleProgress

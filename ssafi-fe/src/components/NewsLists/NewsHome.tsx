@@ -75,6 +75,7 @@ const MostViewedNewsBox = styled.div`
 // 많이 본 뉴스 이미지 속성
 const MostViewedNewsImage = styled.img`
   width: 380px;
+  height: 240px;
 `;
 
 // 많이 본 뉴스 박스 제목 속성
