@@ -15,7 +15,7 @@ export default function InvestGraph({ ratio } : GraphProps) {
     labels: ['위험형', '중립형', '안전형'],
     datasets: [
       {
-        data: [...ratio, ...[100 - ratio[0] - ratio[1]]],
+        data: ratio,
         backgroundColor: ['#392727', '#FAC152', '#50867C'],
         cutout: '50%',
       },

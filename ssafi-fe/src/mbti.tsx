@@ -14,6 +14,8 @@ const MbtiContainer = styled.div`
 export default function Mbti() {
   const [surveyDone, setSurveyDone] = React.useState<boolean>(false);
   const [mbtiScore, setMbtiScore] = React.useState<number[]>([]);
+  const [ratio, setRatio] = React.useState<number[]>([]);
+  const [portfolio, setPortfolio] = React.useState<string>('');
 
   React.useEffect(() => {
     const fetchMbtiPoint = async () => {
@@ -26,6 +28,12 @@ export default function Mbti() {
           mbtiScores.mwScore,
           mbtiScores.lcScore,
         ]);
+        setRatio([
+          mbtiScores.riskRatio,
+          mbtiScores.neutralRatio,
+          mbtiScores.safetyRatio,
+        ]);
+        setPortfolio(mbtiScores.recommendedStock);
         setSurveyDone(true);
       }
     };
@@ -35,7 +43,7 @@ export default function Mbti() {
   return (
     <MbtiContainer>
       {surveyDone ? (
-        <Result setSurveyDone={setSurveyDone} mbtiScore={mbtiScore} />
+        <Result setSurveyDone={setSurveyDone} mbtiScore={mbtiScore} ratio={ratio} portfolio={portfolio} />
       ) : (
         <Survey setSurveyDone={setSurveyDone} />
       )}
