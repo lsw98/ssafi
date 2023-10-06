@@ -34,9 +34,9 @@ public class PortfolioServiceImpl implements PortfolioService{
         Score score = scoreRepository.findById(member.getId()).orElse(null);
         AiTrade aiTrade = aiRepository.findById(member.getId()).orElse(null);
 
-        Double riskRatio;
-        Double neutralRatio;
-        Double safetyRatio;
+        Double riskRatio = null;
+        Double neutralRatio = null;
+        Double safetyRatio = null;
 
         Type type = member.getType();
         String investmentType = null;
@@ -55,23 +55,103 @@ public class PortfolioServiceImpl implements PortfolioService{
                 investmentType = "safe";
             }
         } else if (type != null){
-            investmentType = switch (type) {
-                case APML -> "risk";
-                case APMC -> "risk";
-                case APWL -> "neutral";
-                case APWC -> "safe";
-                case ABML -> "risk";
-                case ABMC -> "risk";
-                case ABWL -> "risk";
-                case ABWC -> "neutral";
-                case IPML -> "risk";
-                case IPMC -> "risk";
-                case IPWL -> "neutral";
-                case IPWC -> "safe";
-                case IBML -> "risk";
-                case IBMC -> "risk";
-                case IBWL -> "neutral";
-                case IBWC -> "safe";
+            switch (type) {
+                case APML :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case APMC :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case APWL :
+                    investmentType = "neutral";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case APWC :
+                    investmentType = "safe";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case ABML :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case ABMC :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case ABWL :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case ABWC :
+                    investmentType = "neutral";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IPML :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IPMC :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IPWL :
+                    investmentType = "neutral";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IPWC :
+                    investmentType = "safe";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IBML :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IBMC :
+                    investmentType = "risk";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IBWL :
+                    investmentType = "neutral";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
+                case IBWC :
+                    investmentType = "safe";
+                    riskRatio = 50.0;
+                    neutralRatio = 30.0;
+                    safetyRatio = 20.0;
+                    break;
             };
         }
 
@@ -93,6 +173,10 @@ public class PortfolioServiceImpl implements PortfolioService{
             portfolioResponseDto.setMwScore(score.getMwScore());
             portfolioResponseDto.setLcScore(score.getLcScore());
         }
+
+        portfolioResponseDto.setRiskRatio(riskRatio);
+        portfolioResponseDto.setNeutralRatio(neutralRatio);
+        portfolioResponseDto.setSafetyRatio(safetyRatio);
 
         portfolioResponseDto.setMessage(PortfolioMessage.PORTFOLIO_LOADING_SUCCESS.getMessage());
 

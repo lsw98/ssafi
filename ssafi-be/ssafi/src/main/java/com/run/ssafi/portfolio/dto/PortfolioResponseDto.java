@@ -17,5 +17,8 @@ public class PortfolioResponseDto {
     private Double pbScore;
     private Double mwScore;
     private Double lcScore;
+    private Double riskRatio;
+    private Double neutralRatio;
+    private Double safetyRatio;
     private String message;
 }
