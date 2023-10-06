@@ -28,23 +28,24 @@ const Kakao = () => {
             // 헤더에 있는 토큰 정보 저장
             const accessToken = response.headers.authorization;
             const refreshToken = response.headers.refreshtoken;
-            console.log(response.headers);
+            console.log(response.data);
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             // 응답 본문에 있는 추가 정보 저장
-            const { AccessToken, appKey, secretKey } =
-              response.data.authResponseDto;
-            if (AccessToken) {
-              localStorage.setItem('apiAccessToken', AccessToken);
+            const { appKey, secretKey } = response.data.authResponseDto;
+            const apiAccessToken = response.data.authResponseDto.accessToken;
+            const cano = response.data.accountPrefix;
+            if (apiAccessToken) {
+              localStorage.setItem('apiAccessToken', apiAccessToken);
             }
             if (appKey) localStorage.setItem('appKey', appKey);
             if (secretKey) localStorage.setItem('secretKey', secretKey);
-
+            if (cano) localStorage.setItem('cano', cano);
             window.alert('로그인 성공!.');
             setIsLoggedIn(true);
-            console.log(localStorage);
+            console.log('스토리지:', localStorage);
             // 필요한 정보가 모두 있으면 주식 투자 창으로 이동
-            if (AccessToken && appKey && secretKey) {
+            if (apiAccessToken && appKey && secretKey) {
               // navigate('/stockInvestment');
               navigate('/trade');
             } else if (accessToken || refreshToken) {

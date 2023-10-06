@@ -135,6 +135,7 @@ export default function Header() {
       localStorage.clear();
       setIsLoggedIn(false);
       window.alert('로그아웃되었습니다.');
+      navigate('/');
     } catch (error) {
       console.error('로그아웃 중 에러가 발생했습니다:', error);
     }

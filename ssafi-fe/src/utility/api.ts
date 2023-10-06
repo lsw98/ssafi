@@ -4,14 +4,14 @@ const apiToken = process.env.REACT_APP_PROD_TOKEN;
 const apiKey = process.env.REACT_APP_PROD_APPKEY;
 const apiSecret = process.env.REACT_APP_PROD_APPSECRET;
 // 모의투자
-const vtsCano = process.env.REACT_APP_CANO;
-const vtsToken = process.env.REACT_APP_VTS_TOKEN;
-const vtsKey = process.env.REACT_APP_VTS_APPKEY;
-const vtsSecret = process.env.REACT_APP_VTS_APPSECRET;
-// const vtsCano = localStorage.getItem('cano') || '';
-// const vtsToken = localStorage.getItem('apiAccessToken') || '';
-// const vtsKey = localStorage.getItem('appKey') || '';
-// const vtsSecret = localStorage.getItem('secretKey') || '';
+// const vtsCano = process.env.REACT_APP_CANO;
+// const vtsToken = process.env.REACT_APP_VTS_TOKEN;
+// const vtsKey = process.env.REACT_APP_VTS_APPKEY;
+// const vtsSecret = process.env.REACT_APP_VTS_APPSECRET;
+const vtsCano = localStorage.getItem('cano') || '';
+const vtsToken = localStorage.getItem('apiAccessToken') || '';
+const vtsKey = localStorage.getItem('appKey') || '';
+const vtsSecret = localStorage.getItem('secretKey') || '';
 
 type FetchAccountResult = {
   refinedOutput: any[];
